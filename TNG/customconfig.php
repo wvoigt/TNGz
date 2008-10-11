@@ -27,7 +27,7 @@ if ($cms[TNGz] == 1){
     $logname         = $cms[tngpath] . $logname ;
 
     
-    // Now fix PostNuke's $register_globals=off code for TNG
+    // Now fix Zikula's $register_globals=off code for TNG
     $register_globals = (bool) ini_get('register_globals');
     if( $register_globals ) {
         $the_globals = $_SERVER + $_ENV + $_GET +$_POST;
