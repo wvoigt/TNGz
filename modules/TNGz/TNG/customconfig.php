@@ -5,7 +5,7 @@
 // then you can just use this file
 if ($cms[TNGz] == 1){
 
-    $cms[support]    = "postnuke";
+    $cms[support]    = "zikula";
     $cms[module]     = "TNGz";    
     $cms[url]        = "index.php?module=TNGz&func=main&show";    
     $cms[tngpath]    = $TNG['directory']. "/";
