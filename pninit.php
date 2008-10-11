@@ -62,13 +62,6 @@ function TNGz_upgrade($oldversion)
         case 1.00:
         case 2.00:
         default:
-              // No longer need these from any version
-              pnModDelVar(TNGz, '_config');
-              pnModDelVar(TNGz, '_db');
-              pnModDelVar(TNGz, '_mail');
-              pnModDelVar(TNGz, '_basepath');
-              pnModDelVar(TNGz, '_debug');
-              pnModDelVar(TNGz, '_wrap');    
               $successful = true;
               break;
     }
