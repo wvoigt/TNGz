@@ -1,0 +1,63 @@
+<!--[*  $Id: TNGz_block_ThisDay.htm,v 1.0 2006/10/19 23:43:19 wvoigt Exp $  *]-->
+<div style="text-align:left;">
+
+<!--[if $thisdayerror ]-->
+    <div style="text-align:left;"><!--[$thisdayerror]--><br /></div>
+<!--[/if]-->
+
+<!--[if $showdate ]-->
+    <div style="text-align:center;"><strong><!--[$todaytime|pndate_format:"%d %b %Y"]--></strong><br /></div>
+<!--[/if]-->
+
+<!--[if $showbirth ]-->
+    <div style="text-align:center;"><strong><!--[pnml name="_BIRTH"|pnvarprephtmldisplay]--></strong><br /></div>
+    <!--[if $birth ]-->
+        <ul>
+        <!--[foreach item=item from=$birth]-->
+        <li><!--[$item]--></li>
+        <!--[/foreach]-->
+        </ul>
+    <!--[else]-->
+    <div style="text-align:center;"><!--[pnml name="_NONETNG"|pnvarprephtmldisplay]--><br /></div>   
+    <!--[/if]-->
+    <br />
+<!--[/if]-->
+
+<!--[if $showmarriage ]-->
+    <div style="text-align:center;"><strong><!--[pnml name="_MARRIAGE"|pnvarprephtmldisplay]--></strong><br /></div>
+    <!--[if $marriage ]-->
+        <ul>
+        <!--[foreach item=item from=$marriage]-->
+        <li><!--[$item]--></li>
+        <!--[/foreach]-->
+        </ul>        
+    <!--[else]-->
+    <div style="text-align:center;"><!--[pnml name="_NONETNG"|pnvarprephtmldisplay]--><br /></div>   
+    <!--[/if]-->
+    <br />    
+<!--[/if]-->
+
+<!--[if $showdeath ]-->
+    <div style="text-align:center;"><strong><!--[pnml name="_DEATH"|pnvarprephtmldisplay]--></strong><br /></div>
+    <!--[if $death ]-->
+        <ul>
+        <!--[foreach item=item from=$death]-->
+        <li><!--[$item]--></li>
+        <!--[/foreach]-->
+        </ul>        
+    <!--[else]-->
+    <div style="text-align:center;"><!--[pnml name="_NONETNG"|pnvarprephtmldisplay]--><br /></div>   
+    <!--[/if]-->
+    <br />    
+<!--[/if]-->
+
+<!--[if $showwiki ]-->
+     <div style="text-align:center;"><strong><br />
+     <A href="http://en.wikipedia.org/wiki/<!--[$wiki]-->" target="new"><!--[pnml name="_WIKITODAY"|pnvarprephtmldisplay]--></A>
+     </strong>
+     </div>
+<!--[/if]-->
+
+<div style="text-align:center;"><strong><br /><!--[$mainmenu]--></strong><br /></div>   
+
+</div>

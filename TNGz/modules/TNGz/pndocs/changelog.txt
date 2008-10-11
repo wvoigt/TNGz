@@ -1,0 +1,14 @@
+======================================================================================
+CHANGE LOG
+TNGz /pndoc/changelog.txt
+TNGz (C) 2008 Wendel Voigt
+======================================================================================
+-------------
+version 1.01
+  * Converted pnTNG to TNGz (major rewrite and update)
+  * Updated integration techniques to allow for a more complete integration into Zikula
+     - All HTML is now templated
+     - Removed iframe option
+  * Updated module Administration
+     - Followed Zikula design guidelines
+     - Integrated TNG Administration into TNGz Administration

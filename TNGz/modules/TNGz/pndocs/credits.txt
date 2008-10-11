@@ -1,0 +1,23 @@
+=========================================================================
+CREDITS
+TNGz /pndoc/credits.txt
+TNGz (C) 2008 Wendel Voigt
+=========================================================================
+Wendel Voigt
+  * TNGz rewrite of pnTNG for a API complient Zikula integration of TNG.
+
+Wendel Voigt (pntng@VoigtWorld.com / www.VoigtWorld.com):
+  * pnTNG updates including ThisDay, RandomPhoto, WhatsNew, MostWanted blocks, non-framed version of pnTNG, initial Zikula integration
+
+Cas Nuy (Cas@nuy.info / www.nuy.info):
+  * the creator of pnTNG
+
+Martin Stær Andersen (msandersen@tpg.com.au)
+  * The original non-IFRAME version (pntng.php) was based on NukeWrapper v2.7.13 Beta for Postnuke
+
+Robert Penrose 
+  * The current non-IFRAME version uses concepts found in TNG Nuke Add-on 1.8.1
+
+A very special thanks to Darrin Lythgoe for 
+ The Next Generation of Genealogy Sitebuilding (TNG)
+ http://lythgoes.net/genealogy/software.php
