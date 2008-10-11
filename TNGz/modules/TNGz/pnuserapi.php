@@ -665,7 +665,7 @@ function TNGz_userapi_CleanEmail($args) {
 
  /**
  * Generate reference link back to TNGz items
- * @param int args['RefType'] Type of reference to make 0= iframe style 1=pntng.php style
+ * @param int args['RefType'] 0 or 1 depending upon URL style
  * @param int args['func'] what function to call from TNG
  * @param int args['personID']
  * @param int args['tree'] 
@@ -719,11 +719,11 @@ function TNGz_userapi_MakeRef($args) {
     
     switch ($RefType) {
     case "1":
-            $Ref = "index.php?module=TNGz&func=";
+            $Ref = "index.php?module=TNGz".$amp."func=";
             break;    
     case "0":
     default :
-            $Ref = "index.php?module=TNGz&func=main&show=";
+            $Ref = "index.php?module=TNGz".$amp."func=main".$amp."show=";
     }
     
 
@@ -756,32 +756,19 @@ function TNGz_userapi_MakeRef($args) {
 }
  /**
  * Generate reference link back to TNGz items
- * @param int args['RefType'] Type of reference to make 0= iframe style 1=pntng.php style
- * @param int args['func'] what function to call from TNG
- * @param int args['personID']
- * @param int args['tree'] 
- * @param int args['ordernum'] 
- * @param int args['photoID'] 
- * @param int args['familyID'] 
- * @param int args['docID']  
- * @param int args['target'] 
- * @param int args['description'] link description
+ * @param int $args['RefType'],     0 or 1 depending upon URL style
+ * @param str $args['target'],      to add any special target parameters to the link
+ * @param str $args['description'], the text for the link
+ * @param str $args['func'],        the TNG file to run
+ * @param str $args['...],          any other parameters are passed directly to the TNG function
  * @return reference link
  */ 
-function TNGz_userapi_MakeRefnew($args) {
+function TNGz_userapi_MakeRefproposed($args) {  
     
-    // Valid call combinations
-    // $RefType, $func="getperson", $personID, $tree $target $description
-    // $RefType, $func="showphoto", $personID, $tree, $ordernum $target $description
-    // $RefType, $func="photo", $photoID $target $description
-    // $RefType, $func="familygroup", $familyID, $tree $target $description
-    // $RefType, $func="showhistory", $docID $target $description
-    // $RefType, $func="url", $url $target $description
-    // $RefType, $func="main" $target $description
+    // QUESTION: Why does file based short URLs not work with pnModURL????
     
     $RefType = (isset($args['RefType'])) ? $args['RefType'] : 0 ;
     unset($args['RefType']);
-   
     $RefType = 0; // FIX - just do type 0 for now...
    
     $target = (isset($args['target'])) ? $args['target'] : "" ;
@@ -807,11 +794,11 @@ function TNGz_userapi_MakeRefnew($args) {
     default :
             $func="main";
 	    if ($prog != "main") {
-	        $args['show'] = $prog;
+	        $args = array_merge(array("show"=>$prog),$args); // add to the front (so comes out first
 	    }
     }
      
-    return "<a href=\"" . pnModURL("TNGz", "user", $func, $args) . "\" $target >$description</a>";
+    return "<a href=\"" . pnModURL("TNGz", null, $func, $args) . "\" $target >$description</a>";
     
 }
  /**
