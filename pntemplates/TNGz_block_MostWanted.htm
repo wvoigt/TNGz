@@ -1,0 +1,36 @@
+<!--[*  $Id: TNGz_block_ThisDay.htm,v 1.0 2006/10/19 23:43:19 wvoigt Exp $  *]-->
+<!--[counter start=0 name=ItemCount assign=ItemCount ]-->
+<div style="text-align:left;">
+    <!--[if $WantedText ]-->
+        <div style="text-align:center;"><!--[$WantedText|pnvarprephtmldisplay]--><br /></div>
+    <!--[/if]-->   
+    <!--[if $WantedPeopleList ]-->
+        <!--[if $WantedPeopleLabel ]-->
+        <div style="text-align:center;"><strong><br /><!--[$WantedPeopleLabel]--></strong></div>   
+        <!--[/if]-->
+        <ul>  
+        <!--[foreach item=item from=$WantedPeopleList]-->
+        <li><!--[$item]--></li>
+        <!--[/foreach]-->
+        </ul>
+        <!--[counter name=ItemCount assign=ItemCount ]-->    
+    <!--[/if]-->
+    <!--[if $WantedFamilyList ]-->
+        <!--[if $WantedFamilyLabel ]-->
+        <div style="text-align:center;"><strong><br /><!--[$WantedFamilyLabel]--></strong></div>   
+        <!--[/if]-->    
+        <ul>    
+        <!--[foreach item=item from=$WantedFamilyList]-->
+        <li><!--[$item]--></li>
+        <!--[/foreach]-->
+        </ul>
+        <!--[counter name=ItemCount assign=ItemCount ]-->  
+    <!--[/if]-->
+    <!--[if $ItemCount eq 0 ]-->        
+        <div style="text-align:center;"><br /><!--[pnml name="_NONETNG"|pnvarprephtmldisplay]--><br /></div>          
+    <!--[/if]-->
+        </ul>    
+    <!--[if $WantedMenuLink ]-->
+        <div style="text-align:center;"><strong><br /><!--[$WantedMenuLink]--></strong><br /></div>   
+    <!--[/if]-->
+</div>
