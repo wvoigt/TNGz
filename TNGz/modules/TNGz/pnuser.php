@@ -1,6 +1,10 @@
 <?php
 // $Id: pnuser.php, v 1.01 2008/10/06 13:08:28 wvoigt Exp $
-
+//*****************************************************************************
+// The generic way to call TNG functions (RefType=0)
+// Generically they have the form:
+// index.php?module=TNGz&type=user&func=main&show=
+//*****************************************************************************
 function TNGz_user_main() {
 
     $TNGpage = FormUtil::getPassedValue('show', 'index', 'GET');
@@ -31,35 +35,9 @@ function TNGz_user_main() {
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => $TNGpage, 'render' => $TNGrenderpage ));
 }
 
-/*
-Files to Render:
-Evaluate:
-addbookmark.php,addnewacct.php,ahnentafel.php,albumlib.php,anniversaries.php,anniversaries2.php,
-begin.php,bookmarks.php,browsealbums.php,browsedocs.php,browseheadstones.php,browsemedia.php,
-browsenotes.php,browsephotos.php,browserepos.php,browserinfo.php,browsesources.php,browsetrees-old.php,
-browsetrees.php,cemeteries.php,changelanguage.php,checklogin.php,config.php,customconfig.php,
-deletebookmark.php,deleteentity.php,descend.php,descendtext.php,desctracker.php,end.php,end7.php,
-extrastree.php,familygroup.php,findperson.php,findpersonform.php,fpdf.php,fpdf_cellfit.php,
-functions.php,gedcom.php,gedform.php,genlib-bak.php,genlib.php,getglobals.php,getlang.php,
-getperson.php,globallib.php,headstones.php,historytemplate.php,importconfig.php,index-backup.php,
-index-bak.php,index-new.php,index.php,index_new.php,index_plus_header_footer.php,index_pn-bak.php,
-index_pn-bak2.php,index_pn-bak3.php,index_pn.php,index_pnTNG.php,log.php,logconfig.php,login.php,
-logout.php,logxml.php,maint.php,mapconfig.php,mediatypes.php,menu-top.php,menu.php,meta.php,
-mostwanted.php,newacctform.php,pdfform.php,pedconfig.php,pedigree.php,pedigreetext.php,
-pedxml.php,personlib.php,photoblock.php,places-all.php,places-oneletter.php,places.php,
-places100.php,placesearch.php,pnversion.php,processlogin.php,register.php,reglib.php,relateform.php,
-relationship.php,relationship2.php,reports.php,rpt_descend.php,rpt_ind.php,rpt_pedigree.php,
-rss2html.php,savelanguage.php,savelanguage2.php,savetentedit.php,search.php,searchform.php,sendlogin.php,
-setpermissions1.php,showalbum.php,showheadstone.php,showhistory.php,showlog.php,showmap.php,
-showmedia.php,showmedialib.php,showmediaxml.php,showphoto.php,showrepo.php,showreport.php,
-showsource.php,showtree.php,smallimage.php,subroot.php,suggest.php,surnames-all.php,surnames-oneletter.php,
-surnames.php,surnames100.php,switchcolor.php,switchcolor2.php,tentedit.php,timeline.php,timeline2.php,
-tngfiletypes.php,tnghelp.php,tnginstall.php,tngmenu.php,tngpdf.php,tngrobots.php,tngrss.php,tngsendmail.php,
-topmenu.php,ufpdf.php,ultraped.php,version.php,whatsnew.php,index_TNGz.php
-Files that don't get rendered:
-*/
-
-
+//*****************************************************************************
+// TNG administration
+// *****************************************************************************
 function TNGz_user_admin() {
 
     if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_OVERVIEW)) {
@@ -88,4 +66,146 @@ function TNGz_user_admin() {
     return $pnRender->fetch('TNGz_user_admin.htm');
     
 }
+
+//*****************************************************************************
+// The itemized way to call TNG functions. (RefType=1)
+// Generically they have the form:
+// index.php?module=TNGz&type=user&func=
+//
+//*****************************************************************************
+// TNG functions that get called and should have Zikula wrapped around it
+//*****************************************************************************
+function TNGz_user_getperson() {  
+    return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'getperson', 'render' => true ));
+}
+/*
+Need to finish this....
+Files to Render:
+addnewacct
+ahnentafel
+anniversaries
+bookmarks
+browsealbums
+browsemedia
+browsenotes
+browserepos
+browsesources
+browsetrees-old
+browsetrees
+cemeteries
+changelanguage
+descend
+descendtext
+desctracker
+extrastree
+familygroup
+gedform
+getperson
+headstones
+historytemplate
+login
+maint
+mostwanted
+newacctform
+pedigree
+pedigreetext
+places-all
+places-oneletter
+places
+places100
+placesearch
+register
+relateform
+relationship
+reports
+search
+searchform
+sendlogin
+showalbum
+showhistory
+showlog
+showmap
+showmedia
+showrepo
+showreport
+showsource
+showtree
+suggest
+surnames-all
+surnames-oneletter
+surnames
+surnames100
+timeline
+timeline2
+ultraped
+whatsnew 
+
+
+Need to Evaluate:
+anniversaries2, browsedocs,browseheadstones,browsephotos,browserinfo,deletebookmark,deleteentity,,fpdf,fpdf_cellfit,
+functions,getlang,headstones,historytemplate,logout,logxml,mapconfig,mediatypes,meta,,photoblock,processlogin,
+register,relateform,relationship2,rss2html,savelanguage,savelanguage2,savetentedit,search,searchform,sendlogin,
+setpermissions1,showheadstone,showphoto,,switchcolor,switchcolor2
+*/
+
+
+//*****************************************************************************
+// TNG functions that get called and should NOT have Zikula wrapped around it
+//*****************************************************************************
+function TNGz_user_addbookmark() {  
+    return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'addbookmark', 'render' => false ));
+}
+
+function TNGz_user_findperson() {  
+    return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'findperson', 'render' => false ));
+}
+
+function TNGz_user_findpersonform() {  
+    return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'findpersonform', 'render' => false ));
+}
+
+function TNGz_user_gedcom() {  
+    return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'gedcom', 'render' => false ));
+}
+
+function TNGz_user_pdfform() {  
+    return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'pdfform', 'render' => false ));
+}
+
+function TNGz_user_pedxml() {  
+    return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'pedxml', 'render' => false ));
+}
+
+function TNGz_user_rpt_descend() {  
+    return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'rpt_descend', 'render' => false ));
+}
+
+function TNGz_user_rpt_ind() {  
+    return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'rpt_ind', 'render' => false ));
+}
+
+function TNGz_user_rpt_pedigree() {  
+    return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'rpt_pedigree', 'render' => false ));
+}
+
+function TNGz_user_showmediaxml() {  
+    return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'showmediaxml', 'render' => false ));
+}
+
+function TNGz_user_smallimage() {  
+    return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'smallimage', 'render' => false ));
+}
+
+function TNGz_user_atentedit() {  
+    return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'tentedit', 'render' => false ));
+}
+
+function TNGz_user_tnghelp() {  
+    return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'tnghelp', 'render' => false ));
+}
+
+function TNGz_user_tngrss() {  
+    return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'tngrss', 'render' => false ));
+}
+
 ?>
