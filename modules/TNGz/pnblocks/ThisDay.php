@@ -342,7 +342,6 @@ function TNGz_ThisDayblock_display($blockinfo)
     //////////// WIKI Link ///////////////////////
     if ($vars['showwiki'] == "Y") {
         $thisday_showwiki   = true;
-        $thisday_wiki       = date('F_j', $my_time );
     }
 
     //////////// TNG Main Menu Link //////////////
@@ -375,7 +374,6 @@ function TNGz_ThisDayblock_display($blockinfo)
     $pnRender->assign('showdeath'    , $thisday_showdeath);
     $pnRender->assign('death'        , $thisday_deathitems);    
     $pnRender->assign('showwiki'     , $thisday_showwiki);
-    $pnRender->assign('wiki'         , $thisday_wiki);
     $pnRender->assign('mainmenu'     , $thisday_mainmenu);
     $pnRender->assign('thisdayerror' , $thisday_error);       
     
