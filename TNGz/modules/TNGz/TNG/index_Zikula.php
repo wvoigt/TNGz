@@ -24,8 +24,8 @@ tng_header( $text[mnuheader], $flags );
 <h2><?php echo $text[mnusearchfornames]; ?></h2>
 <!-- Do not change the form action or field names! -->
 <form action="" method="GET">
-<input name="name" type="hidden" value="<?php echo $cms[module]; ?>"/>
-<input name="file" type="hidden" value="search"/> 
+<input name="module" type="hidden" value="<?php echo $cms[module]; ?>"/>
+<input name="show"   type="hidden" value="search"/> 
 <table border="0" cellspacing="5" cellpadding="0">
 	<tr><td><span class="normal"><?php echo $text[mnulastname]; ?>: </span><br/><input type="text" name="mylastname" size="14"></td></tr>
 	<tr><td><span class="normal"><?php echo $text[mnufirstname]; ?>:</span><br/><input type="text" name="myfirstname" size="14"></td></tr>
