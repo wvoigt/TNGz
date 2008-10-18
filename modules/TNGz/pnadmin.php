@@ -226,7 +226,7 @@ function TNGz_admin_updateconfig()
     if (empty($_guest)) { $_guest = 0; }        
     pnModSetVar('TNGz', '_guest'    , $_guest);
 
-    if (empty($_gname) || ($_gname=="") ){ $_gname = "Guest";}
+    if (empty($_gname) || ($_gname=="") ){ $_gname = _TNGZGUESTDEFAULT;}
     pnModSetVar('TNGz', '_gname'    , $_gname);   
 
     if (empty($_users)) { $_users = 0; }    

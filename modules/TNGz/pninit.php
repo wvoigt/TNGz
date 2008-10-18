@@ -39,7 +39,7 @@ function TNGz_init()
     pnModSetVar(TNGz, '_loc'     ,  'TNG');
     pnModSetVar(TNGz, '_window'  ,   0);
     pnModSetVar(TNGz, '_guest'   ,   0);
-    pnModSetVar(TNGz, '_gname'   ,  'Guest');
+    pnModSetVar(TNGz, '_gname'   ,  _TNGZGUESTDEFAULT);
     pnModSetVar(TNGz, '_users'   ,   0);
     pnModSetVar(TNGz, '_living'  ,   0);
     pnModSetVar(TNGz, '_gedcom'  ,   0); 
