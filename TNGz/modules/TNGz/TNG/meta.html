@@ -5,24 +5,40 @@ $TNGrss           = "tngrss.php";
 $TNGtemplatestyle = "templatestyle.css";
 
 if ($cms[support]) {
+    // Look for css in the current Theme directory
     $CurrentTheme =  pnVarPrepForOs( pnUserGetTheme() ); 
 
     if( file_exists( "themes/$CurrentTheme/style/genstyle.css" ) ) {
-   	    $TNGstyle = "themes/$CurrentTheme/style/genstyle.css";
-    } 
-    else {
+        $TNGstyle = "themes/$CurrentTheme/style/genstyle.css";
+    } else {
         $TNGstyle = $cms[tngpath]."genstyle.css";
     }
-    $TNGrss      = $cms[tngpath]."tngrss.php";
-    $TNGmystyle  = $cms[tngpath]."mytngstyle.css";
-    $TNGtemplate = $cms[tngpath]."templatestyle.css";
+    
+    if( file_exists( "themes/$CurrentTheme/style/tngrss.css" ) ) {
+        $TNGrss = "themes/$CurrentTheme/style/tngrss.css";
+    } else {
+        $TNGrss = $cms[tngpath]."tngrss.php";
+    }
+    
+    if( file_exists( "themes/$CurrentTheme/style/mytngstyle.css" ) ) {
+        $TNGmystyle = "themes/$CurrentTheme/style/mytngstyle.css";
+    } else {
+        $TNGmystyle = $cms[tngpath]."mytngstyle.css";
+    }
+    
+    if( file_exists( "themes/$CurrentTheme/style/templatestyle.css" ) ) {
+        $TNGtemplatestyle = "themes/$CurrentTheme/style/templatestyle.css";
+    } else {
+        $TNGtemplatestyle = $cms[tngpath]."templatestyle.css";
+    }    
+    
+    
+    
 } 
 
 echo "<link href=\"$TNGstyle\" rel=\"stylesheet\" type=\"text/css\">";
 echo "<link href=\"$TNGtemplatestyle\" rel=\"stylesheet\" type=\"text/css\">";
 echo "<link href=\"$TNGmystyle\" rel=\"stylesheet\" type=\"text/css\">";
 echo "<link href=\"$TNGrss\" rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS\" >";
-
-
 
 ?>
