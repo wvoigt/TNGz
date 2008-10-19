@@ -4,7 +4,7 @@
 <!--[pnmodavailable modname=TNGz assign=tngz]-->
 <!--[if $tngz]-->
     <!--[* PEOPLE *]-->
-    <!--[pnmodapifunc modname=TNGz func=getall kind=people assign=tngz]-->
+    <!--[pnmodapifunc modname=TNGz func=getAllrecords kind=people assign=tngz]-->
     <!--[if $tngz]-->
         <!--[foreach from=$tngz item=i]-->
             <url>
@@ -16,7 +16,7 @@
     <!--[/if]-->
 
     <!--[* FAMILIES *]-->
-    <!--[pnmodapifunc modname=TNGz func=getall kind=family assign=tngz]-->
+    <!--[pnmodapifunc modname=TNGz func=getAllrecords kind=family assign=tngz]-->
     <!--[if $tngz]-->
         <!--[foreach from=$tngz item=i]-->
             <url>
@@ -29,6 +29,3 @@
     
 <!--[/if]-->
 </urlset> 
-
-
-
