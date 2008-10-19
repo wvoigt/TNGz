@@ -886,7 +886,7 @@ function TNGz_userapi_getAllrecords($args) {
             $items = array();
             list( $items['tree'],$items['id'],$items['changedate'] ) = $result->fields;
 		    $items['changedate'] = substr($items['changedate'],0,10);  // mod to handle date format change in TNGv6
-		    if ($items['changedate'] == "0000-00-00") {
+		    if ($items['changedate'] == "0000-00-00" || $items['changedate'] == "" ) {
      		      $items['changedate'] = date("Y-m-d");
 		    }
             $thelist[] = $items;
