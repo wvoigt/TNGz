@@ -13,7 +13,7 @@ function TNGz_ThisDayblock_info()
     return array(
         'text_type'      => 'ThisDayblock',
         'text_type_long' => 'On This Day',
-        'module'         => 'TNGz',        
+        'module'         => 'TNGz',
         'allow_multiple' => true,
         'form_content'   => false,
         'form_refresh'   => true,
@@ -32,20 +32,20 @@ function TNGz_ThisDayblock_display($blockinfo)
 
     if( !pnSecAuthAction( 0, 'TNGz:ThisDayblock:', "$blockinfo[title]::", ACCESS_READ ) )
 	    return false;
-    
+
     if( !pnModAPILoad('TNGz','user',true) ) {
         return false;
     }
 
     // Get variables from content block
     $vars = pnBlockVarsFromContent($blockinfo['content']);
-    
+
     // Defaults
     if (empty($vars['showdate'])) {
         $vars['showdate']   = 'Y';
     //    Y = Yes
     //    N = No
-    }    
+    }
     if (empty($vars['showbirth'])) {
         $vars['showbirth']  = 'L';
     //    N = No or None
@@ -53,15 +53,15 @@ function TNGz_ThisDayblock_display($blockinfo)
     //    Y = show all
     //    L = show living only if user is logged in
     }
-    
+
     if (empty($vars['showmarrige'])) {
         $vars['showmarrige']  = 'N';
     //    N = No or None
     //    D = show only dead people (no living)
-    //    L = show living only if user is logged in    
+    //    L = show living only if user is logged in
     //    Y = show all
-    }    
-    
+    }
+
     if (empty($vars['showdeath'])) {
         $vars['showdeath']  = 'Y';
     //    N = No or None
@@ -82,7 +82,7 @@ function TNGz_ThisDayblock_display($blockinfo)
         $vars['usecache']   = 0;
     //    1 = Yes
     //    0 = No
-    }    
+    }
 
     $target = "" ;
     $window=pnModGetVar('TNGz', '_window');
@@ -91,21 +91,21 @@ function TNGz_ThisDayblock_display($blockinfo)
     }
 
     $guest  = pnModGetVar('TNGz', '_guest');
-    
+
     $TNGstyle = pnModGetVar('TNGz', '_style');
-    
+
     $thisday_error         = "";
-    $thisday_showdate      = false;    
+    $thisday_showdate      = false;
     $thisday_showbirth     = false;
     $thisday_birthitems    = array();
     $thisday_showmarriage  = false;
-    $thisday_marriageitems = array();      
+    $thisday_marriageitems = array();
     $thisday_showdeath     = false;
-    $thisday_deathitems    = array();    
+    $thisday_deathitems    = array();
     $thisday_showwiki      = false;
-    $thisday_wiki          = "";       
+    $thisday_wiki          = "";
     $thisday_mainmenu      = "";
-    
+
 
     $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
 
@@ -123,14 +123,14 @@ function TNGz_ThisDayblock_display($blockinfo)
     // Get the date and time values we will need
     $thisday_time  = GetUserTime(time()) ;
     $day           = date('d',   $thisday_time );
-    $monthday      = date('m-d', $thisday_time );    
+    $monthday      = date('m-d', $thisday_time );
     $month         = date('M',   $thisday_time );
     $month         = strtoupper($month) ;
 
     // Check to see of this user has the permissions to see living conditionally
     $User_Can_See_Living = false;
     if ( pnUserLoggedIn() ){
-        // now check to make sure TNG says user can see the living 
+        // now check to make sure TNG says user can see the living
         $userid = pnUserGetVar('uname');
         $query = "SELECT allow_living FROM $users_table WHERE username = '$userid' ";
         if ($result = &$TNG_conn->Execute($query) ) {
@@ -139,7 +139,7 @@ function TNGz_ThisDayblock_display($blockinfo)
                 $User_Can_See_Living = true;
             }
          }
-        $result->Close(); 
+        $result->Close();
     }
 
     //////////// SHOW DATE ///////////////////////
@@ -157,7 +157,7 @@ function TNGz_ThisDayblock_display($blockinfo)
         } elseif ( $vars['showbirth'] == 'L' && $User_Can_See_Living ) {
             $showliving = true;
         }
-        
+
         $query = "SELECT personID,firstname,lastname,birthdatetr,deathdatetr,living,gedcom from $people_table";
         $query .= " where '$monthday'=substring(birthdatetr,6,5)";
         if ( !$showliving ){
@@ -166,11 +166,11 @@ function TNGz_ThisDayblock_display($blockinfo)
         if ($vars['sortby'] =="N") {
             $query .= " order by lastname,firstname ";
         } elseif ($vars['sortby'] =="R") {
-            $query .= " order by birthdate DESC ";              
+            $query .= " order by birthdate DESC ";
         } elseif ($vars['sortby'] =="D") {
-            $query .= " order by birthdate ASC";    
+            $query .= " order by birthdate ASC";
         } else {
-            $query .= " order by birthdate ASC";        
+            $query .= " order by birthdate ASC";
         }
         if (!$result = &$TNG_conn->Execute($query)  ) {
             $thisday_error  = ""._PEOPLEDBFERROR." " . $TNG_conn->ErrorMsg();
@@ -178,7 +178,7 @@ function TNGz_ThisDayblock_display($blockinfo)
             $found = $result->RecordCount();
             if ($found == 0){
             } else{
-                for (; !$result->EOF; $result->MoveNext()) { 
+                for (; !$result->EOF; $result->MoveNext()) {
                     list($id,$first,$last,$start,$end,$stat,$gedcom) = $result->fields;
                     $title1 = $last ;
                     $title1 .= ", " ;
@@ -217,21 +217,21 @@ function TNGz_ThisDayblock_display($blockinfo)
     }
     //////////// MARRIAGE ///////////////////////
     if ($vars['showmarriage'] != 'N' && $have_info == 1){
-        $thisday_showmarriage = true;       
+        $thisday_showmarriage = true;
         $showliving = false;  // default to no
         if ($vars['showmarriage'] == 'Y') {
             $showliving = true;
         } elseif ( $vars['showmarriage'] == 'L' && $User_Can_See_Living ) {
             $showliving = true;
-        } 
-        
+        }
+
         $query =  "SELECT familyID, marrdatetr, divdate, f.living as FLiving, h.lastname AS HLast, h.firstname AS HFirst, h.living as HLiving, w.lastname as WLast, w.firstname as WFirst, w.living as WLiving, f.gedcom as gedcom";
         $query .= " FROM $families_table AS f LEFT JOIN $people_table AS h ON f.husband=h.personID LEFT JOIN $people_table AS w ON f.wife=w.personID";
         $query .= " WHERE '$monthday'=substring(marrdatetr,6,5)";
         if ( !$showliving ){
             $query .= " and f.living = '0' ";
-        }        
-        
+        }
+
         if ($vars['sortby'] =="N") {
             $query .= " order by h.lastname, h.firstname";
         } elseif ($vars['sortby'] =="R") {
@@ -247,7 +247,7 @@ function TNGz_ThisDayblock_display($blockinfo)
             $found = $result->RecordCount();
             if ($found == 0){
 	        } else {
-                for (; !$result->EOF; $result->MoveNext()) { 
+                for (; !$result->EOF; $result->MoveNext()) {
                     list($id,$marrdatetr,$divdate,$FLiving,$HLast,$HFirst, $HLiving, $WLast, $WFirst, $WLiving, $gedcom) = $result->fields;
 	    		    $title1 = $HLast ;
                     $title1 .= ", " ;
@@ -282,7 +282,7 @@ function TNGz_ThisDayblock_display($blockinfo)
             $result->Close();
         }
     }
-    
+
     //////////// DEATH ///////////////////////
     if ($vars['showdeath'] != 'N' && $have_info == 1){
         $thisday_showdeath = true;
@@ -303,7 +303,7 @@ function TNGz_ThisDayblock_display($blockinfo)
             $found = $result->RecordCount();
             if ($found == 0){
 	        } else{
-                for (; !$result->EOF; $result->MoveNext()) { 
+                for (; !$result->EOF; $result->MoveNext()) {
                     list($id,$first,$last,$start,$end,$stat,$gedcom) = $result->fields;
 	    		    $title1 = $last ;
                     $title1 .= ", " ;
@@ -314,14 +314,14 @@ function TNGz_ThisDayblock_display($blockinfo)
                         $title1 .= " ? ";
                     } else {
                         $title1 .= $TNGzyear;
-                    }                
+                    }
                     $title1 .= "-" ;
                     $TNGzyear = substr($end,0,4);
                      if ($TNGzyear == "0000" ) {
                         $title1 .= " ? ";
                     } else {
                         $title1 .= $TNGzyear;
-                    }                   
+                    }
                     $title1 .= "]" ;
                     $temp = pnModAPIFunc('TNGz','user','MakeRef',
                                array('func'        => "getperson",
@@ -355,28 +355,28 @@ function TNGz_ThisDayblock_display($blockinfo)
     if ($have_info == 1){
         $TNG_conn->Close();
     }
-    
+
     // Create output object
 	// Note that for a block the corresponding module must be passed.
 	$pnRender =& new pnRender('TNGz');
-    
+
 	// Can turn off caching by using the following
 //    if ( $vars['usecache'] == 0 ) {
 	    $pnRender->caching = false;
 //    }
-   
-    $pnRender->assign('todaytime'    , $thisday_time);       
-    $pnRender->assign('showdate'     , $thisday_showdate); 
-    $pnRender->assign('showbirth'    , $thisday_showbirth);  
+
+    $pnRender->assign('todaytime'    , $thisday_time);
+    $pnRender->assign('showdate'     , $thisday_showdate);
+    $pnRender->assign('showbirth'    , $thisday_showbirth);
     $pnRender->assign('birth'        , $thisday_birthitems);
-    $pnRender->assign('showmarriage' , $thisday_showmarriage);  
-    $pnRender->assign('marriage'     , $thisday_marriageitems);    
+    $pnRender->assign('showmarriage' , $thisday_showmarriage);
+    $pnRender->assign('marriage'     , $thisday_marriageitems);
     $pnRender->assign('showdeath'    , $thisday_showdeath);
-    $pnRender->assign('death'        , $thisday_deathitems);    
+    $pnRender->assign('death'        , $thisday_deathitems);
     $pnRender->assign('showwiki'     , $thisday_showwiki);
     $pnRender->assign('mainmenu'     , $thisday_mainmenu);
-    $pnRender->assign('thisdayerror' , $thisday_error);       
-    
+    $pnRender->assign('thisdayerror' , $thisday_error);
+
     // Populate block info and pass to theme
     $blockinfo['content'] = $pnRender->fetch('TNGz_block_ThisDay.htm');
 
@@ -387,7 +387,7 @@ function TNGz_ThisDayblock_modify($blockinfo)
 {
     // Get current content
     $vars = pnBlockVarsFromContent($blockinfo['content']);
-    
+
     // Defaults
     if (empty($vars['showdate'])) {
         $vars['showdate']   = "Y";
@@ -397,7 +397,7 @@ function TNGz_ThisDayblock_modify($blockinfo)
     }
     if (empty($vars['showmarriage'])) {
         $vars['showmarriage'] = "N";
-    }     
+    }
     if (empty($vars['showdeath'])) {
         $vars['showdeath']  = "Y";
     }
@@ -409,7 +409,7 @@ function TNGz_ThisDayblock_modify($blockinfo)
     }
     if (empty($vars['usecache'])) {
         $vars['usecache']   = 0;
-    }    
+    }
 
     // Create output object
 	$pnRender =& new pnRender('TNGz');
@@ -421,19 +421,19 @@ function TNGz_ThisDayblock_modify($blockinfo)
     $pnRender->assign('showdatelist', array(
                                                Y => pnVarPrepHTMLDisplay(_SELECTYES),
                                                N => pnVarPrepHTMLDisplay(_SELECTNO)
-                                              ) );      
+                                              ) );
     $pnRender->assign('showbirthlist', array(
                                                Y => pnVarPrepHTMLDisplay(_SELECTBIRTHY),
                                                D => pnVarPrepHTMLDisplay(_SELECTBIRTHD),
                                                L => pnVarPrepHTMLDisplay(_SELECTBIRTHL),
                                                N => pnVarPrepHTMLDisplay(_SELECTBIRTHN)
-                                              ) );                                            
+                                              ) );
     $pnRender->assign('showmarriagelist', array(
                                                Y => pnVarPrepHTMLDisplay(_SELECTMARRIAGEY),
                                                D => pnVarPrepHTMLDisplay(_SELECTMARRIAGED),
                                                L => pnVarPrepHTMLDisplay(_SELECTMARRIAGEL),
                                                N => pnVarPrepHTMLDisplay(_SELECTMARRIAGEN)
-                                              ) );                                                  
+                                              ) );
     $pnRender->assign('showdeathlist', array(
                                                Y => pnVarPrepHTMLDisplay(_SELECTDEATHY),
                                                N => pnVarPrepHTMLDisplay(_SELECTDEATHN)
@@ -442,20 +442,20 @@ function TNGz_ThisDayblock_modify($blockinfo)
                                                N => pnVarPrepHTMLDisplay(_SELECTORDERN),
                                                D => pnVarPrepHTMLDisplay(_SELECTORDERD),
                                                R => pnVarPrepHTMLDisplay(_SELECTORDERR)
-                                              ) );   
+                                              ) );
 
     $pnRender->assign('showwikilist', array(
                                                Y => pnVarPrepHTMLDisplay(_SELECTYES),
                                                N => pnVarPrepHTMLDisplay(_SELECTNO)
-                                              ) );  
+                                              ) );
 
 	$pnRender->assign('showdate'    , $vars['showdate']);
 	$pnRender->assign('showbirth'   , $vars['showbirth']);
-	$pnRender->assign('showmarriage', $vars['showmarriage']);    
+	$pnRender->assign('showmarriage', $vars['showmarriage']);
 	$pnRender->assign('showdeath'   , $vars['showdeath']);
-	$pnRender->assign('sortby'      , $vars['sortby']);    
+	$pnRender->assign('sortby'      , $vars['sortby']);
 	$pnRender->assign('showwiki'    , $vars['showwiki']);
-	$pnRender->assign('usecache'    , $vars['usecache']);     
+	$pnRender->assign('usecache'    , $vars['usecache']);
 
     // Return the output that has been generated by this function
 	return $pnRender->fetch('TNGz_block_ThisDay_modify.htm');
@@ -465,24 +465,22 @@ function TNGz_ThisDayblock_update($blockinfo)
 {
     //Get current content
     $vars = pnBlockVarsFromContent($blockinfo['content']);
-    
+
     // alter the corresponding variable
-    $vars['showdate']     = pnVarCleanFromInput('showdate');    
+    $vars['showdate']     = pnVarCleanFromInput('showdate');
     $vars['showbirth']    = pnVarCleanFromInput('showbirth');
-    $vars['showmarriage'] = pnVarCleanFromInput('showmarriage');    
+    $vars['showmarriage'] = pnVarCleanFromInput('showmarriage');
     $vars['showdeath']    = pnVarCleanFromInput('showdeath');
     $vars['sortby']       = pnVarCleanFromInput('sortby');
     $vars['showwiki']     = pnVarCleanFromInput('showwiki');
-    $vars['usecache']     = pnVarCleanFromInput('usecache');    
-    
+    $vars['usecache']     = pnVarCleanFromInput('usecache');
+
     // write back the new contents
     $blockinfo['content'] = pnBlockVarsToContent($vars);
-    
+
 	// clear the block cache
 //	$pnRender =& new pnRender('TNGz');
 //	$pnRender->clear_cache('example_block_first.htm');
-    
+
     return $blockinfo;
 }
-
-?>

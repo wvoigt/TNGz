@@ -15,4 +15,3 @@ $modversion['contact']        = 'http://code.zikula.org/tngz';  //The authors we
 $modversion['admin']          = 1;
 $modversion['securityschema'] = array('TNGz::' => '::');
 
-?>
