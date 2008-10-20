@@ -42,10 +42,10 @@ function TNGz_init()
     pnModSetVar(TNGz, '_gname'   ,  _TNGZGUESTDEFAULT);
     pnModSetVar(TNGz, '_users'   ,   0);
     pnModSetVar(TNGz, '_living'  ,   0);
-    pnModSetVar(TNGz, '_gedcom'  ,   0); 
+    pnModSetVar(TNGz, '_gedcom'  ,   0);
     pnModSetVar(TNGz, '_lds'     ,   0);
     pnModSetVar(TNGz, '_sync'    ,   1);
-    pnModSetVar(TNGz, '_style'   ,   0);        
+    pnModSetVar(TNGz, '_style'   ,   0);
 
     return true;
 }
@@ -56,7 +56,7 @@ function TNGz_init()
 function TNGz_upgrade($oldversion)
 {
     $successful = false;
-    
+
     switch($oldversion) {
         case 0.00:
         case 1.00:
@@ -65,7 +65,7 @@ function TNGz_upgrade($oldversion)
               $successful = true;
               break;
     }
-    return $successful;    
+    return $successful;
 }
 
 
@@ -75,18 +75,8 @@ function TNGz_upgrade($oldversion)
  */
 function TNGz_delete()
 {
-    pnModDelVar(TNGz, '_loc');
-    pnModDelVar(TNGz, '_window');
-    pnModDelVar(TNGz, '_guest');
-    pnModDelVar(TNGz, '_gname');
-    pnModDelVar(TNGz, '_users');
-    pnModDelVar(TNGz, '_living');
-    pnModDelVar(TNGz, '_gedcom');
-    pnModDelVar(TNGz, '_lds');
-    pnModDelVar(TNGz, '_sync');
-    pnModDelVar(TNGz, '_style');    
+    pnModDelVar(TNGz);
 
     return true;
 }
 
-?>
