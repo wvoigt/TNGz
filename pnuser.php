@@ -8,7 +8,7 @@
 function TNGz_user_main() {
 
     $TNGpage = FormUtil::getPassedValue('show', 'index', 'GET');
-     
+
     switch ($TNGpage) {
 	    case 'gedcom':
 	    case 'addbookmark':
@@ -18,8 +18,8 @@ function TNGz_user_main() {
 	    case 'tnghelp':
 	    case 'tentedit':
 	    case 'pedxml':
-	    case 'showmediaxml':	    
-            case 'smallimage':	    
+	    case 'showmediaxml':
+            case 'smallimage':
 	    case 'pdfform':
 	    case 'rpt_descend':
 	    case 'rpt_ind':
@@ -29,9 +29,9 @@ function TNGz_user_main() {
 	              break;
 	    default:
 	              // Everything else can be wrapped as usual
-		      $TNGrenderpage = true; 
+		      $TNGrenderpage = true;
 	    break;
-    }     
+    }
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => $TNGpage, 'render' => $TNGrenderpage ));
 }
 
@@ -48,23 +48,23 @@ function TNGz_user_admin() {
         // Must be logged in to even have a chance at getting to the administration page
         pnRedirect(pnModURL('Users','user','loginscreen')) ;
     }
-    
+
     if (!$url=pnModAPIFunc('TNGz','user','GetTNGurl') ){
         return pnVarPrepHTMLDisplay("Error accessing TNG config file.");
     }
-    
+
     //////////////////////////////////////////////////////
     // Now go and display it
-    //////////////////////////////////////////////////////   
+    //////////////////////////////////////////////////////
     $pnTNGmodinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
-    
-    $pnRender =& new pnRender('TNGz');    
-    
-    $pnRender->assign('TNGzURL'      , $url);    
+
+    $pnRender =& new pnRender('TNGz');
+
+    $pnRender->assign('TNGzURL'      , $url);
     $pnRender->assign('TNGzVersion'  , $pnTNGmodinfo['version'] );
-     
+
     return $pnRender->fetch('TNGz_user_admin.htm');
-    
+
 }
 
 //*****************************************************************************
@@ -325,60 +325,59 @@ function TNGz_user_switchcolor2() {
 // TNG functions that get called and should NOT have Zikula wrapped around it
 //*****************************************************************************
 /*
-function TNGz_user_addbookmark() {  
+function TNGz_user_addbookmark() {
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'addbookmark', 'render' => false ));
 }
 
-function TNGz_user_findperson() {  
+function TNGz_user_findperson() {
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'findperson', 'render' => false ));
 }
 
-function TNGz_user_findpersonform() {  
+function TNGz_user_findpersonform() {
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'findpersonform', 'render' => false ));
 }
 
-function TNGz_user_gedcom() {  
+function TNGz_user_gedcom() {
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'gedcom', 'render' => false ));
 }
 
-function TNGz_user_pdfform() {  
+function TNGz_user_pdfform() {
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'pdfform', 'render' => false ));
 }
 
-function TNGz_user_pedxml() {  
+function TNGz_user_pedxml() {
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'pedxml', 'render' => false ));
 }
 
-function TNGz_user_rpt_descend() {  
+function TNGz_user_rpt_descend() {
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'rpt_descend', 'render' => false ));
 }
 
-function TNGz_user_rpt_ind() {  
+function TNGz_user_rpt_ind() {
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'rpt_ind', 'render' => false ));
 }
 
-function TNGz_user_rpt_pedigree() {  
+function TNGz_user_rpt_pedigree() {
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'rpt_pedigree', 'render' => false ));
 }
 
-function TNGz_user_showmediaxml() {  
+function TNGz_user_showmediaxml() {
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'showmediaxml', 'render' => false ));
 }
 
-function TNGz_user_smallimage() {  
+function TNGz_user_smallimage() {
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'smallimage', 'render' => false ));
 }
 
-function TNGz_user_atentedit() {  
+function TNGz_user_atentedit() {
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'tentedit', 'render' => false ));
 }
 
-function TNGz_user_tnghelp() {  
+function TNGz_user_tnghelp() {
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'tnghelp', 'render' => false ));
 }
 
-function TNGz_user_tngrss() {  
+function TNGz_user_tngrss() {
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => 'tngrss', 'render' => false ));
 }
 */
-?>
