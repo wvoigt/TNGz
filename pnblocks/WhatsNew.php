@@ -1,11 +1,19 @@
 <?php
-/********************************************************/
-/* TNGz Show Birtdays etc..                            */
-/* Written by: Cas Nuy       		                    */
-/* with updates by Wendel Voigt                         */
-/* http://www.NUY.info                                  */
-/********************************************************/
-
+/**
+ * Zikula Application Framework
+ *
+ * @copyright (c) 2001, Zikula Development Team
+ * @link http://www.zikula.org
+ * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * @package TNGz
+ * @url http://code.zikula.org/tngz
+ * @license http://www.gnu.org/copyleft/gpl.html
+ *
+ * @original author Cas Nuy
+ * @author Wendel Voigt
+ * @version $Id$
+ */
 
 function TNGz_WhatsNewblock_info()
 {

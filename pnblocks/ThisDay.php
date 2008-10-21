@@ -1,12 +1,19 @@
 <?php
-// $Id: ThisDay.php, v 1.01 2008/10/06 13:08:28 wvoigt Exp $
-/********************************************************/
-/* TNGz Show Birtdays etc..                            */
-/* Written by: Cas Nuy       		                    */
-/* with updates by Wendel Voigt                         */
-/* http://www.NUY.info                                  */
-/********************************************************/
-
+/**
+ * Zikula Application Framework
+ *
+ * @copyright (c) 2001, Zikula Development Team
+ * @link http://www.zikula.org
+ * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * @package TNGz
+ * @url http://code.zikula.org/tngz
+ * @license http://www.gnu.org/copyleft/gpl.html
+ *
+ * @original author Cas Nuy
+ * @author Wendel Voigt
+ * @version $Id$
+ */
 
 function TNGz_ThisDayblock_info()
 {
