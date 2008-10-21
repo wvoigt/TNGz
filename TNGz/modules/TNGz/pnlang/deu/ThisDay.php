@@ -1,13 +1,26 @@
 <?php
-/*
-	File: $Id: tngblock
-*/
+/**
+ * Zikula Application Framework
+ *
+ * @copyright (c) 2001, Zikula Development Team
+ * @link http://www.zikula.org
+ * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * @package TNGz
+ * @url http://code.zikula.org/tngz
+ * @license http://www.gnu.org/copyleft/gpl.html
+ *
+ * @author Wendel Voigt
+ * @translator Sven Schomacker aka hilope
+ * @version $Id$
+ */
+
 define('_SHOWDATE',       'Zeige heutiges Datum :');
 define('_SHOWBIRTH',      'Zeige Geburtstage :');
 define('_SHOWMARRIAGE',   'Zeige Hochzeitstage :');
 define('_SHOWDEATH',      'Zeige Todestage :');
 define('_SHOWORDER',      'Sortiere Einträge nach :');
-define('_SHOWWIKI',       'Zeige Wikipedia-Link :');
+define('_SHOWWIKI',       'Zeige Wikipedia-Link für aktuellen Tag :');
 define('_SELECTBIRTHY',   'Ja, zeige alles');
 define('_SELECTBIRTHN',   'Nein');
 define('_SELECTBIRTHD',   'Ja, aber keine lebenden Personen');

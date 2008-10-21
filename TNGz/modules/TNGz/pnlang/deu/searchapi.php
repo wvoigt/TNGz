@@ -1,13 +1,18 @@
 <?php
 /**
- * PostNuke Application Framework
+ * Zikula Application Framework
  *
- * @copyright (c) 2002, PostNuke Development Team
- * @link http://www.postnuke.com
- * @version $Id$
+ * @copyright (c) 2001, Zikula Development Team
+ * @link http://www.zikula.org
  * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @package PostNuke_Value_Addons
- * @subpackage Pages
+ *
+ * @package TNGz
+ * @url http://code.zikula.org/tngz
+ * @license http://www.gnu.org/copyleft/gpl.html
+ *
+ * @author Wendel Voigt
+ * @translator Sven Schomacker aka hilope
+ * @version $Id$
  */
 
 define('_TNGZ_SEARCH_LIVING', 'Die folgenden Personen sind als lebend gekennzeichnet und wurden deshalb ausgeblendet.');
