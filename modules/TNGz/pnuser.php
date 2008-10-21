@@ -1,10 +1,18 @@
 <?php
-// $Id: pnuser.php, v 1.01 2008/10/06 13:08:28 wvoigt Exp $
-//*****************************************************************************
-// The generic way to call TNG functions (RefType=0)
-// Generically they have the form:
-// index.php?module=TNGz&type=user&func=main&show=
-//*****************************************************************************
+/**
+ * Zikula Application Framework
+ *
+ * @copyright (c) 2001, Zikula Development Team
+ * @link http://www.zikula.org
+ * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * @package TNGz
+ * @url http://code.zikula.org/tngz
+ * @license http://www.gnu.org/copyleft/gpl.html
+ *
+ * @author Wendel Voigt
+ * @version $Id$
+ */
 function TNGz_user_main() {
 
     $TNGpage = FormUtil::getPassedValue('show', 'index', 'GET');
