@@ -1,38 +1,18 @@
 <?php
-// $Id: pnuserapi.php, v 1.01 2008/10/06 13:08:28 wvoigt Exp $
-// ----------------------------------------------------------------------
-// PostNuke Content Management System
-// Copyright (C) 2002 by the PostNuke Development Team.
-// http://www.postnuke.com/
-// ----------------------------------------------------------------------
-// Based on:
-// PHP-NUKE Web Portal System - http://phpnuke.org/
-// Thatware - http://thatware.org/
-// ----------------------------------------------------------------------
-// LICENSE
-//
-// This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License (GPL)
-// as published by the Free Software Foundation; either version 2
-// of the License, or (at your option) any later version.
-//
-// This program is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-//
-// To read the license please visit http://www.gnu.org/copyleft/gpl.html
-// ----------------------------------------------------------------------
-// Original Author of file: Wendel Voigt
-// Purpose of file:  Groups user API
-// ----------------------------------------------------------------------
-
 /**
- * @package PostNuke_System_Modules
- * @subpackage Groups
+ * Zikula Application Framework
+ *
+ * @copyright (c) 2001, Zikula Development Team
+ * @link http://www.zikula.org
+ * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * @package TNGz
+ * @url http://code.zikula.org/tngz
  * @license http://www.gnu.org/copyleft/gpl.html
-*/
-
+ *
+ * @author Wendel Voigt
+ * @version $Id$
+ */
 
  /**
  * Get the common files from user settings
