@@ -44,8 +44,8 @@ function TNGz_userapi_GetTNGpaths()
 
 function TNGz_userapi_ShowPage($args){
 
-   if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_OVERVIEW)) {
-        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_OVERVIEW)) {
+	return LogUtil::registerError(_MODULENOAUTH);
     }
 
     //////////////////////////////////////////////////////
@@ -58,6 +58,37 @@ function TNGz_userapi_ShowPage($args){
     $global_variables = pnModGetVar('TNGz', '_globals');
     if ($global_variables) {
         eval("global " . $global_variables .";");
+    }
+
+    //////////////////////////////////////////////////////
+    // Get Zikula language
+    //////////////////////////////////////////////////////
+    $zikulalang = SessionUtil::getVar('lang');
+
+    switch ($zikulalang) {
+	case "eng":
+		$newlanguage = "English";
+		break;
+	case "deu":
+		$newlanguage = "German";
+		break;
+	case "fra":
+		$newlanguage = "French";
+		break;
+	case "pol":
+		$newlanguage = "Polish";
+		break;
+	case "ita":
+		$newlanguage = "Italian";
+		break;
+	case "nld":
+		$newlanguage = "Dutch";
+		break;
+	case "esp":
+		$newlanguage = "Spanish";
+		break;
+	default:
+		$newlanguage = "English";
     }
 
     $cms[auto]  = true;
@@ -76,7 +107,7 @@ function TNGz_userapi_ShowPage($args){
         $have_info = true;
     }
     if (!$have_info) {
-        return pnVarPrepHTMLDisplay("Error accessing TNG config file.");
+	return LogUtil::registerError("Error accessing TNG config file.");
     }
 
     // Check Arguments
@@ -105,7 +136,7 @@ function TNGz_userapi_ShowPage($args){
     //////////////////////////////////////////////////////
     $ok = pnModAPIFunc('TNGz','user','ModifyCreateUser',array() );
     if (!$ok ) {
-        return pnVarPrepHTMLDisplay("Error Creating User information. ");
+	return LogUtil::registerError("Error Creating User information. ");
     }
 
     //////////////////////////////////////////////////////
@@ -127,7 +158,7 @@ function TNGz_userapi_ShowPage($args){
 	$newdate = date ("Y-m-d H:i:s", time() + ( 3600 * $time_offset ) );
 	$query = "UPDATE $users_table SET lastlogin=\"$newdate\" WHERE userID=\"$row[userID]\"";
         if (!$result = &$TNG_conn->Execute($query) ) {
-            return pnVarPrepHTMLDisplay("$admtext[cannotexecutequery]: $query");
+		return LogUtil::registerError("$admtext[cannotexecutequery]: $query");
         }
 
         // setup session information for the user
@@ -145,6 +176,8 @@ function TNGz_userapi_ShowPage($args){
 	session_register('currentuser');
 	session_register('currentuserdesc');
 	session_register('session_rp');
+	session_register('session_language');
+   	$session_language = $_SESSION[session_language] = $newlanguage;
 	session_register('lastpage');
 	$logged_in = $_SESSION[logged_in] = 1;
 	$allow_edit_db = $_SESSION[allow_edit_db] = $row[allow_edit];
@@ -200,21 +233,36 @@ function TNGz_userapi_ShowPage($args){
         $TNGoutput = pnModAPIFunc('TNGz','user','CleanEmail', array('source' => $TNGoutput, 'mode' => 'both', 'text2link' => false ));
     }
 
-    // Get Title information to add to PostNuke title
+    // Get Title information to add to Zikula title
     if (preg_match("/<meta name=\"Keywords\" content=\"(.+)\"/", $TNGoutput, $tng_title) ){
         $GLOBALS['info']['title'] = $tng_title[1];
     }
 
     // Clean up TNG HTML to remove HTML validation errors
-    // Remove TNG <title> tag.  Each page should only have one and PostNuke provides.
+    // Remove TNG <title> tag.  Each page should only have one and Zikula provides.
     $patterns[0]     = "/<title>(.*)<\/title>/i";
     $replacements[0] = "\n<!-- $0 -->\n";
     // Remove the <meta> tags.  TNG's not in the right place and do not add much new informaiton
     $patterns[1]     = "/<meta (.*)>/i";
     $replacements[1] = "<!-- $0 -->\n";
-    // Remove the TNG's DOCTYPE (Each page should only have one, and PostNuke provides)
+    // Remove the TNG's DOCTYPE (Each page should only have one, and Zikula provides)
     $patterns[2]     = "@<!DOCTYPE[^\"]+\"([^\"]+)\"[^\"]+\"([^\"]+)/([^/]+)\.dtd\">@i";
     $replacements[2] = "<!-- $0 -->\n";
+    // Remove TNG javascripts and load files into head (also using Zikula versions).
+    $patterns[3]     = "/<script(.*)prototype.js(.*)<\/script>/i";
+    $replacements[3] = "\n<!-- $0 -->\n";
+    $patterns[4]     = "/<script(.*)scriptaculous.js(.*)<\/script>/i";
+    $replacements[4] = "\n<!-- $0 -->\n";
+    $patterns[5]     = "/<script(.*)net.js(.*)<\/script>/i";
+    $replacements[5] = "\n<!-- $0 -->\n";
+    $patterns[6]     = "/<script(.*)litbox.js(.*)<\/script>/i";
+    $replacements[6] = "\n<!-- $0 -->\n";
+
+    PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/net.js');
+    PageUtil::AddVar('javascript', 'javascript/ajax/prototype.js');
+    PageUtil::AddVar('javascript', 'javascript/ajax/scriptaculous.js');
+    PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/litbox.js');
+
     ksort($patterns);      // The sorts are recommended to make sure the pattern/replacement are aligned
     ksort($replacements);
     $TNGoutput = preg_replace($patterns, $replacements, $TNGoutput);
@@ -336,7 +384,7 @@ function TNGz_userapi_ModifyCreateUser()
         if ( $loggedin ) {
             $uid    = pnSessionGetVar('uid');  // find out which user #
             $u      = pnUserGetVars($uid, true);     // $u[] has all the logged in user vars
-            // Start Fix... Starting with PostNuke .800, user values have changed.  So fix up so it looks like old
+            // Start Fix... Starting with Zikula, user values have changed.  So fix up so it looks like old
             // List is from \system\Profile\pnuserapi.php function Profile_userapi_aliasing
             $vars = array();
             $vars['_UREALNAME']      = 'name';
@@ -354,7 +402,7 @@ function TNGz_userapi_ModifyCreateUser()
             $vars['_YINTERESTS']     = 'user_intrest';
             $vars['_SIGNATURE']      = 'user_sig';
             $vars['_EXTRAINFO']      = 'bio';
-            // map new names to old names  Note: these should only exist starting with PostNuke .800
+            // map new names to old names  Note: these should only exist starting with Zikula
             foreach ( $vars as $key => $value) {
                 if (isset($u[$key])) {
                     $u[$value] = $u[$key];
@@ -409,7 +457,7 @@ function TNGz_userapi_ModifyCreateUser()
 		$TNG_pwd_safe = md5( $TNG_pwd );
 
             } elseif ( $TNG_create == 1) {
-                // A registered PostNuke user
+                // A registered Zikula user
                 $TNG_user     = $u['uname'] ;
                 $TNG_email    = $u['email'];
                 $TNG_name     = $u['name'];
@@ -470,6 +518,8 @@ function TNGz_userapi_ModifyCreateUser()
             list($TNG_uid, $TNG_email, $TNG_name, $TNG_website, $TNG_password ) = $result->fields;
             $adding =  "UPDATE $users_table SET ";
             if ( $TNG_email != $u['email'] ) {
+
+
                 $TNG_email = $u['email'];
                 $adding .= " email='$TNG_email',";
                 $TNG_changed = true;

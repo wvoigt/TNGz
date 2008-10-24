@@ -48,8 +48,8 @@ function TNGz_user_main() {
 // *****************************************************************************
 function TNGz_user_admin() {
 
-    if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_OVERVIEW)) {
-        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_OVERVIEW)) {
+	return LogUtil::registerError(_MODULENOAUTH);
     }
 
     if (!pnUserLoggedIn()) {
@@ -58,7 +58,7 @@ function TNGz_user_admin() {
     }
 
     if (!$url=pnModAPIFunc('TNGz','user','GetTNGurl') ){
-        return pnVarPrepHTMLDisplay("Error accessing TNG config file.");
+    	return LogUtil::registerError("Error accessing TNG config file.");
     }
 
     //////////////////////////////////////////////////////
