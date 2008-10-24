@@ -1,4 +1,19 @@
 <?php
+/**
+ * Zikula Application Framework
+ *
+ * @copyright (c) 2001, Zikula Development Team
+ * @link http://www.zikula.org
+ * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * @package TNGz
+ * @url http://code.zikula.org/tngz
+ * @license http://www.gnu.org/copyleft/gpl.html
+ *
+ * @author Wendel Voigt
+ * @version $Id$
+ */
+
 include("begin.php");
 include($cms[tngpath] . "genlib.php");
 include($cms[tngpath] . "getlang.php");
@@ -25,7 +40,7 @@ tng_header( $text[mnuheader], $flags );
 <!-- Do not change the form action or field names! -->
 <form action="" method="GET">
 <input name="module" type="hidden" value="<?php echo $cms[module]; ?>"/>
-<input name="show"   type="hidden" value="search"/> 
+<input name="show"   type="hidden" value="search"/>
 <table border="0" cellspacing="5" cellpadding="0">
 	<tr><td><span class="normal"><?php echo $text[mnulastname]; ?>: </span><br/><input type="text" name="mylastname" size="14"></td></tr>
 	<tr><td><span class="normal"><?php echo $text[mnufirstname]; ?>:</span><br/><input type="text" name="myfirstname" size="14"></td></tr>
@@ -41,7 +56,7 @@ tng_header( $text[mnuheader], $flags );
   <li><a href="<?php echo getURL( "surnames"         , 0 )?>"><?php echo $text[mnulastnames]    ?></a></li>
   <li><a href="<?php echo getURL( "bookmarks"        , 0 )?>"><?php echo $text[bookmarks]       ?></a></li>
   <li><a href="<?php echo getURL( "browsetrees"      , 0 )?>"><?php echo $text[mnustatistics]   ?></a></li>
-  <li><a href="<?php echo getURL( "browsemedia"      , 0 )?>"><?php echo $text[allmedia]        ?></a></li>  
+  <li><a href="<?php echo getURL( "browsemedia"      , 0 )?>"><?php echo $text[allmedia]        ?></a></li>
   <li><a href="<?php echo getURL( "browsemedia"      , 1 )."mediatypeID=photos"     ?>"><?php echo $text[mnuphotos]    ?></a></li>
   <li><a href="<?php echo getURL( "browsemedia"      , 1 )."mediatypeID=histories"  ?>"><?php echo $text[mnuhistories] ?></a></li>
   <li><a href="<?php echo getURL( "browsemedia"      , 1 )."mediatypeID=documents"  ?>"><?php echo $text[documents]    ?></a></li>
@@ -60,7 +75,7 @@ tng_header( $text[mnuheader], $flags );
   <li><a href="<?php echo getURL( "changelanguage"   , 0 )?>"><?php echo $text[mnulanguage]     ?></a></li>
 <?php if( $allow_admin ) { ?>
   <li><a href="index.php?module=pnTNG&func=admin"            ><?php echo $text[mnuadmin]        ?></a></li>
-  <li><a href="<?php echo getURL( "showlog"          , 0 )?>"><?php echo $text[mnushowlog]      ?></a></li>        
+  <li><a href="<?php echo getURL( "showlog"          , 0 )?>"><?php echo $text[mnushowlog]      ?></a></li>
 <?php } ?>
   <li><a href="<?php echo getURL( "suggest"          , 0 )?>"><?php echo $text[contactus]      ?></a></li>
 </ul>
