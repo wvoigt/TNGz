@@ -4,6 +4,12 @@ TNGz /pndoc/changelog.txt
 TNGz (C) 2008 Wendel Voigt
 ======================================================================================
 -------------
+version 1.?
+  * removed all deprecated Zikula functions
+  * Template bugfixes, Validation bugfixes
+  * removed TNG js, loading directly into header with PageUtil to solve version conflicts
+  * simplified pninit.php
+
 version 1.01
   * Converted pnTNG to TNGz (major rewrite and update)
   * Updated integration techniques to allow for a more complete integration into Zikula
