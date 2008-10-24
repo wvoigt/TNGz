@@ -41,7 +41,7 @@ define('_BIRTH',          'Geburtstage');
 define('_MARRIAGE',       'Hochzeitstage');
 define('_MARRIAGE_AND',   'und');
 define('_DIVORCED',       'D');
-define('_DEATH',          'Todesatage');
+define('_DEATH',          'Todestage');
 define('_ACCESSTNG',      'Ahnenforschungsseite');
 define('_NONETNG',        'Niemand für heute gefunden');
 define('_WIKITODAY',      'Gehe zu Wikipedia');
