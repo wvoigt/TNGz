@@ -26,8 +26,8 @@ function TNGz_admin_main()
     // anything and so we refuse access altogether.  The lowest level of access
     // for administration depends on the particular module, but it is generally
     // either 'edit' or 'delete'
-    if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_EDIT)) {
-        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_EDIT)) {
+    	return LogUtil::registerError(_MODULENOAUTH);
     }
 
     // Create output object - this object will store all of our output so that
@@ -49,8 +49,8 @@ function TNGz_admin_modifyconfig()
 {
     // Security check - important to do this as early as possible to avoid
     // potential security holes or just too much wasted processing
-    if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_ADMIN)) {
-        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN)) {
+    	return LogUtil::registerError(_MODULENOAUTH);
     }
 
     // Get the TNG information based on what we currently have
@@ -150,13 +150,13 @@ function TNGz_admin_modifyconfig()
     $pnRender->assign('TNG_versionlast'   , $TNG_versionlast);
 
 
-    // Allow non-logged in PostNuke users as a Guest
+    // Allow non-logged in Zikula users as a Guest
     $pnRender->assign('tngguest', pnModGetVar('TNGz', '_guest'));
 
-    // If non-logged in PostNuke users as a Guest, under what name?
+    // If non-logged in Zikula users as a Guest, under what name?
     $pnRender->assign('tngguestname', pnModGetVar('TNGz', '_gname'));
 
-    // Create TNG users from PostNuke user information
+    // Create TNG users from Zikula user information
     $pnRender->assign('tngusers', pnModGetVar('TNGz', '_users'));
 
     // Can a created user see Living?
@@ -175,7 +175,7 @@ function TNGz_admin_modifyconfig()
     // Can a created user see LDS information?
     $pnRender->assign('tnglds', pnModGetVar('TNGz', '_lds'));
 
-    // For created users, Sync TNG info with PostNuke info?
+    // For created users, Sync TNG info with Zikula info?
     $pnRender->assign('tngsync', pnModGetVar('TNGz', '_sync'));
 
     // TNG location
@@ -190,25 +190,25 @@ function TNGz_admin_updateconfig()
 {
     // Security check - important to do this as early as possible to avoid
     // potential security holes or just too much wasted processing
-    if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_ADMIN)) {
-        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN)) {
+        return LogUtil::registerError(_MODULENOAUTH);
     }
 
     // Get parameters from whatever input we need.  All arguments to this
     // function should be obtained from pnVarCleanFromInput(), getting them
     // from other places such as the environment is not allowed, as that makes
-    // assumptions that will not hold in future versions of PostNuke
+    // assumptions that will not hold in future versions of Zikula
     // Get parameters from whatever input we need.
-	$_loc      = pnVarCleanFromInput('tngmodule');
-	$_guest    = pnVarCleanFromInput('tngguest');
-	$_users    = pnVarCleanFromInput('tngusers');
-        $_living   = pnVarCleanFromInput('tngliving');
-        $_email    = pnVarCleanFromInput('tngemail');
-	$_gedcom   = pnVarCleanFromInput('tnggedcom');
-        $_lds      = pnVarCleanFromInput('tnglds');
-        $_sync     = pnVarCleanFromInput('tngsync');
-        $_gname    = pnVarCleanFromInput('tngguestname');
-	$_version  = pnVarCleanFromInput('tngversion');
+	$_loc      = FormUtil::getPassedValue('tngmodule', null, 'REQUEST');
+	$_guest    = FormUtil::getPassedValue('tngguest', null, 'REQUEST');
+	$_users    = FormUtil::getPassedValue('tngusers', null, 'REQUEST');
+	$_living   = FormUtil::getPassedValue('tngliving', null, 'REQUEST');
+	$_email    = FormUtil::getPassedValue('tngemail', null, 'REQUEST');
+	$_gedcom   = FormUtil::getPassedValue('tnggedcom', null, 'REQUEST');
+	$_lds      = FormUtil::getPassedValue('tnglds', null, 'REQUEST');
+	$_sync     = FormUtil::getPassedValue('tngsync', null, 'REQUEST');
+	$_gname    = FormUtil::getPassedValue('tngguestname', null, 'REQUEST');
+	$_version  = FormUtil::getPassedValue('tngversion', null, 'REQUEST');
 
     /*
 	$_config   = pnVarCleanFromInput('_config');
@@ -222,8 +222,8 @@ function TNGz_admin_updateconfig()
     // authorisation code attached to it.  If it did not then the function will
     // proceed no further as it is possible that this is an attempt at sending
     // in false data to the system
-    if (!pnSecConfirmAuthKey()) {
-        pnSessionSetVar('errormsg', _BADAUTHKEY);
+    if (!SecurityUtil::confirmAuthKey()) {
+        LogUtil::registerStatus(_BADAUTHKEY);
         pnRedirect(pnModURL('TNGz', 'admin', 'main'));
         return true;
     }
@@ -293,8 +293,8 @@ function TNGz_admin_updateconfig()
 function TNGz_admin_TNGadmin()
 {
 
-    if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_ADMIN)) {
-        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN)) {
+        return LogUtil::registerError(_MODULENOAUTH);
     }
 
     if (!pnUserLoggedIn()) {
@@ -303,7 +303,7 @@ function TNGz_admin_TNGadmin()
     }
 
     if (!$url=pnModAPIFunc('TNGz','user','GetTNGurl') ){
-        return pnVarPrepHTMLDisplay("Error accessing TNG config file.");
+        return LogUtil::registerError("Error accessing TNG config file.");
     }
 
     // Get TNGz module information
@@ -326,8 +326,8 @@ function TNGz_admin_TNGadmin()
 function TNGz_admin_Instruct()
 {
 
-    if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_ADMIN)) {
-        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN)) {
+        return LogUtil::registerError(_MODULENOAUTH);
     }
 
     // Get TNGz module information
@@ -356,8 +356,8 @@ function TNGz_admin_Instruct()
 
 function TNGz_admin_Info()
 {
-    if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_ADMIN)) {
-        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN)) {
+        return LogUtil::registerError(_MODULENOAUTH);
     }
 
     // Get TNGz module information
