@@ -1,4 +1,19 @@
 <?php
+/**
+ * Zikula Application Framework
+ *
+ * @copyright (c) 2001, Zikula Development Team
+ * @link http://www.zikula.org
+ * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * @package TNGz
+ * @url http://code.zikula.org/tngz
+ * @license http://www.gnu.org/copyleft/gpl.html
+ *
+ * @author Wendel Voigt
+ * @version $Id$
+ */
+
 // Custom settings for TNGz to work with TNG
 // Please copy these lines into your customconfig.php file
 // or if you do not use the customconfig.php file for anything else
@@ -6,16 +21,16 @@
 if ($cms[TNGz] == 1){
 
     $cms[support]    = "zikula";
-    $cms[module]     = "TNGz";    
-    $cms[url]        = "index.php?module=TNGz&func=main&show";    
+    $cms[module]     = "TNGz";
+    $cms[url]        = "index.php?module=TNGz&func=main&show";
     $cms[tngpath]    = $TNG['directory']. "/";
     $cms[adminurl]   = "index.php?module=TNGz&func=admin";
     $cms[cloaklogin] = "Yes";
     $cms[credits]    = "<!-- TNGz --><br />";
-    
+
     // Fix up file paths
     $homepage = ($dot = strrchr($homepage, '.')) ? substr($homepage, 0, -strlen($dot)): $homepage;// strip .php or .html
-    $rootpath        = $TNG['SitePath'] . "/"; 
+    $rootpath        = $TNG['SitePath'] . "/";
 
     $gendexfile      = $cms[tngpath] . $gendexfile ;
     $mediapath       = $cms[tngpath] . $mediapath ;
@@ -26,14 +41,14 @@ if ($cms[TNGz] == 1){
     $photopath       = $cms[tngpath] . $photopath ;
     $logname         = $cms[tngpath] . $logname ;
 
-    
+
     // Now fix Zikula's $register_globals=off code for TNG
     $register_globals = (bool) ini_get('register_globals');
     if( $register_globals ) {
         $the_globals = $_SERVER + $_ENV + $_GET +$_POST;
         if( $the_globals && is_array( $the_globals ) ) {
             foreach( $the_globals as $key=>$value ) {
-                if($key == 'cms' || $key == 'lang' || $key == 'mylanguage') die("sorry!");               
+                if($key == 'cms' || $key == 'lang' || $key == 'mylanguage') die("sorry!");
                 ${$key} = $value;
             }
         }
