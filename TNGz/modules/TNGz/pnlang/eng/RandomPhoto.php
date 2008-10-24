@@ -1,7 +1,19 @@
 <?php
-/*
-	File: $Id: tngphoto
-*/
+/**
+ * Zikula Application Framework
+ *
+ * @copyright (c) 2001, Zikula Development Team
+ * @link http://www.zikula.org
+ * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * @package TNGz
+ * @url http://code.zikula.org/tngz
+ * @license http://www.gnu.org/copyleft/gpl.html
+ *
+ * @author Wendel Voigt
+ * @version $Id$
+ */
+
 define('_SHOWLIVING',     'Show Pictures of People');
 define('_SELECTLIVINGY',  'Yes, show all');
 define('_SELECTLIVINGN',  'No');
@@ -21,4 +33,3 @@ define('_NOPHOTOFOUND',   'No Photo found');
 define('_USECACHE',       'Cache the block (if pnRender caching is enabled)');
 define('_TNGPHOTOLIST',   'Limit Photo selection to the following list of TNG mediaID numbers (default = blank)');
 
-?>

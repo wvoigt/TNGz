@@ -1,7 +1,19 @@
 <?php
-/*
-	File: $Id: tngblock
-*/
+/**
+ * Zikula Application Framework
+ *
+ * @copyright (c) 2001, Zikula Development Team
+ * @link http://www.zikula.org
+ * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * @package TNGz
+ * @url http://code.zikula.org/tngz
+ * @license http://www.gnu.org/copyleft/gpl.html
+ *
+ * @author Wendel Voigt
+ * @version $Id$
+ */
+
 define('_ACCESSTNG',      'Genealogy Page');
 define('_NONETNG',        'Nobody found for today');
 define('_PEOPLEDBFERROR', 'Error in accessing the TNG table. ');
@@ -28,4 +40,3 @@ define('_MARRIAGE_AND',   'and');
 define('_MARRIED_ABR',     'm.');
 define('_DIVORCED_ABR',    'D');
 
-?>
