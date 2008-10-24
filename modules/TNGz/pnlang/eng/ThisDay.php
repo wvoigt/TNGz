@@ -1,7 +1,19 @@
 <?php
-/*
-	File: $Id: tngblock
-*/
+/**
+ * Zikula Application Framework
+ *
+ * @copyright (c) 2001, Zikula Development Team
+ * @link http://www.zikula.org
+ * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * @package TNGz
+ * @url http://code.zikula.org/tngz
+ * @license http://www.gnu.org/copyleft/gpl.html
+ *
+ * @author Wendel Voigt
+ * @version $Id$
+ */
+
 define('_SHOWDATE',       'Show Today\'s Date :');
 define('_SHOWBIRTH',      'Show Birthdays :');
 define('_SHOWMARRIAGE',   'Show Marriages :');
@@ -34,4 +46,3 @@ define('_NONETNG',        'Nobody found for today');
 define('_WIKITODAY',      'Go to Wikipedia');
 define('_USECACHE',       'Cache the block (if pnRender caching is enabled)');
 
-?>

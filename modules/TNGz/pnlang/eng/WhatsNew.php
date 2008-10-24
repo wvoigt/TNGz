@@ -1,7 +1,19 @@
 <?php
-/*
-	File: $Id: whatsnew.php
-*/
+/**
+ * Zikula Application Framework
+ *
+ * @copyright (c) 2001, Zikula Development Team
+ * @link http://www.zikula.org
+ * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * @package TNGz
+ * @url http://code.zikula.org/tngz
+ * @license http://www.gnu.org/copyleft/gpl.html
+ *
+ * @author Wendel Voigt
+ * @version $Id$
+ */
+
 define('_TNGZ_WHATSNEW_RECENT',      'newest in');
 define('_TNGZ_WHATSNEW_DAYS',        'days');
 define('_TNGZ_WHATSNEW_HEAD_PEOPLE', 'Individuals');
@@ -22,4 +34,3 @@ define('_TNGZ_WHATSNEW_NOCHANGES',   'No new or updated records');
 define('_TNGZ_WHATSNEW_SQLERROR',    'Error in accessing the database.');
 define('_USECACHE',                  'Cache the block (if pnRender caching is enabled)');
 
-?>
