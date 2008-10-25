@@ -1,37 +1,43 @@
-<tr>
-  <td><!--[pnml name="_WANTEDINSTRUCTIONS" html="1"]--></td>
-  <td></td>
-</tr>
-<tr>
-  <td><label for="pntng_wantedtext"><!--[pnml name="_WANTEDTEXT"]--></label></td>
-  <td><textarea id="pntng_wantedtext" name="wantedtext" rows="7" cols="60"><!--[$wantedtext|pnvarprephtmldisplay]--></textarea></td>
-</tr>
-<tr>
-  <td><label for="pntng_sortby"><!--[pnml name="_SHOWORDER"]--></label></td>
-  <td><select id="pntng_sortby" name="sortby"><!--[html_options options=$sortbylist selected=$sortby]--></select></td>
-</tr>
-<tr>
-  <td><label for="pntng_wantedpeoplelabel"><!--[pnml name="_WANTEDPEOPLELABEL"]--></label></td>
-  <td><input type="text" id="pntng_wantedpeoplelabel" name="wantedpeoplelabel" size="60" value="<!--[$wantedpeoplelabel|pnvarprepfordisplay]-->"></td>  
-</tr>
-<tr>
-  <td><label for="pntng_wantedpeoplelist"><!--[pnml name="_WANTEDPEOPLELIST"]--></label></td>
-  <td><textarea id="pntng_wantedpeoplelist" name="wantedpeoplelist" rows="4" cols="60"><!--[$wantedpeoplelist|pnvarprepfordisplay]--></textarea></td>  
-</tr>
-<tr>
-  <td><label for="pntng_wantedfamilylabel"><!--[pnml name="_WANTEDFAMILYLABEL"]--></label></td>
-  <td><input type="text" id="pntng_wantedfamilylabel" name="wantedfamilylabel" size="60" value="<!--[$wantedfamilylabel|pnvarprepfordisplay]-->"></td>  
-</tr>
-<tr>
-  <td><label for="pntng_wantedfamilylist"><!--[pnml name="_WANTEDFAMILYLIST"]--></label></td>
-  <td><textarea id="pntng_wantedfamilylist" name="wantedfamilylist" rows="4" cols="60"><!--[$wantedfamilylist|pnvarprepfordisplay]--></textarea></td>  
-</tr>
-<tr>
-  <td><label for="pntng_wantedfamilyname"><!--[pnml name="_SHOWFAMILYNAME"]--></label></td>
-  <td><select id="pntng_wantedfamilyname" name="wantedfamilyname"><!--[html_options options=$wantednamelist selected=$wantedfamilyname]--></select></td>
-</tr>
-<tr>
-  <td><label for="pntng_wantedmenulink"><!--[pnml name="_WANTEDMENULINK"]--></label></td>
-  <td><select id="pntng_wantedmenulink" name="wantedmenulink"><!--[html_options options=$yeslist selected=$wantedmenulink]--></select></td>
-</tr>
+<!--[* $Id$ *]-->
+<div class="pn-informationmsg">
+  <!--[pnml name="_WANTEDINSTRUCTIONS" html="1"]-->
+</div>
+<div class="pn-adminformrow">
+  <label for="pntng_wantedtext"><!--[pnml name="_WANTEDTEXT"]--></label>
+  <textarea id="pntng_wantedtext" name="wantedtext" rows="7" cols="60"><!--[$wantedtext|pnvarprephtmldisplay]--></textarea>
+</div>
 
+<div class="pn-adminformrow">
+  <label for="pntng_sortby"><!--[pnml name="_SHOWORDER"]--></label>
+  <select id="pntng_sortby" name="sortby"><!--[html_options options=$sortbylist selected=$sortby]--></select>
+</div>
+
+<div class="pn-adminformrow">
+  <label for="pntng_wantedpeoplelabel"><!--[pnml name="_WANTEDPEOPLELABEL"]--></label>
+  <input type="text" id="pntng_wantedpeoplelabel" name="wantedpeoplelabel" size="60" value="<!--[$wantedpeoplelabel|pnvarprepfordisplay]-->">  
+</div>
+
+<div class="pn-adminformrow">
+  <label for="pntng_wantedpeoplelist"><!--[pnml name="_WANTEDPEOPLELIST"]--></label>
+  <textarea id="pntng_wantedpeoplelist" name="wantedpeoplelist" rows="4" cols="60"><!--[$wantedpeoplelist|pnvarprepfordisplay]--></textarea>  
+</div>
+
+<div class="pn-adminformrow">
+  <label for="pntng_wantedfamilylabel"><!--[pnml name="_WANTEDFAMILYLABEL"]--></label>
+  <input type="text" id="pntng_wantedfamilylabel" name="wantedfamilylabel" size="60" value="<!--[$wantedfamilylabel|pnvarprepfordisplay]-->">  
+</div>
+
+<div class="pn-adminformrow">
+  <label for="pntng_wantedfamilylist"><!--[pnml name="_WANTEDFAMILYLIST"]--></label>
+  <textarea id="pntng_wantedfamilylist" name="wantedfamilylist" rows="4" cols="60"><!--[$wantedfamilylist|pnvarprepfordisplay]--></textarea>  
+</div>
+
+<div class="pn-adminformrow">
+  <label for="pntng_wantedfamilyname"><!--[pnml name="_SHOWFAMILYNAME"]--></label>
+  <select id="pntng_wantedfamilyname" name="wantedfamilyname"><!--[html_options options=$wantednamelist selected=$wantedfamilyname]--></select>
+</div>
+
+<div class="pn-adminformrow">
+  <label for="pntng_wantedmenulink"><!--[pnml name="_WANTEDMENULINK"]--></label>
+  <select id="pntng_wantedmenulink" name="wantedmenulink"><!--[html_options options=$yeslist selected=$wantedmenulink]--></select>
+</div>
