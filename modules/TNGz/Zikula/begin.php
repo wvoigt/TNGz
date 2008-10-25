@@ -11,7 +11,7 @@
  * @license http://www.gnu.org/copyleft/gpl.html
  *
  * @author Wendel Voigt
- * @version $Id: pnadminapi.php 29 2008-10-21 10:01:35Z hilope $
+ * @version $Id$
  *
  * This file is required for proper opperation of TNG with the TNGz module.
  * TNG always includes a file called "begin.php" from the default include directory.
