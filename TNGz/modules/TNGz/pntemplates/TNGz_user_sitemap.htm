@@ -1,0 +1,26 @@
+<!--[* $Id$ *]-->
+<!--[nocache]--><!--[php]-->header("Content-type: text/xml");<!--[/php]--><!--[/nocache]-->
+<?xml version='1.0' encoding='UTF-8'?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!--[if $records]-->
+    <!--[foreach from=$records item=record]-->
+        <!--[pnmodapifunc modname=TNGz func=getRecords kind=$record.type start=$record.start count=$record.count assign=tngz]-->
+        <!--[if $tngz]-->
+            <!--[foreach from=$tngz item=i]-->
+                <url>
+		<!--[if $record.type == 'people']-->
+		    <loc><!--[pnmodurl fqurl=true modname=TNGz show=getperson   personID=$i.id tree=$i.tree]--></loc>
+		<!--[elseif $record.type == 'family']-->
+		    <loc><!--[pnmodurl fqurl=true modname=TNGz show=familygroup familyID=$i.id tree=$i.tree]--></loc>
+		<!--[/if]-->
+		<lastmod><!--[$i.changedate|date_format:"%Y-%m-%d"]--></lastmod>
+                <changefreq>monthly</changefreq>
+	        </url>
+	    <!--[/foreach]-->
+        <!--[/if]-->
+    <!--[/foreach]-->    
+<!--[/if]-->
+</urlset> 
