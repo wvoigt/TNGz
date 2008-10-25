@@ -131,7 +131,7 @@ function TNGz_userapi_ShowPage($args){
     // Fix up file paths to look in the right place
     $homepage = ($dot = strrchr($homepage, '.')) ? substr($homepage, 0, -strlen($dot)): $homepage;// strip .php or .html
     $rootpath        = $TNG['SitePath'] . "/";                     // Overwrite setting from TNG configuration
-//  $custommetta     = dirname(realpath(__FILE__)) . "/meta.php";  // Overwrite setting from TNG configuration
+    $custommeta      = dirname(realpath(__FILE__)) . "/meta.php";  // Overwrite setting from TNG configuration
 
     $gendexfile      = $cms[tngpath] . $gendexfile ;
     $mediapath       = $cms[tngpath] . $mediapath ;
