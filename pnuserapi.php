@@ -61,36 +61,45 @@ function TNGz_userapi_ShowPage($args){
     }
 
     //////////////////////////////////////////////////////
-    // Get Zikula language
+    // Language Settings
     //////////////////////////////////////////////////////
-    $zikulalang = SessionUtil::getVar('lang');
+    $languages = array( // Zikula => TNG
+                            'deu' => 'German',                        
+                            'fra' => 'French',
+                            'pol' => 'Polish',
+                            'ita' => 'Italian',
+                            'nld' => 'Dutch',
+                            'esp' => 'Spanish',
+//                          'xxx' => 'Afrikaans',
+//                          'xxx' => 'Croatian',
+//                          'xxx' => 'Czech',
+//                          'xxx' => 'Danish',
+//                          'xxx' => 'Finnish',
+//                          'xxx' => 'Greek',
+//                          'xxx' => 'Icelandic',
+//                          'xxx' => 'Norwegian',
+//                          'xxx' => 'Romanian',
+//                          'xxx' => 'Russian',
+//                          'xxx' => 'Serbian',
+//                          'xxx' => 'Swedish',
+//                          'xxx' => 'Portuguese',
+//                          'xxx' => 'PortugueseBR,
+//                          'xxx' => 'French-UTF8',
+//                          'xxx' => 'German-UTF8',
+                            'eng' => 'English'                       
+                       );
 
-    switch ($zikulalang) {
-	case "eng":
-		$newlanguage = "English";
-		break;
-	case "deu":
-		$newlanguage = "German";
-		break;
-	case "fra":
-		$newlanguage = "French";
-		break;
-	case "pol":
-		$newlanguage = "Polish";
-		break;
-	case "ita":
-		$newlanguage = "Italian";
-		break;
-	case "nld":
-		$newlanguage = "Dutch";
-		break;
-	case "esp":
-		$newlanguage = "Spanish";
-		break;
-	default:
-		$newlanguage = "English";
+    $newlanguage = false; // default to use language setting from TNG
+    $zikulalang = SessionUtil::getVar('lang');  // get language used in Zikula
+    if ( isset($languages[$zikulalang]) ){   // is it defined?
+        // If the Zikula language has been installed in TNG, then use it
+        // NOTE: May want to add a Zikula Administration setting to turn this on/off
+        // QUESTION: Is there a TNG setting that must be enabled for this to work?
+        if (file_exists($TNG['directory']. "/" . $languages[$zikulalang] . "/text.php") ){
+            $newlanguage = $languages[$zikulalang];
+        }
     }
-
+    
     //////////////////////////////////////////////////////
     // Get the TNG configuration information
     //////////////////////////////////////////////////////
@@ -108,9 +117,8 @@ function TNGz_userapi_ShowPage($args){
     }
 
     // Now that TNG config file is loaded, update the cms parameters (which at one time was in customconfig.php)
-    // At one time, this was in the customconfig.php, but it can be done here.
-    $cms[auto]  = true;
-    $cms[TNGz]  = 1; //
+    $cms[auto]       = true;
+    $cms[TNGz]       = 1; 
     $cms[support]    = "zikula";
     $cms[module]     = "TNGz";    
     $cms[url]        = "index.php?module=TNGz&func=main&show";    
@@ -222,8 +230,10 @@ function TNGz_userapi_ShowPage($args){
 	session_register('currentuser');
 	session_register('currentuserdesc');
 	session_register('session_rp');
-	session_register('session_language');
-   	$session_language = $_SESSION[session_language] = $newlanguage;
+    if ($newlanguage) {
+	    session_register('session_language');
+   	    $session_language = $_SESSION[session_language] = $newlanguage;
+    }
 	session_register('lastpage');
 	$logged_in = $_SESSION[logged_in] = 1;
 	$allow_edit_db = $_SESSION[allow_edit_db] = $row[allow_edit];
@@ -1097,5 +1107,4 @@ function TNGz_userapi_getRecordsCount($args) {
  * This does not include all PostNuke user fields, just those of interest to TNG
  * PostNuke passwords are MD5 based.  It would be great if TNG moved to MD5
  *
- */
  */
