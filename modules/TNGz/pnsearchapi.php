@@ -50,10 +50,10 @@ function TNGz_searchapi_search($args)
 
     $TNGstyle = pnModGetVar('TNGz', '_style');
 
-    list($TNG_configfile, $TNG_dir, $TNG_Site_path, $TNG_WebRoot, $TNG_configpath) = pnModAPIFunc('TNGz','user','GetTNGpaths');
+    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');  // GetTNGpaths returns an associative array of values. Fixed #1
     // Check to be sure we can get to the TNG information
-    if (file_exists($TNG_configfile) ){
-        include($TNG_configfile);
+    if (file_exists($TNG['configfile']) ){
+        include($TNG['configfile']);
         $TNG_conn = &ADONewConnection('mysql');
         $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
         $have_info = 1;
