@@ -63,31 +63,33 @@ function TNGz_userapi_ShowPage($args){
     //////////////////////////////////////////////////////
     // Language Settings
     //////////////////////////////////////////////////////
-    $languages = array( // Zikula => TNG
-                            'deu' => 'German',                        
-                            'fra' => 'French',
-                            'pol' => 'Polish',
-                            'ita' => 'Italian',
-                            'nld' => 'Dutch',
-                            'esp' => 'Spanish',
-//                          'xxx' => 'Afrikaans',
-//                          'xxx' => 'Croatian',
-//                          'xxx' => 'Czech',
-//                          'xxx' => 'Danish',
-//                          'xxx' => 'Finnish',
-//                          'xxx' => 'Greek',
-//                          'xxx' => 'Icelandic',
-//                          'xxx' => 'Norwegian',
-//                          'xxx' => 'Romanian',
-//                          'xxx' => 'Russian',
-//                          'xxx' => 'Serbian',
-//                          'xxx' => 'Swedish',
-//                          'xxx' => 'Portuguese',
-//                          'xxx' => 'PortugueseBR,
-//                          'xxx' => 'French-UTF8',
-//                          'xxx' => 'German-UTF8',
-                            'eng' => 'English'                       
-                       );
+    $languages = array( 
+    // Zikula => TNG
+        'deu' => 'German',                        
+        'fra' => 'French',
+        'pol' => 'Polish',
+        'ita' => 'Italian',
+        'nld' => 'Dutch',
+        'esp' => 'Spanish',
+        'afr' => 'Afrikaans',
+        'hrv' => 'Croatian',
+//      'xxx' => 'Czech',
+        'dan' => 'Danish',
+        'fin' => 'Finnish',
+//      'xxx' => 'Greek',
+        'isl' => 'Icelandic',
+        'nob' => 'Norwegian',
+        'nno' => 'Norwegian',
+        'rom' => 'Romanian',
+        'rus' => 'Russian',
+//      'xxx' => 'Serbian',
+        'swe' => 'Swedish',
+        'por' => 'Portuguese',
+//      'xxx' => 'PortugueseBR,
+//      'xxx' => 'French-UTF8',
+//      'xxx' => 'German-UTF8',
+        'eng' => 'English'                       
+    );
 
     $newlanguage = false; // default to use language setting from TNG
     $zikulalang = SessionUtil::getVar('lang');  // get language used in Zikula
