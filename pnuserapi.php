@@ -91,13 +91,10 @@ function TNGz_userapi_ShowPage($args){
 		$newlanguage = "English";
     }
 
-    $cms[auto]  = true;
-    $cms[pnTNG] = 0;
-    $cms[TNGz]  = 1; //
-    $cms[tngpath] = $TNG['TNGpath'];
     //////////////////////////////////////////////////////
     // Get the TNG configuration information
     //////////////////////////////////////////////////////
+    $cms[tngpath] = $TNG['TNGpath'];
     $have_info = false;
     if (file_exists($TNG['configfile']) ){
 	include $TNG['configfile'];
@@ -110,7 +107,56 @@ function TNGz_userapi_ShowPage($args){
 	return LogUtil::registerError("Error accessing TNG config file.");
     }
 
+    // Now that TNG config file is loaded, update the cms parameters (which at one time was in customconfig.php)
+    // At one time, this was in the customconfig.php, but it can be done here.
+    $cms[auto]  = true;
+    $cms[TNGz]  = 1; //
+    $cms[support]    = "zikula";
+    $cms[module]     = "TNGz";    
+    $cms[url]        = "index.php?module=TNGz&func=main&show";    
+    $cms[tngpath]    = $TNG['directory']. "/";
+    $cms[adminurl]   = "index.php?module=TNGz&func=admin";
+    $cms[noend]      = true; // Tell TNG to not include end.php file
+    $cms[cloaklogin] = "Yes";
+    $cms[credits]    = "<!-- TNGz --><br />";
+    
+    // Fix up file paths to look in the right place
+    $homepage = ($dot = strrchr($homepage, '.')) ? substr($homepage, 0, -strlen($dot)): $homepage;// strip .php or .html
+    $rootpath        = $TNG['SitePath'] . "/";                     // Overwrite setting from TNG configuration
+//  $custommetta     = dirname(realpath(__FILE__)) . "/meta.php";  // Overwrite setting from TNG configuration
+
+    $gendexfile      = $cms[tngpath] . $gendexfile ;
+    $mediapath       = $cms[tngpath] . $mediapath ;
+    $headstonepath   = $cms[tngpath] . $headstonepath ;
+    $historypath     = $cms[tngpath] . $historypath ;
+    $backuppath      = $cms[tngpath] . $backuppath ;
+    $documentpath    = $cms[tngpath] . $documentpath ;
+    $photopath       = $cms[tngpath] . $photopath ;
+    $logname         = $cms[tngpath] . $logname ;
+
+    
+    // Now fix Zikula's $register_globals=off code for TNG
+    // NOTE: Is this still needed?
+    $register_globals = (bool) ini_get('register_globals');
+    if( $register_globals ) {
+        $the_globals = $_SERVER + $_ENV + $_GET +$_POST;
+        if( $the_globals && is_array( $the_globals ) ) {
+            foreach( $the_globals as $key=>$value ) {
+                if($key == 'cms' || $key == 'lang' || $key == 'mylanguage') die("sorry!");               
+                ${$key} = $value;
+            }
+        }
+        unset($the_globals);
+        if( $_FILES && is_array( $_FILES ) ) {
+            foreach( $_FILES as $key=>$value ) {
+                ${$key} = $value[tmp_name];
+            }
+        }
+    }
+
+    //////////////////////////////////////////////////////
     // Check Arguments
+    //////////////////////////////////////////////////////
     $TNGshowpage   = (isset($args['showpage'])) ? $args['showpage'] : $TNGhomepage;
     if ( !strpos( $TNGshowpage, ".php") ) {
 	$TNGshowpage .= ".php";
@@ -239,6 +285,7 @@ function TNGz_userapi_ShowPage($args){
     }
 
     // Clean up TNG HTML to remove HTML validation errors
+    // First set up the changes
     // Remove TNG <title> tag.  Each page should only have one and Zikula provides.
     $patterns[0]     = "/<title>(.*)<\/title>/i";
     $replacements[0] = "\n<!-- $0 -->\n";
@@ -262,7 +309,10 @@ function TNGz_userapi_ShowPage($args){
     PageUtil::AddVar('javascript', 'javascript/ajax/prototype.js');
     PageUtil::AddVar('javascript', 'javascript/ajax/scriptaculous.js');
     PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/litbox.js');
+    // Question: What happens if Zikula and TNG use different versions of these libraries
+    //           Could this cause odd behavior in TNG?
 
+    // Now go do the clean up
     ksort($patterns);      // The sorts are recommended to make sure the pattern/replacement are aligned
     ksort($replacements);
     $TNGoutput = preg_replace($patterns, $replacements, $TNGoutput);
@@ -518,8 +568,6 @@ function TNGz_userapi_ModifyCreateUser()
             list($TNG_uid, $TNG_email, $TNG_name, $TNG_website, $TNG_password ) = $result->fields;
             $adding =  "UPDATE $users_table SET ";
             if ( $TNG_email != $u['email'] ) {
-
-
                 $TNG_email = $u['email'];
                 $adding .= " email='$TNG_email',";
                 $TNG_changed = true;
@@ -878,16 +926,42 @@ function TNGz_userapi_PhotoRef($args) {
 }
 
 
-function TNGz_userapi_getAllrecords($args) {
+function TNGz_userapi_getRecords($args) {
     extract($args);
 
+    // check out $kind
     if (!isset($kind)) {
         $kind = "people";
     }
     if ( ($kind != "people") && ($kind != "family")) {
         return(false);
-    }
+    }  
 
+    $limit = true;      // first assume number of records returned are limited unless found otherwise.
+    // Check out $start
+    if (!isset($start)) {
+        $limit = false;    // No starting value given
+    } elseif (!is_numeric($start)){
+        $limit = false;    // not a number
+    } elseif ( $start < 0 ) {
+        $limit = false;    // Invalid starting value given
+    } else {
+        $start = intval($start);
+    }
+    
+    // Check out $count
+    if (!isset($count)) {
+        $limit = false;    // No starting value given
+    } elseif (!is_numeric($count)){
+        $limit = false;    // not a number
+    } elseif ( $count < 0 ) {
+        $limit = false;    // Invalid starting value given
+    } else {
+        $count = intval($count);
+    }
+    // $limit is still true only if $start and $count are valid
+    
+    // Now go get the informaiton
     $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
 
     // Check to be sure we can get to the TNG information
@@ -905,6 +979,10 @@ function TNGz_userapi_getAllrecords($args) {
         $query  =  "SELECT gedcom, personID, changedate FROM $people_table";
     } elseif ( $kind == "family") {
         $query   =  "SELECT gedcom, familyID, changedate FROM $families_table";
+    }
+    if ($limit) {
+        $query  .= " LIMIT ". $start . ", " . $count;
+	
     }
 
     if (!$result = &$TNG_conn->Execute($query) ) {
@@ -925,9 +1003,59 @@ function TNGz_userapi_getAllrecords($args) {
     return($thelist);
 }
 
+//
+function TNGz_userapi_getRecordsCount($args) {
+    extract($args);
+    
+    $MaxPerMap = 1000; // maximum number of sitemap records that can be returned. 
+    
+    $facts = array();
+    
+    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
 
-function TNGz_userapi_getTNGmodule($args) {
-    return (pnModGetVar('TNGz', '_loc') );
+    // Check to be sure we can get to the TNG information
+    $have_info = 0;
+    if (file_exists($TNG['configfile']) ){
+        include($TNG['configfile']);
+        $TNG_conn = &ADONewConnection('mysql');
+        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
+        $have_info = 1;
+    }
+    if (!$have_info) {
+        return(false);
+    }
+
+    $query  =  "SELECT count(id) as pcount FROM $people_table";
+    if (!$result = &$TNG_conn->Execute($query) ) {
+        return(false);
+    }
+    if($result->RecordCount()>0) {
+        list( $facts['people'] ) = $result->fields;
+    }
+    
+    $query  =  "SELECT count(id) as pcount FROM $families_table";
+    if (!$result = &$TNG_conn->Execute($query) ) {
+        return(false);
+    }
+    if($result->RecordCount()>0) {
+        list( $facts['family'] ) = $result->fields;
+    }
+    
+    $facts['total'] = $facts['people'] + $facts['family'];
+    $facts['sitemapindex'] = false;
+    
+    if ($facts['total']>$MaxPerMap){
+        $sitemaps = array();
+        for($i=0; $i < $facts['people']; $i+= $MaxPerMap) {
+            $sitemaps[] = array( 'map' => 'people', 'start' => $i, 'count' => $MaxPerMap);
+        }
+        for($i=0; $i < $facts['family']; $i+= $MaxPerMap) {
+            $sitemaps[] = array( 'map' => 'family', 'start' => $i, 'count' => $MaxPerMap);
+        }
+        $facts['sitemapindex'] = $sitemaps;       
+    }   
+
+    return($facts);
 }
 
 /* **************************  POSTNUKE TO TNG Field Mappings **************************************************************
@@ -969,4 +1097,5 @@ function TNGz_userapi_getTNGmodule($args) {
  * This does not include all PostNuke user fields, just those of interest to TNG
  * PostNuke passwords are MD5 based.  It would be great if TNG moved to MD5
  *
+ */
  */
