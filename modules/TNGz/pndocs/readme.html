@@ -119,6 +119,17 @@ Tested withWorks with :
        o In Zikula Administration, go to Blocks, then select New Block, and select TNGz/'block name'
        o Go to Blocks and edit the options for the block.
 
+  e. For Search Engine (SE) sitemap generation, there are two choices (only pick one!)
+       o If using the Zikula SEsitemap module (part of the webservices modules) to index your entire site,
+         just copy the file:
+            /modules/tngz/pntemplates/sesitemap_user_tngz.htm
+         to
+	    /modules/sesitemap/pntemplates/sesitemap_user_tngz.htm
+	    
+       o If you have more than 50,000 records (people + families) in TNG,
+         or if you only care about submitting your TNG data to the search engines,
+         then just submit the following url to the search engines:
+	 http://www.yoursitename.com/index.php?module=TNGz&func=sitemap
    
 === Tips and Notes ===
 
