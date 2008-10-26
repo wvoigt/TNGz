@@ -9,6 +9,8 @@ version 1.?
   * Template bugfixes, Validation bugfixes
   * removed TNG js, loading directly into header with PageUtil to solve version conflicts
   * simplified pninit.php
+  * added sitemap generation options (either direct or with SEsitemap)
+  * added ability to switch TNG language to match Zikula language
 
 version 1.01
   * Converted pnTNG to TNGz (major rewrite and update)

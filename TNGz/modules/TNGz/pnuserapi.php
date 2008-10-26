@@ -1019,7 +1019,16 @@ function TNGz_userapi_getRecords($args) {
 function TNGz_userapi_getRecordsCount($args) {
     extract($args);
     
-    $MaxPerMap = 1000; // maximum number of sitemap records that can be returned. 
+    $MaxPerMap = 2000; // Maximum number of records to return in a sitemap.
+                       // If there are more records, then a sitemapindex file will need to be generated.
+                       // * Must be less than 50,000, but fewer is faster.
+                       // * Minimum limited by having at most 1000 entries in a sitemapindex file.
+                       //   So must be set to more than: (Total People + Total Families) / 1000
+                       // * So a value of 2000 is good for TNG databases that have less than
+                       //   2 million people and family records -- and is reasonably fast.
+                       // * It also creates a single sitemap file for those TNG databases that have
+                       //   less than 2000 records to return (People + Families).
+                       // * If find value needs to change a lot, then can make a administration setting.
     
     $facts = array();
     
