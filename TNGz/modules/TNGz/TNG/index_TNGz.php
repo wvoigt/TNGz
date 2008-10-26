@@ -16,7 +16,7 @@
 
 global $cms;
 $cms[auto]    = true;
-$cms[support] = "postnuke";
+$cms[support] = "zikula";
 $cms[tngpath] = "";
 include("config.php");
 include($cms[tngpath] . "getlang.php");
@@ -90,5 +90,3 @@ else {
 	$login_url = getURL( "login", 1 );
 	header( "Location: " . "$login_url" . "message=loginfailed" );
 }
-
-?>
