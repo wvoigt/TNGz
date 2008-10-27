@@ -849,13 +849,17 @@ function TNGz_userapi_MakeRef_old($args) {
  * @param str $args['target'],      to add any special target parameters to the link
  * @param str $args['description'], the text for the link
  * @param str $args['func'],        the TNG file to run.  If not set, calls TNGz main
+ * @param str $args['url'],         if set, just provide the URL, not the whole reference
  * @param str $args['...],          any other parameters are passed directly to the TNG function
  * @return reference link
  */
 function TNGz_userapi_MakeRef($args) {
 
     unset($args['RefType']); // No longer need RefType, so remove if from the args if it is set
-    
+
+    $url = (isset($args['url'])) ? $args['url'] : false ;
+    unset($args['url']);
+
     $target = (isset($args['target'])) ? $args['target'] : false ;
     unset($args['target']);
     if ( $target ){
@@ -868,6 +872,12 @@ function TNGz_userapi_MakeRef($args) {
     $prog = (isset($args['func'])) ? $args['func'] : false ;
     unset($args['func']);
     
+    $tree = (isset($args['tree'])) ? $args['tree'] : false ;
+    unset($args['tree']);
+    if ($tree) {
+	    $args = array_merge(array("tree"=>$tree),$args); // move to the front (so comes out first)
+    }
+    
     if ( $prog ) {
         $func = 'main';
 	    $args = array_merge(array("show"=>$prog),$args); // add show to the front (so comes out first)
@@ -876,7 +886,13 @@ function TNGz_userapi_MakeRef($args) {
         $args = array();  // just pass the rest of the parameters
     }
 
-    return "<a href=\"" . pnModURL('TNGz', 'user', $func, $args) . "\" $target >$description</a>";
+    $ref = pnModURL('TNGz', 'user', $func, $args);
+    
+    if ($url){
+        return $ref;
+    } else {
+        return "<a href=\"" . $ref . "\" $target >$description</a>";
+    }
 
 }
  /**
