@@ -768,7 +768,7 @@ function TNGz_userapi_CleanEmail($args) {
  * @param int args['description'] image description
  * @return reference link
  */
-function TNGz_userapi_MakeRef($args) {
+function TNGz_userapi_MakeRef_old($args) {
 
     extract($args);
     // Valid call combinations
@@ -846,49 +846,37 @@ function TNGz_userapi_MakeRef($args) {
 }
  /**
  * Generate reference link back to TNGz items
- * @param int $args['RefType'],     0 or 1 depending upon URL style
  * @param str $args['target'],      to add any special target parameters to the link
  * @param str $args['description'], the text for the link
- * @param str $args['func'],        the TNG file to run
+ * @param str $args['func'],        the TNG file to run.  If not set, calls TNGz main
  * @param str $args['...],          any other parameters are passed directly to the TNG function
  * @return reference link
  */
-function TNGz_userapi_MakeRefproposed($args) {
+function TNGz_userapi_MakeRef($args) {
 
-    // QUESTION: Why does file based short URLs not work with pnModURL????
-
-    $RefType = (isset($args['RefType'])) ? $args['RefType'] : 0 ;
-    unset($args['RefType']);
-    $RefType = 0; // FIX - just do type 0 for now...
-
-    $target = (isset($args['target'])) ? $args['target'] : "" ;
+    unset($args['RefType']); // No longer need RefType, so remove if from the args if it is set
+    
+    $target = (isset($args['target'])) ? $args['target'] : false ;
     unset($args['target']);
-    if ($target !="" ){
+    if ( $target ){
         $target = "target = \"$target\"";
     }
 
     $description = (isset($args['description'])) ? $args['description'] : "" ;
     unset($args['description']);
 
-    $prog = (isset($args['func'])) ? $args['func'] : "main" ;
+    $prog = (isset($args['func'])) ? $args['func'] : false ;
     unset($args['func']);
-    if ($prog == "main") {
-        $args = array();
+    
+    if ( $prog ) {
+        $func = 'main';
+	    $args = array_merge(array("show"=>$prog),$args); // add show to the front (so comes out first)
+    } else {
+        $func = $prog;
+        $args = array();  // just pass the rest of the parameters
     }
 
-    switch ($RefType) {
-    case "1":
-            $func=$prog;
-            break;
-    case "0":
-    default :
-            $func="main";
-	    if ($prog != "main") {
-	        $args = array_merge(array("show"=>$prog),$args); // add to the front (so comes out first
-	    }
-    }
-
-    return "<a href=\"" . pnModURL("TNGz", null, $func, $args) . "\" $target >$description</a>";
+    return "<a href=\"" . pnModURL('TNGz', 'user', $func, $args) . "\" $target >$description</a>";
 
 }
  /**
@@ -1078,6 +1066,112 @@ function TNGz_userapi_getRecordsCount($args) {
 
     return($facts);
 }
+
+/**
+ * form custom url string
+ *
+ * @return string custom url string
+ */
+function TNGz_userapi_encodeurl($args)
+{
+    // check we have the required input
+    if (!isset($args['modname']) || !isset($args['func']) || !isset($args['args'])) {
+        return LogUtil::registerError (_MODARGSERROR);
+    }
+
+    if (!isset($args['type'])) {
+        $args['type'] = 'user';
+    }
+
+    // don't display the function name if using main
+    if ($args['func'] == 'main') {
+        $args['func'] = '';
+    }
+    
+    // create an empty string to start
+    $vars = '';
+
+    // Start with 'show' value if it is set
+    if ( isset($args['args']['show'])) {
+        $vars = $args['args']['show'];
+        unset($args['args']['show']);       
+    }
+
+    // Next if it is there, show the tree
+    if ( isset($args['args']['tree'])) {
+        $vars .= "/tree/".$args['args']['tree'];
+        unset($args['args']['tree']);
+    }
+
+    // Now add the rest of the arguments
+    foreach ($args['args'] as $k => $v) {
+        if (is_array($v)) {
+            foreach ($v as $k2 => $w) {
+                if ($w != '') {
+                    $vars .= "/$k[$k2]/$w"; // &$k[$k2]=$w
+                }
+            }
+        } elseif ($v != '') {
+            $vars .= "/$k/$v"; // &$k=$v
+        }
+    }
+
+    // construct the custom url part
+    if (empty($args['func']) && empty($vars)) {
+        return $args['modname'] . '/';
+    } elseif (empty($args['func'])) {
+        return $args['modname'] . '/' . $vars . '/';
+    } elseif (empty($vars)) {
+        return $args['modname'] . '/' . $args['func'] . '/';
+    } else {
+        return $args['modname'] . '/' . $args['func'] . '/' . $vars . '/';
+    }
+}
+
+/**
+ * decode the custom url string
+ *
+ * @return bool true if successful, false otherwise
+ */
+function TNGz_userapi_decodeurl($args)
+{
+    // check we actually have some vars to work with...
+    if (!isset($args['vars'])) {
+        return LogUtil::registerError (_MODARGSERROR);
+    }
+
+    // define the available user functions
+    $funcs = array('main', 'admin', 'sitemap');
+    // set the correct function name based on our input
+    if (empty($args['vars'][2])) {
+        pnQueryStringSetVar('func', 'main');
+    } elseif (!in_array($args['vars'][2], $funcs)) {
+        pnQueryStringSetVar('func', 'main');
+        $nextvar = 2;
+    } else {
+        pnQueryStringSetVar('func', $args['vars'][2]);
+        $nextvar = 3;
+    }
+
+    // if it exists, show value should be next
+    if (isset($args['vars'][$nextvar])){
+        pnQueryStringSetVar('show', (string)$args['vars'][$nextvar]);
+        $nextvar++;
+    }
+
+    // Now just need to expand out the remaining parameters
+    $argscount = count($args['vars']);
+    for ($i = $nextvar; $i < $argscount; $i = $i + 2) {
+        if (isset($args['vars'][$i])){
+            pnQueryStringSetVar($args['vars'][$i], urldecode($args['vars'][$i+1]));
+        }
+    }
+
+    return true;
+}
+
+
+
 
 /* **************************  POSTNUKE TO TNG Field Mappings **************************************************************
  * POSTNUKE              pnTYPE          TNG             TNG TYPE    DESCRIPTION
