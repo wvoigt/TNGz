@@ -150,3 +150,86 @@ function TNGz_user_sitemap() {
     return true;
     
 }
+
+
+function TNGz_user_worldmap() {
+    if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_READ)) {
+        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+    }   
+ 
+    $image   = FormUtil::getPassedValue('image', false, 'GET');
+    
+    if (!$image) {
+        $pnTNGmodinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
+
+        $pnRender =& new pnRender('TNGz');
+        $pnRender->assign('TNGzVersion'  , $pnTNGmodinfo['version'] );
+        return $pnRender->fetch('TNGz_user_worldmap.htm');
+    }
+    
+    // Just generate the image
+
+    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
+
+    // Check to be sure we can get to the TNG information
+    $have_info = 0;
+    if (file_exists($TNG['configfile']) ){
+        include($TNG['configfile']);
+        $TNG_conn = &ADONewConnection('mysql');
+        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
+        $have_info = 1;
+    }
+    if (!$have_info) {
+        return(false);
+    }
+
+    // Now go get all the locations to plot
+    $query  = "SELECT placelevel, latitude,longitude,zoom from $places_table ";
+    $query .= "WHERE latitude <> 0 AND longitude <> 0 AND latitude is not null AND longitude is not null";
+
+    if (!$result = &$TNG_conn->Execute($query) ) {
+        return(false);
+    }
+    $points = array();    
+    if($result->RecordCount()>0) {
+        for (; !$result->EOF; $result->MoveNext()) {
+            $items = array();
+            list( $items['placelevel'],$items['latitude'],$items['longitude'],$items['zoom']) = $result->fields;
+            $points[] = $items;
+        }
+    }
+    mysql_free_result($result);
+    $TNG_conn->Close();    
+    
+    // Load the background map
+    if (!$im  = imagecreatefromjpeg("modules/TNGz/pnimages/800px-Whole_world_-_land_and_oceans.jpg")){
+        echo "Image failed to load";
+        exit;
+    }
+    $red = imagecolorallocate ($im, 255,0,0);
+
+    // find the base image size
+    $scale_x = imagesx($im);
+    $scale_y = imagesy($im);
+
+   // Now we convert the long/lat coordinates into screen coordinates
+   foreach($points as $point){
+       $pt = TNGz_map_coordinates($point['latitude'], $point['longitude'], $scale_x, $scale_y);
+       // mark the point on the map using a 2 pixel rectangle
+       imagefilledellipse($im,$pt["x"],$pt["y"],2,2,$red);      
+   }
+
+   // Return the map image. Uing a PNG format since it gives better final image quality
+
+   header ("Content-type: image/png");
+   imagepng($im);
+   imagedestroy($im); 
+   return true;
+}
+
+function TNGz_map_coordinates($lat, $lon, $width, $height)
+{
+   $x = (($lon + 180) * ($width / 360));
+   $y = ((($lat * -1) + 90) * ($height / 180));
+   return array("x"=>round($x),"y"=>round($y));
+}

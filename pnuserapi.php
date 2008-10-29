@@ -123,7 +123,7 @@ function TNGz_userapi_ShowPage($args){
     $cms[TNGz]       = 1; 
     $cms[support]    = "zikula";
     $cms[module]     = "TNGz";    
-    $cms[url]        = "index.php?module=TNGz&func=main&show";    
+    $cms[url]        = _TNGZ_PREFIX;    
     $cms[tngpath]    = $TNG['directory']. "/";
     $cms[adminurl]   = "index.php?module=TNGz&func=admin";
     $cms[noend]      = true; // Tell TNG to not include end.php file
@@ -290,7 +290,14 @@ function TNGz_userapi_ShowPage($args){
     } elseif ($TNGemail == "E" ) {
         $TNGoutput = pnModAPIFunc('TNGz','user','CleanEmail', array('source' => $TNGoutput, 'mode' => 'both', 'text2link' => false ));
     }
-
+    
+    // Short URL Filter
+    $shorturls     = pnConfigGetVar('shorturls');
+    $shorturlstype = pnConfigGetVar('shorturlstype');
+    if ($shorturls && $shorturlstype == 0 && false) {  // This has problems, so disable for now
+        $TNGoutput = preg_replace_callback( "/(\s+href\s*=\s*[\"\'])(.*)([\"\'])/iU", "TNGz_userapi_ShortURLencode", $TNGoutput);
+    }
+  
     // Get Title information to add to Zikula title
     if (preg_match("/<meta name=\"Keywords\" content=\"(.+)\"/", $TNGoutput, $tng_title) ){
         $GLOBALS['info']['title'] = $tng_title[1];
@@ -1083,6 +1090,39 @@ function TNGz_userapi_getRecordsCount($args) {
     return($facts);
 }
 
+ /**
+ * Change all local TNGz hrefs in page to short URLs (directory style)
+ * @param  array $matches    array from preg_replace for matching an HTML anchor with href
+ *                           $matches[0] = whole string
+ *                           $matches[1] = '<a href="'
+ *                           $matches[2] = the url to convert
+ *                           $matches[3] = '" >'
+ * @return string  html anchor with TNGz href converted to a short URL (directory style)
+ */
+function TNGz_userapi_ShortURLencode($matches) {
+
+    if (strpos($matches[0], _TNGZ_PREFIX) === false){
+        return $matches[0];   // The URL is not for TNGz, so leave alone
+    }
+    list($prog, $params) = split('\?', $matches[2], 2);
+    $pairs = explode('&', html_entity_decode(urldecode($params)));
+    
+    $args=array();
+    foreach ($pairs as $pair) {
+        $x = explode('=', $pair);
+        $args[$x[0]] = $x[1];
+    }
+
+    // Remove those which should not be passed as args
+    unset($args['module']);
+    unset($args['func']);
+    unset($args['type']);
+
+    $url = pnModAPIFunc('TNGz', 'user', 'encodeurl', array('modname' => 'TNGz', 'func' => 'main', 'args' => $args));
+  //  print $matches[2] . " => " . $url . "<br/>";
+    return $matches[1].$url.$matches[3];
+}
+
 /**
  * form custom url string
  *
@@ -1171,8 +1211,7 @@ function TNGz_userapi_decodeurl($args)
 
     // if it exists, show value should be next
     if (isset($args['vars'][$nextvar])){
-        pnQueryStringSetVar('show', (string)$args['vars'][$nextvar]);
-        $nextvar++;
+        pnQueryStringSetVar('show', (string)$args['vars'][$nextvar++]);
     }
 
     // Now just need to expand out the remaining parameters
