@@ -1,0 +1,51 @@
+<!--[*  $Id$  *]-->
+<div id="tngz" style="position:relative; width:99%;">
+<h2><!--[ $text.placetitle ]--> </h2>
+
+<div style="text-align:center;">
+    <!--[ $text.topplaces ]--> (<!--[ $text.totalplaces ]--> )
+</div>
+
+
+<!--[if $places ]-->
+    <!--[* Requires Smarty 2.6.0 or later *]-->
+    <!--[* $data is the array you want to display *]-->
+    <!--[* $numCols is the number of columns *]-->
+    <!--[assign var="numCols" value="5"]-->
+    <table>
+        <tr>
+        <!--[assign var="col" value="0"]-->
+        <!--[section name=element loop=$places]-->
+            <!--[if $col == $numCols]-->
+                </tr>
+	        <tr><!--[assign var="col" value="0"]-->
+            <!--[/if]-->
+            <td><!--[$places[element].rank|string_format:"%2s"]-->. <!--[$places[element].name]--><!--[$places[element].link]--></td>
+            <!--[assign var="col" value="`$col+1`"]-->
+        <!--[/section]-->
+        <!--[assign var="remainder" value="`$numCols-$col`"]-->
+        <!--[section name=emptyElement loop=$remainder]-->
+            <td>&nbsp;</td>
+        <!--[/section]-->
+        </tr>
+    </table>
+<!--[/if]-->
+<div>
+        <form style="margin:0px" action="index.php" method="post">
+        <input type="hidden" name="module" value="TNGz" />
+        <input type="hidden" name="func"   value="main" />	
+        <input type="hidden" name="show"   value="places100" />
+        <!--[ $text.showtop ]-->
+	<input type="text" name="topplace" value="100" size="3" maxlength="3" /><!--[ $text.byoccurrence ]-->
+	<input type="submit" value="<!--[$text.go ]-->" />
+        </form>
+</div>    
+    
+<div>
+    <a href="<!--[pnmodurl fqurl=true modname=TNGz show=places-all ]-->"><!--$text.showallplaces ]--></a><!--$text.sortedalpha ]-->
+</div>
+<div>
+    <a href="<!--[pnmodurl fqurl=true modname=TNGz show=places ]-->"><!--[$text.mainplacepage ]--></a>
+</div>
+<img HEIGHT="400", WIDTH="800" src="<!--[pnmodurl fqurl=true modname=TNGz func=worldmap size=large ]-->">
+</div>
