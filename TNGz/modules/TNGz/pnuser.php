@@ -151,24 +151,94 @@ function TNGz_user_sitemap() {
     
 }
 
-
-function TNGz_user_worldmap() {
+function TNGz_user_view()
+{
     if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_READ)) {
         return pnVarPrepHTMLDisplay(_MODULENOAUTH);
-    }   
- 
-    $image   = FormUtil::getPassedValue('image', false, 'GET');
+    }
+
+    $item   = FormUtil::getPassedValue('item', false, 'GET');
+    $validitems = array('places');
+    $item = (in_array($item, $validitems))? $item : $validitems[0];
     
-    if (!$image) {
+    
+    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
+
+    // Check to be sure we can get to the TNG information
+    $have_info = 0;
+    if (file_exists($TNG['configfile']) ){
+        include($TNG['configfile']);
+        $TNG_conn = &ADONewConnection('mysql');
+        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
+        $have_info = 1;
+    }
+    if (!$have_info) {
+        return pnVarPrepHTMLDisplay("Failed to find TNG database");
+    }
+    
+    $cms['tngpath']    = $TNG['directory']. "/";        
+    if ($item == "places" ) {
+
+        $thePlaces = array();
+        
+        $query = "SELECT distinct trim(substring_index(place,',',-1)) as myplace, count(distinct place) as placecount FROM $places_table WHERE trim(substring_index(place,',',-1)) != \"\" GROUP BY myplace ORDER by placecount DESC LIMIT 30";
+        $saved_fetch_mode = &$TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
+        if (!$result = &$TNG_conn->Execute($query) ) {
+            return pnVarPrepHTMLDisplay("Failed to TNG query");
+        }
+        $count = 1;
+        for (; !$result->EOF; $result->MoveNext()) {
+            $place = $result->fields;
+            $place2 = urlencode($place['myplace']);
+	        if( $place2 != "" ) {
+		        $query = "SELECT count(distinct place) as placecount FROM $places_table WHERE place = \"$place[myplace]\"";
+                if (!$result2 = &$TNG_conn->Execute($query) ) {
+                    return pnVarPrepHTMLDisplay("Failed to TNG query");
+                }
+		        $countrow = $result2->fields;
+		        $specificcount = $countrow['placecount'];
+
+		        $searchlink = ($specificcount) ? " <a href=\"". pnModURL('TNGz', 'user', 'main', array('show'=>'placesearch', 'psearch'=>$place2)). "\"><img src=\"". $cms['tngpath']. "tng_search_small.gif\" border=\"0\" alt=\"\" width=\"9\" height=\"9\" /></a>" : "";
+		        $name = ($place['placecount'] > 1 || !$specificcount) ? "<a href=\"". pnModURL('TNGz', 'user', 'main', array('show'=>'places-oneletter', 'offset'=>$offset, 'psearch'=>$place2))."\">" . str_replace(array("<",">"), array("&lt;","&gt;"), $place['myplace']) . "</a> (".$place['placecount'].")" : $place['myplace'];
+                $thePlaces[] = array('rank'=> $count, 'name'=>$name, 'count'=> $place['placecount'], 'link'=>$searchlink);
+		        $count++;
+            }
+        }
+        $saved_fetch_mode= &$TNG_conn->SetFetchMode($saved_fetch_mode);
+        $TNG_conn->Close();
+        
+        $text['placetitle']    = "Top Locations and Places";
+        $text['topplaces']     = "Top Places";
+        $text['totalplaces']   = "Total Places";
+        $text['showtop']       = "Show top";
+        $text['byoccurrence']  = "ordered by occurrence";
+        $text['sortedalpha']   = "sorted alphabetically";
+        $text['mainplacepage'] = "Main place listing page";
+        $text['go']            = "Go";
+        
+        
         $pnTNGmodinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
 
         $pnRender =& new pnRender('TNGz');
         $pnRender->assign('TNGzVersion'  , $pnTNGmodinfo['version'] );
-        return $pnRender->fetch('TNGz_user_worldmap.htm');
+        $pnRender->assign('places'   , $thePlaces);
+        $pnRender->assign('text'     , $text);
+        return $pnRender->fetch('TNGz_user_view_places.htm');
     }
-    
-    // Just generate the image
 
+}
+
+
+function TNGz_user_worldmap()
+{
+    if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_READ)) {
+        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+    }   
+ 
+    $size    = FormUtil::getPassedValue('size'  , false, 'GET');
+    $region  = FormUtil::getPassedValue('region', 0,     'GET');
+    $region = (in_array($region, array(0,1,2,3,4,5,6)))? $region : 0;
+      
     $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
 
     // Check to be sure we can get to the TNG information
@@ -200,30 +270,86 @@ function TNGz_user_worldmap() {
     }
     mysql_free_result($result);
     $TNG_conn->Close();    
-    
-    // Load the background map
-    if (!$im  = imagecreatefromjpeg("modules/TNGz/pnimages/800px-Whole_world_-_land_and_oceans.jpg")){
-        echo "Image failed to load";
-        exit;
-    }
-    $red = imagecolorallocate ($im, 255,0,0);
+         
+    switch ($size) {
+        case 'tiny':
+                  $ratio = 0.25;
+	              break;        
+        case 'small':
+                  $ratio = 0.50;
+	              break;
+ 	    case 'medium':
+	              $ratio = 0.75;
+		          break;
+ 	    case 'huge':
+	              $ratio = 1.25;
+		          break;
+        case 'giant':
+	              $ratio = 1.50;
+		          break; 
+        case 'large':                
+	    default:
+	              $ratio = 1.0;
+		          break;
+    }    
 
+    // Load the background map
+    $imagefile = "800px-Whole_world_-_land_and_oceans.jpg";
+    if (!$source  = imagecreatefromjpeg("modules/TNGz/pnimages/". $imagefile)){
+        return pnVarPrepHTMLDisplay("aaaWorld Map image failed to load");
+    }
+    // find the base image size
+    $source_x = imagesx($source);
+    $source_y = imagesy($source);
+
+    // Create an image based upon the source (same size)
+    $im = imagecreatetruecolor($source_x, $source_y);        
+    imagecopyresized($im, $source, 0, 0, 0, 0, $source_x , $source_y, $source_x, $source_y);
+    imagedestroy($source);
+    
     // find the base image size
     $scale_x = imagesx($im);
-    $scale_y = imagesy($im);
+    $scale_y = imagesy($im);    
+        
+    $red = imagecolorallocate ($im, 255,0,0);
 
-   // Now we convert the long/lat coordinates into screen coordinates
+   // Now we convert the long/lat coordinates into image coordinates
    foreach($points as $point){
        $pt = TNGz_map_coordinates($point['latitude'], $point['longitude'], $scale_x, $scale_y);
-       // mark the point on the map using a 2 pixel rectangle
-       imagefilledellipse($im,$pt["x"],$pt["y"],2,2,$red);      
+       imagefilledellipse($im,$pt["x"],$pt["y"],2,2,$red); // mark on the map   
    }
+   
+   // Define the partial regions.  Region 0 is everything.
+   // Regions are arranged as:  1  2  3 <= Northern Hemisphere
+   //                           4  5  6 <= Southern Hemisphere
+   $regions[0]=array('y'=> 0.00, 'h'=> 1.00, 'x'=> 0.00,                              'w'=> 1.00 );   
+   $regions[1]=array('y'=> 0.00, 'h'=> 0.50, 'x'=> 0.00,                              'w'=> 0.45 );
+   $regions[2]=array('y'=> 0.00, 'h'=> 0.50, 'x'=> $regions[1]['w'],                  'w'=> 0.30 );
+   $regions[3]=array('y'=> 0.00, 'h'=> 0.50, 'x'=> $regions[1]['w']+$regions[2]['w'], 'w'=> 1- $regions[1]['w']-$regions[2]['w']);
+   $regions[4]=array('y'=> 0.50, 'h'=> 0.50, 'x'=> $regions[1]['x'],                  'w'=> $regions[1]['w'] );
+   $regions[5]=array('y'=> 0.50, 'h'=> 0.50, 'x'=> $regions[2]['x'],                  'w'=> $regions[2]['w'] );
+   $regions[6]=array('y'=> 0.50, 'h'=> 0.50, 'x'=> $regions[3]['x'],                  'w'=> $regions[3]['w'] );
+  
+   $part_x = $source_x * $regions[$region]['x'];
+   $part_w = $source_x * $regions[$region]['w'];
+   $part_y = $source_y * $regions[$region]['y'];
+   $part_h = $source_y * $regions[$region]['h'];
+
+   // Get ready for final image with the right size
+   $dest_x  = 0;
+   $dest_y  = 0;
+   $dest_w  = $part_w * $ratio;
+   $dest_h  = $part_h * $ratio;
+
+   // Now create the final image, then copy (all or part) and resize
+   $im_return = imagecreatetruecolor($dest_w, $dest_h);
+   imagecopyresized($im_return, $im, $dest_x, $dest_y, $part_x, $part_y, $dest_w, $dest_h, $part_w, $part_h);
+   imagedestroy($im); 
 
    // Return the map image. Uing a PNG format since it gives better final image quality
-
    header ("Content-type: image/png");
-   imagepng($im);
-   imagedestroy($im); 
+   imagepng($im_return);
+   imagedestroy($im_return); 
    return true;
 }
 
