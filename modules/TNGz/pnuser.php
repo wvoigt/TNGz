@@ -158,7 +158,7 @@ function TNGz_user_view()
     }
 
     $item   = FormUtil::getPassedValue('item', false, 'GET');
-    $validitems = array('places');
+    $validitems = array('places', 'surnames');
     $item = (in_array($item, $validitems))? $item : $validitems[0];
     
     
@@ -184,7 +184,7 @@ function TNGz_user_view()
         $query = "SELECT distinct trim(substring_index(place,',',-1)) as myplace, count(distinct place) as placecount FROM $places_table WHERE trim(substring_index(place,',',-1)) != \"\" GROUP BY myplace ORDER by placecount DESC LIMIT 30";
         $saved_fetch_mode = &$TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
         if (!$result = &$TNG_conn->Execute($query) ) {
-            return pnVarPrepHTMLDisplay("Failed to TNG query");
+            return pnVarPrepHTMLDisplay("Failed the TNG query");
         }
         $count = 1;
         for (; !$result->EOF; $result->MoveNext()) {
@@ -199,7 +199,7 @@ function TNGz_user_view()
 		        $specificcount = $countrow['placecount'];
 
 		        $searchlink = ($specificcount) ? " <a href=\"". pnModURL('TNGz', 'user', 'main', array('show'=>'placesearch', 'psearch'=>$place2)). "\"><img src=\"". $cms['tngpath']. "tng_search_small.gif\" border=\"0\" alt=\"\" width=\"9\" height=\"9\" /></a>" : "";
-		        $name = ($place['placecount'] > 1 || !$specificcount) ? "<a href=\"". pnModURL('TNGz', 'user', 'main', array('show'=>'places-oneletter', 'offset'=>$offset, 'psearch'=>$place2))."\">" . str_replace(array("<",">"), array("&lt;","&gt;"), $place['myplace']) . "</a> (".$place['placecount'].")" : $place['myplace'];
+		        $name = ($place['placecount'] > 1 || !$specificcount) ? "<a href=\"". pnModURL('TNGz', 'user', 'main', array('show'=>'places-oneletter', 'offset'=>'1', 'psearch'=>$place2))."\">" . str_replace(array("<",">"), array("&lt;","&gt;"), $place['myplace']) . "</a> (".$place['placecount'].")" : $place['myplace'];
                 $thePlaces[] = array('rank'=> $count, 'name'=>$name, 'count'=> $place['placecount'], 'link'=>$searchlink);
 		        $count++;
             }
@@ -207,6 +207,7 @@ function TNGz_user_view()
         $saved_fetch_mode= &$TNG_conn->SetFetchMode($saved_fetch_mode);
         $TNG_conn->Close();
         
+        // Need to clean this up and put in lang files
         $text['placetitle']    = "Top Locations and Places";
         $text['topplaces']     = "Top Places";
         $text['totalplaces']   = "Total Places";
@@ -224,6 +225,91 @@ function TNGz_user_view()
         $pnRender->assign('places'   , $thePlaces);
         $pnRender->assign('text'     , $text);
         return $pnRender->fetch('TNGz_user_view_places.htm');
+    }
+    
+    if ($item == "surnames" ) {
+
+        $default_top = 100;
+        $top  = FormUtil::getPassedValue('top', $default_top, 'GET');
+        $top  = (is_numeric($top) && $top > 0)? intval($top) : $default_top;
+
+        // First get all unique surnames
+        $query = "SELECT ucase( $binary TRIM(CONCAT_WS(' ',lnprefix,lastname) ) ) as surnameuc, TRIM(CONCAT_WS(' ',lnprefix,lastname) ) as surname, count( ucase($binary lastname ) ) as count FROM $people_table WHERE lastname<>'' GROUP BY surname ORDER by count DESC ";
+        $saved_fetch_mode = &$TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
+        if (!$result = &$TNG_conn->Execute($query) ) {
+            return pnVarPrepHTMLDisplay("Failed the TNG query");
+        }
+
+        $SurnameCount = $result->RecordCount();
+        $name         = $result->fields;       // Look at first record, since already sorted by Surname Count
+        $SurnameMax   = $name['count'];        // First record should have the most
+        $SurnameRank  = array();
+        for ($rank=1; !$result->EOF && $rank<=$top; $result->MoveNext(), $rank++) {
+            $name = $result->fields;
+            $name['surname']   = urlencode($name['surname']);
+            $name['surnameuc'] = urlencode($name['surnameuc']);            
+            $name['rank']      = $rank;
+            // Now assign a class to each surname based upon relative number to most used surname
+            $percent = 100 * $name['count'] / $SurnameMax;
+            if ($percent > 98) {
+                $class = 1;
+            } else if ($percent > 70) {
+                $class = 2;
+            } else if ($percent > 50) {
+                $class = 3;
+            } else if ($percent > 30) {
+                $class = 4;
+            } else if ($percent > 25) {
+                $class = 5;
+            } else if ($percent > 20) {
+                $class = 6;
+            } else if ($percent > 15) {
+                $class = 7;
+            } else if ($percent > 10) {
+                $class = 8;
+            } else if ($percent > 5 ) {
+                $class = 9;
+            } else {
+                $class = 0;
+            }
+            $name['class'] = $class;
+            
+            $SurnameRank[]  = $name;
+        }
+        
+        // Now get a array $SurnameAlpha sorted on the upper case surname
+        $SurnameAlpha = $SurnameRank;
+        foreach ($SurnameAlpha as $key => $row) {
+            $surname[$key]  = $row['surnameuc'];
+        }
+        array_multisort($surname, SORT_ASC, $SurnameAlpha);
+
+        // Clean up
+        $saved_fetch_mode= &$TNG_conn->SetFetchMode($saved_fetch_mode);
+        $TNG_conn->Close();
+
+        // Need to clean this up and put in lang files
+        $text['surnametitle']    = "Top Surnames";
+        $text['top']             = "Top";
+        $text['surnames']        = "Surnames";
+        $text['outof']           = "out of";
+        $text['totalsurnames']   = "Total Unique Surnames";
+        $text['showtop']         = "Show top";
+        $text['byoccurrence']    = "ordered by occurrence";
+        $text['sortedalpha']     = "sorted alphabetically";
+        $text['mainsurnamepage'] = "Main surname listing page";
+        $text['go']              = "Go";
+
+        $pnTNGmodinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
+
+        $pnRender =& new pnRender('TNGz');
+        $pnRender->assign('TNGzVersion'  , $pnTNGmodinfo['version'] );
+        $pnRender->assign('top'          , $top);
+        $pnRender->assign('SurnameCount' , $SurnameCount);
+        $pnRender->assign('SurnameRank'  , $SurnameRank);
+        $pnRender->assign('SurnameAlpha' , $SurnameAlpha);
+        $pnRender->assign('text'         , $text);
+        return $pnRender->fetch('TNGz_user_view_surnames.htm');
     }
 
 }
