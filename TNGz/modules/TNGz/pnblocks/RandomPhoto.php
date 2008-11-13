@@ -244,14 +244,17 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
         $TNG_conn->Close();
     }
 
-    // Create output object
-	// Note that for a block the corresponding module must be passed.
-	$pnRender =& new pnRender('TNGz');
+    // Can turn off caching by using the following
+    if ( $vars['usecache'] == 0 ) {
+    	$zcaching = false;
+    } else {
+    	$zcaching = true;
+    }
 
-	// Can turn off caching by using the following
-//    if ( $vars['usecache'] == 0 ) {
-//	    $pnRender->caching = false;
-//    }
+    // Create output object
+    // Note that for a block the corresponding module must be passed.
+
+    $pnRender = pnRender::getInstance('TNGz', $zcaching);
 
     $pnRender->assign('photo_ref'        , $photo_ref);
     $pnRender->assign('photo_description', $photo_description);
