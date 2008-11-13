@@ -268,8 +268,8 @@ function TNGz_WhatsNewblock_display($blockinfo)
                                           'description' => "border='0'"));
 
                     $temp  = pnModAPIFunc('TNGz','user','MakeRef',
-                                                array('func'        => "photo",
-                                                      'photoID'     => $mediaID,
+                                                array('func'        => "showmedia",
+                                                      'mediaID'     => $mediaID,
                                                       'description' => $temp1,
                                                       'RefType'     => $TNGstyle
                                                       ));
