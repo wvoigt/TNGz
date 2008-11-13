@@ -1,16 +1,16 @@
 <!--[*  $Id$  *]-->
-<div style="text-align:left;">
+<div>
 
 <!--[if $thisdayerror ]-->
-    <div style="text-align:left;"><!--[$thisdayerror]--><br /></div>
+    <div><!--[$thisdayerror]--><br /></div>
 <!--[/if]-->
 
 <!--[if $showdate ]-->
-    <div style="text-align:center;"><strong><!--[$todaytime|pndate_format:"%d %b %Y"]--></strong><br /></div>
+    <h3><!--[$todaytime|pndate_format:"%d %b %Y"]--></h3>
 <!--[/if]-->
 
 <!--[if $showbirth ]-->
-    <div style="text-align:center;"><strong><!--[pnml name="_BIRTH"|pnvarprephtmldisplay]--></strong><br /></div>
+    <h4><!--[pnml name="_BIRTH"|pnvarprephtmldisplay]--></h4>
     <!--[if $birth ]-->
         <ul>
         <!--[foreach item=item from=$birth]-->
@@ -18,46 +18,43 @@
         <!--[/foreach]-->
         </ul>
     <!--[else]-->
-    <div style="text-align:center;"><!--[pnml name="_NONETNG"|pnvarprephtmldisplay]--><br /></div>   
+    <div style="text-align:center;"><!--[pnml name="_NONETNG"|pnvarprephtmldisplay]--><br /></div>
     <!--[/if]-->
     <br />
 <!--[/if]-->
 
 <!--[if $showmarriage ]-->
-    <div style="text-align:center;"><strong><!--[pnml name="_MARRIAGE"|pnvarprephtmldisplay]--></strong><br /></div>
+    <h4><!--[pnml name="_MARRIAGE"|pnvarprephtmldisplay]--></h4>
     <!--[if $marriage ]-->
         <ul>
         <!--[foreach item=item from=$marriage]-->
         <li><!--[$item]--></li>
         <!--[/foreach]-->
-        </ul>        
+        </ul>
     <!--[else]-->
-    <div style="text-align:center;"><!--[pnml name="_NONETNG"|pnvarprephtmldisplay]--><br /></div>   
+    <div style="text-align:center;"><!--[pnml name="_NONETNG"|pnvarprephtmldisplay]--><br /></div>
     <!--[/if]-->
-    <br />    
+    <br />
 <!--[/if]-->
 
 <!--[if $showdeath ]-->
-    <div style="text-align:center;"><strong><!--[pnml name="_DEATH"|pnvarprephtmldisplay]--></strong><br /></div>
+    <h4><!--[pnml name="_DEATH"|pnvarprephtmldisplay]--></h4>
     <!--[if $death ]-->
         <ul>
         <!--[foreach item=item from=$death]-->
         <li><!--[$item]--></li>
         <!--[/foreach]-->
-        </ul>        
+        </ul>
     <!--[else]-->
-    <div style="text-align:center;"><!--[pnml name="_NONETNG"|pnvarprephtmldisplay]--><br /></div>   
+    <div style="text-align:center;"><!--[pnml name="_NONETNG"|pnvarprephtmldisplay]--><br /></div>
     <!--[/if]-->
-    <br />    
+    <br />
 <!--[/if]-->
 
 <!--[if $showwiki ]-->
-     <div style="text-align:center;"><strong><br />
-     <A href="http://www.wikipedia.org/wiki/<!--[$todaytime|pndate_format:"%B_%d"]-->" target="new"><!--[pnml name="_WIKITODAY"|pnvarprephtmldisplay]--></A>
-     </strong>
-     </div>
+     <h3><a href="http://www.wikipedia.org/wiki/<!--[$todaytime|pndate_format:"%B_%d"]-->" target="_blank"><!--[pnml name="_WIKITODAY"|pnvarprephtmldisplay]--></a></h3>
 <!--[/if]-->
 
-<div style="text-align:center;"><strong><br /><!--[$mainmenu]--></strong><br /></div>   
+<p><strong><!--[$mainmenu]--></strong></p>
 
 </div>
