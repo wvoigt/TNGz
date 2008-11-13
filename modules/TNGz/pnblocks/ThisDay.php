@@ -363,14 +363,17 @@ function TNGz_ThisDayblock_display($blockinfo)
         $TNG_conn->Close();
     }
 
-    // Create output object
-	// Note that for a block the corresponding module must be passed.
-	$pnRender =& new pnRender('TNGz');
+    // Can turn off caching by using the following
+    if ( $vars['usecache'] == 0 ) {
+    	$zcaching = false;
+    } else {
+    	$zcaching = true;
+    }
 
-	// Can turn off caching by using the following
-//    if ( $vars['usecache'] == 0 ) {
-	    $pnRender->caching = false;
-//    }
+    // Create output object
+    // Note that for a block the corresponding module must be passed.
+
+    $pnRender = pnRender::getInstance('TNGz', $zcaching);
 
     $pnRender->assign('todaytime'    , $thisday_time);
     $pnRender->assign('showdate'     , $thisday_showdate);

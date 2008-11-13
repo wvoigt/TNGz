@@ -262,14 +262,17 @@ function TNGz_MostWantedblock_display($blockinfo)
         $MostWantedMenuLink="";
     }
 
-    // Create output object
-	// Note that for a block the corresponding module must be passed.
-	$pnRender =& new pnRender('TNGz');
+    // Can turn off caching by using the following
+    if ( $vars['usecache'] == 0 ) {
+    	$zcaching = false;
+    } else {
+    	$zcaching = true;
+    }
 
-	// Can turn off caching by using the following
-//    if ( $vars['usecache'] == 0 ) {
-	    $pnRender->caching = false;
-//    }
+    // Create output object
+    // Note that for a block the corresponding module must be passed.
+
+    $pnRender = pnRender::getInstance('TNGz', $zcaching);
 
     $pnRender->assign('WantedText',         $vars['wantedtext']);
     $pnRender->assign('WantedPeopleLabel',  $vars['wantedpeoplelabel']);
