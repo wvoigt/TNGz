@@ -63,9 +63,9 @@ function TNGz_userapi_ShowPage($args){
     //////////////////////////////////////////////////////
     // Language Settings
     //////////////////////////////////////////////////////
-    $languages = array( 
+    $languages = array(
     // Zikula => TNG
-        'deu' => 'German',                        
+        'deu' => 'German',
         'fra' => 'French',
         'pol' => 'Polish',
         'ita' => 'Italian',
@@ -88,7 +88,7 @@ function TNGz_userapi_ShowPage($args){
 //      'xxx' => 'PortugueseBR,
 //      'xxx' => 'French-UTF8',
 //      'xxx' => 'German-UTF8',
-        'eng' => 'English'                       
+        'eng' => 'English'
     );
 
     $newlanguage = false; // default to use language setting from TNG
@@ -101,7 +101,7 @@ function TNGz_userapi_ShowPage($args){
             $newlanguage = $languages[$zikulalang];
         }
     }
-    
+
     //////////////////////////////////////////////////////
     // Get the TNG configuration information
     //////////////////////////////////////////////////////
@@ -120,16 +120,20 @@ function TNGz_userapi_ShowPage($args){
 
     // Now that TNG config file is loaded, update the cms parameters (which at one time was in customconfig.php)
     $cms[auto]       = true;
-    $cms[TNGz]       = 1; 
+    $cms[TNGz]       = 1;
     $cms[support]    = "zikula";
-    $cms[module]     = "TNGz";    
-    $cms[url]        = _TNGZ_PREFIX;    
+    $cms[module]     = "TNGz";
+    //$cms[url]        = _TNGZ_PREFIX;
+    // using pnModURL
+    $cms[url]        = pnModURL('TNGz','user','main')."&amp;show";
     $cms[tngpath]    = $TNG['directory']. "/";
-    $cms[adminurl]   = "index.php?module=TNGz&func=admin";
+    //$cms[adminurl]   = "index.php?module=TNGz&func=admin";
+    // using pnModURL
+    $cms[adminurl]        = pnModURL('TNGz','admin','TNGadmin');
     $cms[noend]      = true; // Tell TNG to not include end.php file
     $cms[cloaklogin] = "Yes";
     $cms[credits]    = "<!-- TNGz --><br />";
-    
+
     // Fix up file paths to look in the right place
     $homepage = ($dot = strrchr($homepage, '.')) ? substr($homepage, 0, -strlen($dot)): $homepage;// strip .php or .html
     $rootpath        = $TNG['SitePath'] . "/";                     // Overwrite setting from TNG configuration
@@ -144,7 +148,7 @@ function TNGz_userapi_ShowPage($args){
     $photopath       = $cms[tngpath] . $photopath ;
     $logname         = $cms[tngpath] . $logname ;
 
-    
+
     // Now fix Zikula's $register_globals=off code for TNG
     // NOTE: Is this still needed?
     $register_globals = (bool) ini_get('register_globals');
@@ -152,7 +156,7 @@ function TNGz_userapi_ShowPage($args){
         $the_globals = $_SERVER + $_ENV + $_GET +$_POST;
         if( $the_globals && is_array( $the_globals ) ) {
             foreach( $the_globals as $key=>$value ) {
-                if($key == 'cms' || $key == 'lang' || $key == 'mylanguage') die("sorry!");               
+                if($key == 'cms' || $key == 'lang' || $key == 'mylanguage') die("sorry!");
                 ${$key} = $value;
             }
         }
@@ -290,14 +294,14 @@ function TNGz_userapi_ShowPage($args){
     } elseif ($TNGemail == "E" ) {
         $TNGoutput = pnModAPIFunc('TNGz','user','CleanEmail', array('source' => $TNGoutput, 'mode' => 'both', 'text2link' => false ));
     }
-    
+
     // Short URL Filter
     $shorturls     = pnConfigGetVar('shorturls');
     $shorturlstype = pnConfigGetVar('shorturlstype');
     if ($shorturls && $shorturlstype == 0 && false) {  // This has problems, so disable for now
         $TNGoutput = preg_replace_callback( "/(\s+href\s*=\s*[\"\'])(.*)([\"\'])/iU", "TNGz_userapi_ShortURLencode", $TNGoutput);
     }
-  
+
     // Get Title information to add to Zikula title
     if (preg_match("/<meta name=\"Keywords\" content=\"(.+)\"/", $TNGoutput, $tng_title) ){
         $GLOBALS['info']['title'] = $tng_title[1];
@@ -307,7 +311,7 @@ function TNGz_userapi_ShowPage($args){
     // First set up the changes
     // Remove TNG <title> tag.  Each page should only have one and Zikula provides.
     $patterns[0]     = "/<title>(.*)<\/title>/i";
-    $replacements[0] = "\n<!-- $0 -->\n";
+    $replacements[0] = "<!-- $0 -->\n";
     // Remove the <meta> tags.  TNG's not in the right place and do not add much new informaiton
     $patterns[1]     = "/<meta (.*)>/i";
     $replacements[1] = "<!-- $0 -->\n";
@@ -316,13 +320,13 @@ function TNGz_userapi_ShowPage($args){
     $replacements[2] = "<!-- $0 -->\n";
     // Remove TNG javascripts and load files into head (also using Zikula versions).
     $patterns[3]     = "/<script(.*)prototype.js(.*)<\/script>/i";
-    $replacements[3] = "\n<!-- $0 -->\n";
+    $replacements[3] = "<!-- $0 -->\n";
     $patterns[4]     = "/<script(.*)scriptaculous.js(.*)<\/script>/i";
-    $replacements[4] = "\n<!-- $0 -->\n";
+    $replacements[4] = "<!-- $0 -->\n";
     $patterns[5]     = "/<script(.*)net.js(.*)<\/script>/i";
-    $replacements[5] = "\n<!-- $0 -->\n";
+    $replacements[5] = "<!-- $0 -->\n";
     $patterns[6]     = "/<script(.*)litbox.js(.*)<\/script>/i";
-    $replacements[6] = "\n<!-- $0 -->\n";
+    $replacements[6] = "<!-- $0 -->\n";
 
     PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/net.js');
     PageUtil::AddVar('javascript', 'javascript/ajax/prototype.js');
@@ -878,13 +882,13 @@ function TNGz_userapi_MakeRef($args) {
 
     $prog = (isset($args['func'])) ? $args['func'] : false ;
     unset($args['func']);
-    
+
     $tree = (isset($args['tree'])) ? $args['tree'] : false ;
     unset($args['tree']);
     if ($tree) {
 	    $args = array_merge(array("tree"=>$tree),$args); // move to the front (so comes out first)
     }
-    
+
     if ( $prog ) {
         $func = 'main';
 	    $args = array_merge(array("show"=>$prog),$args); // add show to the front (so comes out first)
@@ -894,7 +898,7 @@ function TNGz_userapi_MakeRef($args) {
     }
 
     $ref = pnModURL('TNGz', 'user', $func, $args);
-    
+
     if ($url){
         return $ref;
     } else {
@@ -958,7 +962,7 @@ function TNGz_userapi_getRecords($args) {
     }
     if ( ($kind != "people") && ($kind != "family")) {
         return(false);
-    }  
+    }
 
     $limit = true;      // first assume number of records returned are limited unless found otherwise.
     // Check out $start
@@ -971,7 +975,7 @@ function TNGz_userapi_getRecords($args) {
     } else {
         $start = intval($start);
     }
-    
+
     // Check out $count
     if (!isset($count)) {
         $limit = false;    // No starting value given
@@ -983,7 +987,7 @@ function TNGz_userapi_getRecords($args) {
         $count = intval($count);
     }
     // $limit is still true only if $start and $count are valid
-    
+
     // Now go get the informaiton
     $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
 
@@ -1005,7 +1009,7 @@ function TNGz_userapi_getRecords($args) {
     }
     if ($limit) {
         $query  .= " LIMIT ". $start . ", " . $count;
-	
+
     }
 
     if (!$result = &$TNG_conn->Execute($query) ) {
@@ -1029,7 +1033,7 @@ function TNGz_userapi_getRecords($args) {
 //
 function TNGz_userapi_getRecordsCount($args) {
     extract($args);
-    
+
     $MaxPerMap = 2000; // Maximum number of records to return in a sitemap.
                        // If there are more records, then a sitemapindex file will need to be generated.
                        // * Must be less than 50,000, but fewer is faster.
@@ -1040,9 +1044,9 @@ function TNGz_userapi_getRecordsCount($args) {
                        // * It also creates a single sitemap file for those TNG databases that have
                        //   less than 2000 records to return (People + Families).
                        // * If find value needs to change a lot, then can make a administration setting.
-    
+
     $facts = array();
-    
+
     $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
 
     // Check to be sure we can get to the TNG information
@@ -1064,7 +1068,7 @@ function TNGz_userapi_getRecordsCount($args) {
     if($result->RecordCount()>0) {
         list( $facts['people'] ) = $result->fields;
     }
-    
+
     $query  =  "SELECT count(id) as pcount FROM $families_table";
     if (!$result = &$TNG_conn->Execute($query) ) {
         return(false);
@@ -1072,10 +1076,10 @@ function TNGz_userapi_getRecordsCount($args) {
     if($result->RecordCount()>0) {
         list( $facts['family'] ) = $result->fields;
     }
-    
+
     $facts['total'] = $facts['people'] + $facts['family'];
     $facts['sitemapindex'] = false;
-    
+
     if ($facts['total']>$MaxPerMap){
         $sitemaps = array();
         for($i=0; $i < $facts['people']; $i+= $MaxPerMap) {
@@ -1084,8 +1088,8 @@ function TNGz_userapi_getRecordsCount($args) {
         for($i=0; $i < $facts['family']; $i+= $MaxPerMap) {
             $sitemaps[] = array( 'map' => 'family', 'start' => $i, 'count' => $MaxPerMap);
         }
-        $facts['sitemapindex'] = $sitemaps;       
-    }   
+        $facts['sitemapindex'] = $sitemaps;
+    }
 
     return($facts);
 }
@@ -1106,7 +1110,7 @@ function TNGz_userapi_ShortURLencode($matches) {
     }
     list($prog, $params) = split('\?', $matches[2], 2);
     $pairs = explode('&', html_entity_decode(urldecode($params)));
-    
+
     $args=array();
     foreach ($pairs as $pair) {
         $x = explode('=', $pair);
@@ -1143,14 +1147,14 @@ function TNGz_userapi_encodeurl($args)
     if ($args['func'] == 'main') {
         $args['func'] = '';
     }
-    
+
     // create an empty string to start
     $vars = '';
 
     // Start with 'show' value if it is set
     if ( isset($args['args']['show'])) {
         $vars = $args['args']['show'];
-        unset($args['args']['show']);       
+        unset($args['args']['show']);
     }
 
     // Next if it is there, show the tree
