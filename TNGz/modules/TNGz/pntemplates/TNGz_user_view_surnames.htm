@@ -1,12 +1,12 @@
 <!--[*  $Id$  *]-->
-<h2><!--[ $top ]-->&nbsp;<!--[ $text.surnametitle ]--> </h2>
+<h2><!--[ $top ]-->&nbsp;<!--[ pnml name="_TNGZ_SURNAMETITLE" ]--> </h2>
 
 <!--[* Surname Word Cloud *]-->
 <!--[if $SurnameAlpha ]-->
 <div class='wordcloud'>
-    <!--[section name=element loop=$SurnameAlpha]-->
-        <span class='wordcloud size<!--[$SurnameAlpha[element].class]-->'><a class='wordcloud size<!--[$SurnameAlpha[element].class]-->' href="<!--[pnmodurl modname=TNGz show=search mylastname=$SurnameAlpha[element].surnameuc mybool=AND  ]-->"><!--[$SurnameAlpha[element].surname]--></a></span>
-    <!--[/section]-->
+	<!--[section name=element loop=$SurnameAlpha]-->
+	<span class='wordcloud size<!--[$SurnameAlpha[element].class]-->'><a class='wordcloud size<!--[$SurnameAlpha[element].class]-->' href="<!--[pnmodurl modname=TNGz show=search mylastname=$SurnameAlpha[element].surnameuc mybool=AND  ]-->"><!--[$SurnameAlpha[element].surname]--></a></span>
+	<!--[/section]-->
 </div>
 <!--[/if]-->
 
@@ -15,49 +15,49 @@
 <!--[* Surname Listing *]-->
 <!--[if $SurnameRank ]-->
 <div>
-    <div style="text-align:center;">
-    <!--[ $text.top ]--> <!--[ $top ]--> <!--[ $text.surnames ]--> <!--[ $text.outof ]--> <!--[ $SurnameCount ]--> <!--[ $text.totalsurnames ]-->
-    </div>
+	<div style="text-align:center;">
+		<!--[ pnml name="_TNGZ_TOP" ]--> <!--[ $top ]--> <!--[ pnml name="_TNGZ_SURNAMES" ]--> <!--[ pnml name="_TNGZ_OUTOF" ]--> <!--[ $SurnameCount ]--> <!--[ pnml name="_TNGZ_TOTALSURNAMES" ]-->
+	</div>
 
-    <!--[* $numCols is the number of columns *]-->
-    <!--[assign var="numCols" value="5"]-->
-    <table>
-        <tr>
-        <!--[assign var="col" value="0"]-->
-        <!--[section name=element loop=$SurnameRank]-->
-            <!--[if $col == $numCols]-->
-                </tr>
-	        <tr><!--[assign var="col" value="0"]-->
-            <!--[/if]-->
-            <td><!--[$SurnameRank[element].rank|string_format:"%2s"]-->. <a href="<!--[pnmodurl modname=TNGz show=search mylastname=$SurnameRank[element].surnameuc mybool=AND  ]-->"><!--[$SurnameRank[element].surname]--></a> (<!--[$SurnameRank[element].count]-->)</td>
-            <!--[assign var="col" value="`$col+1`"]-->
-        <!--[/section]-->
-        <!--[assign var="remainder" value="`$numCols-$col`"]-->
-        <!--[section name=emptyElement loop=$remainder]-->
-            <td>&nbsp;</td>
-        <!--[/section]-->
-        </tr>
-    </table>
+	<!--[* $numCols is the number of columns *]-->
+	<!--[assign var="numCols" value="5"]-->
+	<table>
+		<tr>
+			<!--[assign var="col" value="0"]-->
+			<!--[section name=element loop=$SurnameRank]-->
+			<!--[if $col == $numCols]-->
+		</tr>
+		<tr><!--[assign var="col" value="0"]-->
+			<!--[/if]-->
+			<td><!--[$SurnameRank[element].rank|string_format:"%2s"]-->. <a href="<!--[pnmodurl modname=TNGz show=search mylastname=$SurnameRank[element].surnameuc mybool=AND  ]-->"><!--[$SurnameRank[element].surname]--></a> (<!--[$SurnameRank[element].count]-->)</td>
+			<!--[assign var="col" value="`$col+1`"]-->
+			<!--[/section]-->
+			<!--[assign var="remainder" value="`$numCols-$col`"]-->
+			<!--[section name=emptyElement loop=$remainder]-->
+			<td>&nbsp;</td>
+			<!--[/section]-->
+		</tr>
+	</table>
 </div>
 <!--[/if]-->
 
 <!--[* Surname Links elsewhere *]-->
 <div>
-        <form style="margin:0px" action="index.php" method="post">
-        <input type="hidden" name="module" value="TNGz" />
-        <input type="hidden" name="func"   value="main" />
-        <input type="hidden" name="show"   value="surnames100" />
-        <!--[ $text.showtop ]-->
-	<input type="text" name="topnum" value="100" size="3" maxlength="3" /><!--[ $text.byoccurrence ]-->
-	<input type="submit" value="<!--[$text.go ]-->" />
-        </form>
+	<form style="margin:0px" action="index.php" method="post">
+		<input type="hidden" name="module" value="TNGz" />
+		<input type="hidden" name="func"   value="main" />
+		<input type="hidden" name="show"   value="surnames" />
+		<!--[ pnml name="_TNGZ_SHOWTOP" ]-->
+		<input type="text" name="topnum" value="100" size="3" maxlength="3" /><!--[ pnml name="_TNGZ_BYOCCURRENCE" ]-->
+		<input type="submit" value="<!--[ pnml name="_TNGZ_GO" ]-->" />
+	</form>
 </div>
 
 <div>
-    <a href="<!--[pnmodurl fqurl=true modname=TNGz show=surnames-all ]-->"><!--$text.showallsurnames ]--></a><!--$text.sortedalpha ]-->
+	<a href="<!--[pnmodurl fqurl=true modname=TNGz show=surnames-all ]-->"><!--[ pnml name="_TNGZ_SHOWALLSURNAMES" ]--></a><!--[ pnml name="_TNGZ_SORTEDALPHA" ]-->
 </div>
 
 <div>
-    <a href="<!--[pnmodurl fqurl=true modname=TNGz show=surnames ]-->"><!--[$text.mainsurnamepage ]--></a>
+	<a href="<!--[pnmodurl fqurl=true modname=TNGz show=surnames ]-->"><!--[ pnml name="_TNGZ_MAINSURNAMESPAGE" ]--></a>
 </div>
 
