@@ -207,23 +207,11 @@ function TNGz_user_view()
         $saved_fetch_mode= &$TNG_conn->SetFetchMode($saved_fetch_mode);
         $TNG_conn->Close();
 
-        // Need to clean this up and put in lang files
-        $text['placetitle']    = "Top Locations and Places";
-        $text['topplaces']     = "Top Places";
-        $text['totalplaces']   = "Total Places";
-        $text['showtop']       = "Show top";
-        $text['byoccurrence']  = "ordered by occurrence";
-        $text['sortedalpha']   = "sorted alphabetically";
-        $text['mainplacepage'] = "Main place listing page";
-        $text['go']            = "Go";
-
-
         $pnTNGmodinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
 
         $pnRender =& new pnRender('TNGz');
         $pnRender->assign('TNGzVersion'  , $pnTNGmodinfo['version'] );
         $pnRender->assign('places'   , $thePlaces);
-        $pnRender->assign('text'     , $text);
         return $pnRender->fetch('TNGz_user_view_places.htm');
     }
 
@@ -288,18 +276,6 @@ function TNGz_user_view()
         $saved_fetch_mode= &$TNG_conn->SetFetchMode($saved_fetch_mode);
         $TNG_conn->Close();
 
-        // Need to clean this up and put in lang files
-        $text['surnametitle']    = "Top Surnames";
-        $text['top']             = "Top";
-        $text['surnames']        = "Surnames";
-        $text['outof']           = "out of";
-        $text['totalsurnames']   = "Total Unique Surnames";
-        $text['showtop']         = "Show top";
-        $text['byoccurrence']    = "ordered by occurrence";
-        $text['sortedalpha']     = "sorted alphabetically";
-        $text['mainsurnamepage'] = "Main surname listing page";
-        $text['go']              = "Go";
-
         $pnTNGmodinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
 
         $pnRender =& new pnRender('TNGz');
@@ -308,7 +284,6 @@ function TNGz_user_view()
         $pnRender->assign('SurnameCount' , $SurnameCount);
         $pnRender->assign('SurnameRank'  , $SurnameRank);
         $pnRender->assign('SurnameAlpha' , $SurnameAlpha);
-        $pnRender->assign('text'         , $text);
         return $pnRender->fetch('TNGz_user_view_surnames.htm');
     }
 
