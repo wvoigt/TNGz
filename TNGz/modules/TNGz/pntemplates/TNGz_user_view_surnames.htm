@@ -1,5 +1,4 @@
 <!--[*  $Id$  *]-->
-<div id="tngz" style="position:relative; width:99%;">
 <h2><!--[ $top ]-->&nbsp;<!--[ $text.surnametitle ]--> </h2>
 
 <!--[* Surname Word Cloud *]-->
@@ -8,7 +7,7 @@
     <!--[section name=element loop=$SurnameAlpha]-->
         <span class='wordcloud size<!--[$SurnameAlpha[element].class]-->'><a class='wordcloud size<!--[$SurnameAlpha[element].class]-->' href="<!--[pnmodurl modname=TNGz show=search mylastname=$SurnameAlpha[element].surnameuc mybool=AND  ]-->"><!--[$SurnameAlpha[element].surname]--></a></span>
     <!--[/section]-->
-</div>    
+</div>
 <!--[/if]-->
 
 <br/>
@@ -19,7 +18,7 @@
     <div style="text-align:center;">
     <!--[ $text.top ]--> <!--[ $top ]--> <!--[ $text.surnames ]--> <!--[ $text.outof ]--> <!--[ $SurnameCount ]--> <!--[ $text.totalsurnames ]-->
     </div>
-    
+
     <!--[* $numCols is the number of columns *]-->
     <!--[assign var="numCols" value="5"]-->
     <table>
@@ -46,14 +45,14 @@
 <div>
         <form style="margin:0px" action="index.php" method="post">
         <input type="hidden" name="module" value="TNGz" />
-        <input type="hidden" name="func"   value="main" />	
+        <input type="hidden" name="func"   value="main" />
         <input type="hidden" name="show"   value="surnames100" />
         <!--[ $text.showtop ]-->
 	<input type="text" name="topnum" value="100" size="3" maxlength="3" /><!--[ $text.byoccurrence ]-->
 	<input type="submit" value="<!--[$text.go ]-->" />
         </form>
-</div>    
-    
+</div>
+
 <div>
     <a href="<!--[pnmodurl fqurl=true modname=TNGz show=surnames-all ]-->"><!--$text.showallsurnames ]--></a><!--$text.sortedalpha ]-->
 </div>
