@@ -11,8 +11,6 @@
  * @package    Content
  * @subpackage TNGz
  */
- * @version
- */
 
 function TNGz_RandomPhotoblock_info()
 {
