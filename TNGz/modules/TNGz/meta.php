@@ -1,18 +1,15 @@
 <?php
-
 /**
  * Zikula Application Framework
  *
- * @copyright (c) 2001, Zikula Development Team
- * @link http://www.zikula.org
- * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- *
- * @package TNGz
- * @url http://code.zikula.org/tngz
- * @license http://www.gnu.org/copyleft/gpl.html
- *
- * @author Wendel Voigt
- * @version $Id$
+ * @copyright  (c) Zikula Development Team
+ * @link       http://www.zikula.org
+ * @version    $Id$
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @author     Wendel Voigt
+ * @category   Zikula_Extension
+ * @package    Content
+ * @subpackage TNGz
  */
 
 $TNGstyle         = "genstyle.css";
@@ -23,27 +20,35 @@ $TNGtemplatestyle = "templatestyle.css";
 // Look for css in the current Theme directory
 $CurrentTheme =  pnVarPrepForOs( pnUserGetTheme() );
 
-if( file_exists( "themes/$CurrentTheme/style/genstyle.css" ) ) {
+if( file_exists( "themes/$CurrentTheme/style/genstyle.css" ) )
+{
     $TNGstyle = "themes/$CurrentTheme/style/genstyle.css";
-} else {
+} else
+{
     $TNGstyle = $cms[tngpath]."genstyle.css";
 }
 
-if( file_exists( "themes/$CurrentTheme/style/tngrss.css" ) ) {
+if( file_exists( "themes/$CurrentTheme/style/tngrss.css" ) )
+{
     $TNGrss = "themes/$CurrentTheme/style/tngrss.css";
-} else {
+} else
+{
     $TNGrss = $cms[tngpath]."tngrss.php";
 }
 
-if( file_exists( "themes/$CurrentTheme/style/mytngstyle.css" ) ) {
+if( file_exists( "themes/$CurrentTheme/style/mytngstyle.css" ) )
+{
     $TNGmystyle = "themes/$CurrentTheme/style/mytngstyle.css";
-} else {
+} else
+{
     $TNGmystyle = $cms[tngpath]."mytngstyle.css";
 }
 
-if( file_exists( "themes/$CurrentTheme/style/templatestyle.css" ) ) {
+if( file_exists( "themes/$CurrentTheme/style/templatestyle.css" ) )
+{
     $TNGtemplatestyle = "themes/$CurrentTheme/style/templatestyle.css";
-} else {
+} else
+{
     $TNGtemplatestyle = $cms[tngpath]."templatestyle.css";
 }
 
