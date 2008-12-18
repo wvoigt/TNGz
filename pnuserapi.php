@@ -41,7 +41,6 @@ function TNGz_userapi_GetTNGpaths()
     return $TNG;
 }
 
-
 function TNGz_userapi_ShowPage($args)
 {
 
@@ -700,7 +699,8 @@ function TNGz_userapi_ModifyCreateUser()
 // $text2link = true  to make plain text emails into mailto links
 // $text2link = false to just encode text emails without making into mailto links
 //-----------------------------------------------------------------------
-function TNGz_userapi_CleanEmail($args) {
+function TNGz_userapi_CleanEmail($args)
+{
     // Arguments
     $source     = (isset($args['source']))    ? $args['source']    : "";
     $mode       = (isset($args['mode']))      ? $args['mode']      : 'both';
@@ -1062,7 +1062,8 @@ function TNGz_userapi_PhotoRef($args)
 }
 
 
-function TNGz_userapi_getRecords($args) {
+function TNGz_userapi_getRecords($args)
+{
     extract($args);
 
     // check out $kind
@@ -1159,7 +1160,8 @@ function TNGz_userapi_getRecords($args) {
 }
 
 //
-function TNGz_userapi_getRecordsCount($args) {
+function TNGz_userapi_getRecordsCount($args)
+{
     extract($args);
 
     $MaxPerMap = 2000;  // Maximum number of records to return in a sitemap.

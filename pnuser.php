@@ -27,27 +27,28 @@ function TNGz_user_main()
 
     switch ($TNGpage)
     {
-	    case 'gedcom':
-	    case 'addbookmark':
-	    case 'findperson':
-	    case 'findpersonform':
-	    case 'tngrss':
-	    case 'tnghelp':
-	    case 'tentedit':
-	    case 'pedxml':
-	    case 'showmediaxml':
+        case 'gedcom':
+        case 'addbookmark':
+        case 'findperson':
+        case 'findpersonform':
+        case 'tngrss':
+        case 'tnghelp':
+        case 'tentedit':
+        case 'pedxml':
+        case 'showmediaxml':
         case 'smallimage':
-	    case 'pdfform':
-	    case 'rpt_descend':
-	    case 'rpt_ind':
-	    case 'rpt_pedigree':
-                  // for these, just give the output, with no extra stuff wrapped around it
-                  $TNGrenderpage = false;
-	              break;
-	    default:
-	              // Everything else can be wrapped as usual
-                  $TNGrenderpage = true;
-	    break;
+        case 'pdfform':
+        case 'rpt_descend':
+        case 'rpt_ind':
+        case 'rpt_pedigree':
+                // for these, just give the output, with no extra stuff wrapped around it
+                $TNGrenderpage = false;
+                break;
+        default:
+
+        // Everything else can be wrapped as usual
+        $TNGrenderpage = true;
+        break;
     }
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => $TNGpage, 'render' => $TNGrenderpage ));
 }
@@ -124,19 +125,19 @@ function TNGz_user_sitemap()
     switch ($map)
     {
         case 'people':
-	              $records[] = array('type' => 'people', 'start' => $start, 'count' => $count );
-		          $all_site = false;
-	              break;
- 	    case 'family':
-	              $records[] = array('type' => 'family', 'start' => $start, 'count' => $count );
-		          $all_site = false;
-		          break;
+                $records[] = array('type' => 'people', 'start' => $start, 'count' => $count );
+                $all_site = false;
+                break;
+        case 'family':
+                $records[] = array('type' => 'family', 'start' => $start, 'count' => $count );
+                $all_site = false;
+                break;
         case 'all':
-	    default:
-	              $records[] = array('type' => 'people', 'start' => $none, 'count' => $none );
-	              $records[] = array('type' => 'family', 'start' => $none, 'count' => $none );
-		          $all_site = true;
-		          break;
+        default:
+                $records[] = array('type' => 'people', 'start' => $none, 'count' => $none );
+                $records[] = array('type' => 'family', 'start' => $none, 'count' => $none );
+                $all_site = true;
+                break;
     }
 
     if ($all_site)
