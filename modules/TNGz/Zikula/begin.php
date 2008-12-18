@@ -2,16 +2,15 @@
 /**
  * Zikula Application Framework
  *
- * @copyright (c) 2001, Zikula Development Team
- * @link http://www.zikula.org
- * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @copyright  (c) Zikula Development Team
+ * @link       http://www.zikula.org
+ * @version    $Id$
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @author     Wendel Voigt
+ * @category   Zikula_Extension
+ * @package    Content
+ * @subpackage TNGz
  *
- * @package TNGz
- * @url http://code.zikula.org/tngz
- * @license http://www.gnu.org/copyleft/gpl.html
- *
- * @author Wendel Voigt
- * @version $Id$
  *
  * This file is required for proper opperation of TNG with the TNGz module.
  * TNG always includes a file called "begin.php" from the default include directory.

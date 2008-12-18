@@ -2,16 +2,14 @@
 /**
  * Zikula Application Framework
  *
- * @copyright (c) 2001, Zikula Development Team
- * @link http://www.zikula.org
- * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- *
- * @package TNGz
- * @url http://code.zikula.org/tngz
- * @license http://www.gnu.org/copyleft/gpl.html
- *
- * @author Wendel Voigt
- * @version $Id$
+ * @copyright  (c) Zikula Development Team
+ * @link       http://www.zikula.org
+ * @version    $Id$
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @author     Wendel Voigt
+ * @category   Zikula_Extension
+ * @package    Content
+ * @subpackage TNGz
  */
 
 /**
@@ -28,7 +26,8 @@ function TNGz_searchapi_info()
  **/
 function TNGz_searchapi_options($args)
 {
-    if (SecurityUtil::checkPermission( 'TNGz::', '::', ACCESS_READ)) {
+    if (SecurityUtil::checkPermission( 'TNGz::', '::', ACCESS_READ))
+    {
         $pnRender = pnRender::getInstance('TNGz');
         return $pnRender->fetch('TNGz_search_options.htm');
     }
@@ -52,24 +51,29 @@ function TNGz_searchapi_search($args)
 
     $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');  // GetTNGpaths returns an associative array of values. Fixed #1
     // Check to be sure we can get to the TNG information
-    if (file_exists($TNG['configfile']) ){
+    if (file_exists($TNG['configfile']) )
+    {
         include($TNG['configfile']);
         $TNG_conn = &ADONewConnection('mysql');
         $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
         $have_info = 1;
-    } else {
+    } else
+    {
         $have_info = 0;
         return LogUtil::registerError (_GETFAILED);
     }
     // Check to see of this user has the permissions to see living conditionally
     $User_Can_See_Living = false;
-    if ( pnUserLoggedIn() ){
+    if ( pnUserLoggedIn() )
+    {
         // now check to make sure TNG says user can see the living
         $userid = pnUserGetVar('uname');
         $query = "SELECT allow_living FROM $users_table WHERE username = '$userid' ";
-        if ($result = &$TNG_conn->Execute($query) ) {
+        if ($result = &$TNG_conn->Execute($query) )
+        {
             list($TNG_living) = $result->fields;
-            if ($TNG_living == "1") {
+            if ($TNG_living == "1")
+            {
                 $User_Can_See_Living = true;
             }
          }
@@ -103,15 +107,18 @@ VALUES ";
     $result = &$TNG_conn->Execute($sql);
     //LogUtil::log('TNGz query : '.$sql, 'STRICT');
 
-    if (!$result) {
+    if (!$result)
+    {
         LogUtil::log('TNGz query : '.$sql, 'STRICT');
         return LogUtil::registerError (_GETFAILED);
     }
 
     // Process the result set and insert into search result table
-    for (; !$result->EOF; $result->MoveNext()) {
+    for (; !$result->EOF; $result->MoveNext())
+    {
         $item = $result->GetRowAssoc(2);
-        if (SecurityUtil::checkPermission('TNGz', "::", ACCESS_READ)) {
+        if (SecurityUtil::checkPermission('TNGz', "::", ACCESS_READ))
+        {
             $extra = serialize(array('style'  => $TNGstyle,
                                      'id'     => $item['personID'],
                                      'gedcom' => $item['gedcom']
@@ -120,34 +127,42 @@ VALUES ";
 
             $display_title = $item['lastname'] . ', ' . $item['firstname'];
 
-            if ($User_Can_See_Living || $item['living']==0 ) {
+            if ($User_Can_See_Living || $item['living']==0 )
+            {
                 $sep2 = '';
                 $display_text = "";
-                if ( $item['birthdate'] != '' || $item['birthplace'] != '') {
+                if ( $item['birthdate'] != '' || $item['birthplace'] != '')
+                {
                     $display_text .= _TNGZ_SEARCH_BORN . ' ';
                     $sep  = '';
                     $sep2 = "; ";
-                    if ( $item['birthdate'] != ''){
+                    if ( $item['birthdate'] != '')
+                    {
                         $display_text .= $item['birthdate'];
                         $sep = ', ';
                     }
-                    if ( $item['birthplace'] != ''){
+                    if ( $item['birthplace'] != '')
+                    {
                         $display_text .= $sep . $item['birthplace'];
                     }
                 }
-                if ( $item['deathdate'] != '' || $item['deathplace'] != '') {
+                if ( $item['deathdate'] != '' || $item['deathplace'] != '')
+                {
                     $display_text .= $sep2 . _TNGZ_SEARCH_DIED . ' ';
                     $sep  = '';
-                    if ( $item['deathdate'] != ''){
+                    if ( $item['deathdate'] != '')
+                    {
                         $display_text .= $item['deathdate'];
                         $sep = ', ';
                     }
-                    if ( $item['deathplace'] != ''){
+                    if ( $item['deathplace'] != '')
+                    {
                         $display_text .= $sep . $item['deathplace'];
                     }
                 }
                 $display_text = preg_replace('/(\s)*,(\s|,)+/',', ',$display_text);
-            } else {
+            } else
+            {
                 $display_text = _TNGZ_SEARCH_LIVING;
             }
 
@@ -158,7 +173,8 @@ VALUES ";
                        . '\'' . 'TNGz'. '\', '
                        . '\'' . DataUtil::formatForStore($sessionId) . '\')';
             $insertResult = DBUtil::executeSQL($sql);
-            if (!$insertResult) {
+            if (!$insertResult)
+            {
                 return LogUtil::registerError (_GETFAILED);
             }
         }
