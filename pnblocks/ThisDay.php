@@ -2,17 +2,15 @@
 /**
  * Zikula Application Framework
  *
- * @copyright (c) 2001, Zikula Development Team
- * @link http://www.zikula.org
- * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- *
- * @package TNGz
- * @url http://code.zikula.org/tngz
- * @license http://www.gnu.org/copyleft/gpl.html
- *
+ * @copyright  (c) Zikula Development Team
+ * @link       http://www.zikula.org
+ * @version    $Id$
+ * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ * @author     Wendel Voigt
  * @original author Cas Nuy
- * @author Wendel Voigt
- * @version $Id$
+ * @category   Zikula_Extension
+ * @package    Content
+ * @subpackage TNGz
  */
 
 function TNGz_ThisDayblock_info()
@@ -38,9 +36,10 @@ function TNGz_ThisDayblock_display($blockinfo)
 {
 
     if( !pnSecAuthAction( 0, 'TNGz:ThisDayblock:', "$blockinfo[title]::", ACCESS_READ ) )
-	    return false;
+        return false;
 
-    if( !pnModAPILoad('TNGz','user',true) ) {
+    if( !pnModAPILoad('TNGz','user',true) )
+    {
         return false;
     }
 
@@ -48,12 +47,14 @@ function TNGz_ThisDayblock_display($blockinfo)
     $vars = pnBlockVarsFromContent($blockinfo['content']);
 
     // Defaults
-    if (empty($vars['showdate'])) {
+    if (empty($vars['showdate']))
+    {
         $vars['showdate']   = 'Y';
     //    Y = Yes
     //    N = No
     }
-    if (empty($vars['showbirth'])) {
+    if (empty($vars['showbirth']))
+    {
         $vars['showbirth']  = 'L';
     //    N = No or None
     //    D = show only dead people (no living)
@@ -61,7 +62,8 @@ function TNGz_ThisDayblock_display($blockinfo)
     //    L = show living only if user is logged in
     }
 
-    if (empty($vars['showmarrige'])) {
+    if (empty($vars['showmarrige']))
+    {
         $vars['showmarrige']  = 'N';
     //    N = No or None
     //    D = show only dead people (no living)
@@ -69,23 +71,27 @@ function TNGz_ThisDayblock_display($blockinfo)
     //    Y = show all
     }
 
-    if (empty($vars['showdeath'])) {
+    if (empty($vars['showdeath']))
+    {
         $vars['showdeath']  = 'Y';
     //    N = No or None
     //    Y = show all
     }
-    if (empty($vars['sortby'])) {
+    if (empty($vars['sortby']))
+    {
         $vars['sortby']    = 'D';
     //    N = Name - Lastname, Firstname
     //    D = Date of event, asending
     //    R = Date of event, decending
     }
-    if (empty($vars['showwiki'])) {
+    if (empty($vars['showwiki']))
+    {
         $vars['showwiki']   = 'Y';
     //    Y = Yes
     //    N = No
     }
-    if (empty($vars['usecache'])) {
+    if (empty($vars['usecache']))
+    {
         $vars['usecache']   = 0;
     //    1 = Yes
     //    0 = No
@@ -93,7 +99,8 @@ function TNGz_ThisDayblock_display($blockinfo)
 
     $target = "" ;
     $window=pnModGetVar('TNGz', '_window');
-    if ($window == 1 ) {
+    if ($window == 1 )
+    {
         $target = "target=_blank" ;
     }
 
@@ -117,12 +124,14 @@ function TNGz_ThisDayblock_display($blockinfo)
     $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
 
     // Check to be sure we can get to the TNG information
-    if (file_exists($TNG['configfile']) ){
+    if (file_exists($TNG['configfile']) )
+    {
         include($TNG['configfile']);
         $TNG_conn = &ADONewConnection('mysql');
         $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
         $have_info = 1;
-    } else {
+    } else
+    {
         $have_info = 0;
         $thisday_error  = ""._PEOPLEDBFERROR."";
     }
@@ -136,84 +145,107 @@ function TNGz_ThisDayblock_display($blockinfo)
 
     // Check to see of this user has the permissions to see living conditionally
     $User_Can_See_Living = false;
-    if ( pnUserLoggedIn() ){
+    if ( pnUserLoggedIn() )
+    {
         // now check to make sure TNG says user can see the living
         $userid = pnUserGetVar('uname');
         $query = "SELECT allow_living FROM $users_table WHERE username = '$userid' ";
-        if ($result = &$TNG_conn->Execute($query) ) {
+        if ($result = &$TNG_conn->Execute($query) )
+        {
             list($TNG_living) = $result->fields;
-            if ($TNG_living == "1") {
+            if ($TNG_living == "1")
+            {
                 $User_Can_See_Living = true;
             }
-         }
+        }
         $result->Close();
     }
 
     //////////// SHOW DATE ///////////////////////
-    if ($vars['showdate'] == "Y") {
+    if ($vars['showdate'] == "Y")
+    {
         $thisday_showdate   = true;
     }
 
     //////////// BIRTH ///////////////////////
-    if ($vars['showbirth'] != 'N' && $have_info == 1){
+    if ($vars['showbirth'] != 'N' && $have_info == 1)
+    {
         $thisday_showbirth = true;
         // determine if we show living information
         $showliving = false;  // default to no
-        if ($vars['showbirth'] == 'Y') {
+        if ($vars['showbirth'] == 'Y')
+        {
             $showliving = true;
-        } elseif ( $vars['showbirth'] == 'L' && $User_Can_See_Living ) {
+        } elseif ( $vars['showbirth'] == 'L' && $User_Can_See_Living )
+        {
             $showliving = true;
         }
 
         $query = "SELECT personID,firstname,lastname,birthdatetr,deathdatetr,living,gedcom from $people_table";
         $query .= " where '$monthday'=substring(birthdatetr,6,5)";
-        if ( !$showliving ){
+        if ( !$showliving )
+        {
             $query .= " and living = '0' ";
         }
-        if ($vars['sortby'] =="N") {
+        if ($vars['sortby'] =="N")
+        {
             $query .= " order by lastname,firstname ";
-        } elseif ($vars['sortby'] =="R") {
+        } elseif ($vars['sortby'] =="R")
+        {
             $query .= " order by birthdate DESC ";
-        } elseif ($vars['sortby'] =="D") {
+        } elseif ($vars['sortby'] =="D")
+        {
             $query .= " order by birthdate ASC";
-        } else {
+        } else
+        {
             $query .= " order by birthdate ASC";
         }
-        if (!$result = &$TNG_conn->Execute($query)  ) {
+        if (!$result = &$TNG_conn->Execute($query)  )
+        {
             $thisday_error  = ""._PEOPLEDBFERROR." " . $TNG_conn->ErrorMsg();
-        } else {
+        } else
+        {
             $found = $result->RecordCount();
-            if ($found == 0){
-            } else{
-                for (; !$result->EOF; $result->MoveNext()) {
+            if ($found == 0)
+            {
+
+            } else
+            {
+                for (; !$result->EOF; $result->MoveNext())
+                {
                     list($id,$first,$last,$start,$end,$stat,$gedcom) = $result->fields;
                     $title1 = $last ;
                     $title1 .= ", " ;
                     $title1 .= $first ;
                     $title1 .= " [" ;
                     $TNGzyear = substr($start,0,4);
-                    if ($TNGzyear == "0000" ) {
+                    if ($TNGzyear == "0000" )
+                    {
                         $title1 .= " ? ";
-                    } else {
+                    } else
+                    {
                         $title1 .= $TNGzyear;
                     }
-                    if ($stat == 0) {
+                    if ($stat == 0)
+                    {
                         $title1 .= "-" ;
                         $TNGzyear = substr($end,0,4);
-                        if ($TNGzyear == "0000" ) {
+                        if ($TNGzyear == "0000" )
+                        {
                             $title1 .= " ? ";
-                        } else {
+                        } else
+                        {
                             $title1 .= $TNGzyear;
                         }
                     }
                     $title1 .= "]" ;
                     $temp = pnModAPIFunc('TNGz','user','MakeRef',
-                               array('func'        => "getperson",
-                                     'personID'    => $id,
-                                     'tree'        => $gedcom,
-                                     'description' => $title1,
-                                     'target'      => $target,
-                                     'RefType'     => $TNGstyle
+                            array('func'        => "getperson",
+                                    'personID'    => $id,
+                                    'tree'        => $gedcom,
+                                    'description' => $title1,
+                                    'target'      => $target,
+                                    'RefType'     => $TNGstyle
                                     ));
                     $thisday_birthitems[] = $temp;
                 }
@@ -223,151 +255,188 @@ function TNGz_ThisDayblock_display($blockinfo)
         $result->Close();
     }
     //////////// MARRIAGE ///////////////////////
-    if ($vars['showmarriage'] != 'N' && $have_info == 1){
+    if ($vars['showmarriage'] != 'N' && $have_info == 1)
+    {
         $thisday_showmarriage = true;
         $showliving = false;  // default to no
-        if ($vars['showmarriage'] == 'Y') {
+        if ($vars['showmarriage'] == 'Y')
+        {
             $showliving = true;
-        } elseif ( $vars['showmarriage'] == 'L' && $User_Can_See_Living ) {
+        } elseif ( $vars['showmarriage'] == 'L' && $User_Can_See_Living )
+        {
             $showliving = true;
         }
 
         $query =  "SELECT familyID, marrdatetr, divdate, f.living as FLiving, h.lastname AS HLast, h.firstname AS HFirst, h.living as HLiving, w.lastname as WLast, w.firstname as WFirst, w.living as WLiving, f.gedcom as gedcom";
         $query .= " FROM $families_table AS f LEFT JOIN $people_table AS h ON f.husband=h.personID LEFT JOIN $people_table AS w ON f.wife=w.personID";
         $query .= " WHERE '$monthday'=substring(marrdatetr,6,5)";
-        if ( !$showliving ){
+        if ( !$showliving )
+        {
             $query .= " and f.living = '0' ";
         }
 
-        if ($vars['sortby'] =="N") {
+        if ($vars['sortby'] =="N")
+        {
             $query .= " order by h.lastname, h.firstname";
-        } elseif ($vars['sortby'] =="R") {
+        } elseif ($vars['sortby'] =="R")
+        {
             $query .= " order by marrdatetr DESC";
-        } elseif ($vars['sortby'] =="D") {
+        } elseif ($vars['sortby'] =="D")
+        {
             $query .= " order by marrdatetr ASC";
-        } else {
+        } else
+        {
             $query .= " order by marrdatetr ASC";
         }
-        if (!$result = &$TNG_conn->Execute($query) ) {
+        if (!$result = &$TNG_conn->Execute($query) )
+        {
             $thisday_error  = ""._PEOPLEDBFERROR." " . $TNG_conn->ErrorMsg();
-        } else {
+        } else
+        {
             $found = $result->RecordCount();
-            if ($found == 0){
-	        } else {
-                for (; !$result->EOF; $result->MoveNext()) {
+            if ($found == 0)
+            {
+
+            } else
+            {
+                for (; !$result->EOF; $result->MoveNext())
+                {
                     list($id,$marrdatetr,$divdate,$FLiving,$HLast,$HFirst, $HLiving, $WLast, $WFirst, $WLiving, $gedcom) = $result->fields;
-	    		    $title1 = $HLast ;
+                    $title1 = $HLast ;
                     $title1 .= ", " ;
                     $title1 .= $HFirst ;
                     $title1 .= " " . _MARRIAGE_AND . " ";
-	    		    $title1 .= $WFirst ;
-                    if ($WLast != ""){
+                    $title1 .= $WFirst ;
+                    if ($WLast != "")
+                    {
                         $title1 .= " " . $WLast ;
                     }
                     $title1 .= " [" ;
                     $TNGzyear = substr($marrdatetr,0,4);
-                    if ($TNGzyear == "0000" ) {
+                    if ($TNGzyear == "0000" )
+                    {
                         $title1 .= " ? ";
-                    } else {
+                    } else
+                    {
                         $title1 .= $TNGzyear;
                     }
                     $title1 .= "]" ;
-                    if ($divdate !="" ){
+                    if ($divdate !="" )
+                    {
                         $title1 .= "(" . _DIVORCED . ")" ;
                     }
                     $temp = pnModAPIFunc('TNGz','user','MakeRef',
-                               array('func'        => "familygroup",
-                                     'familyID'    => $id,
-                                     'tree'        => $gedcom,
-                                     'description' => $title1,
-                                     'target'      => $target,
-                                     'RefType'     => $TNGstyle
+                            array('func'        => "familygroup",
+                                    'familyID'    => $id,
+                                    'tree'        => $gedcom,
+                                    'description' => $title1,
+                                    'target'      => $target,
+                                    'RefType'     => $TNGstyle
                                     ));
                     $thisday_marriageitems[] = $temp;
-	    	    }
-	        }
+                }
+            }
             $result->Close();
         }
     }
 
     //////////// DEATH ///////////////////////
-    if ($vars['showdeath'] != 'N' && $have_info == 1){
+    if ($vars['showdeath'] != 'N' && $have_info == 1)
+    {
         $thisday_showdeath = true;
         $query = "SELECT personID,firstname,lastname,birthdatetr,deathdatetr,living,gedcom from $people_table ";
         $query .= " where '$monthday'=substring(deathdatetr,6,5)";
-        if ($vars['sortby'] =="N") {
+        if ($vars['sortby'] =="N")
+        {
             $query .= " order by lastname,firstname ";
-        } elseif ($vars['sortby'] =="R") {
+        } elseif ($vars['sortby'] =="R")
+        {
             $query .= " order by deathdate DESC";
-        } elseif ($vars['sortby'] =="D") {
+        } elseif ($vars['sortby'] =="D")
+        {
             $query .= " order by deathdate ASC";
-        } else {
+        } else
+        {
             $query .= " order by deathdate ASC";
         }
-        if (!$result = &$TNG_conn->Execute($query) ) {
+        if (!$result = &$TNG_conn->Execute($query) )
+        {
             $thisday_error  = ""._PEOPLEDBFERROR." " . $TNG_conn->ErrorMsg();
-        } else {
+        } else
+        {
             $found = $result->RecordCount();
-            if ($found == 0){
-	        } else{
-                for (; !$result->EOF; $result->MoveNext()) {
+            if ($found == 0)
+            {
+
+            } else
+            {
+                for (; !$result->EOF; $result->MoveNext())
+                {
                     list($id,$first,$last,$start,$end,$stat,$gedcom) = $result->fields;
-	    		    $title1 = $last ;
+                    $title1 = $last ;
                     $title1 .= ", " ;
                     $title1 .= $first ;
                     $title1 .= " [" ;
                     $TNGzyear = substr($start,0,4);
-                    if ($TNGzyear == "0000" ) {
+                    if ($TNGzyear == "0000" )
+                    {
                         $title1 .= " ? ";
-                    } else {
+                    } else
+                    {
                         $title1 .= $TNGzyear;
                     }
                     $title1 .= "-" ;
                     $TNGzyear = substr($end,0,4);
-                     if ($TNGzyear == "0000" ) {
+                    if ($TNGzyear == "0000" )
+                    {
                         $title1 .= " ? ";
-                    } else {
+                    } else
+                    {
                         $title1 .= $TNGzyear;
                     }
                     $title1 .= "]" ;
                     $temp = pnModAPIFunc('TNGz','user','MakeRef',
-                               array('func'        => "getperson",
-                                     'personID'    => $id,
-                                     'tree'        => $gedcom,
-                                     'description' => $title1,
-                                     'target'      => $target,
-                                     'RefType'     => $TNGstyle
+                            array('func'        => "getperson",
+                                    'personID'    => $id,
+                                    'tree'        => $gedcom,
+                                    'description' => $title1,
+                                    'target'      => $target,
+                                    'RefType'     => $TNGstyle
                                     ));
                     $thisday_deathitems[] = $temp;
-	    	    }
-	        }
+                }
+            }
         }
         $result->Close();
     }
 
 
     //////////// WIKI Link ///////////////////////
-    if ($vars['showwiki'] == "Y") {
+    if ($vars['showwiki'] == "Y")
+    {
         $thisday_showwiki   = true;
     }
 
     //////////// TNG Main Menu Link //////////////
     $thisday_mainmenu = pnModAPIFunc('TNGz','user','MakeRef',
-                                                              array('func'        => "main",
+                                                            array('func'        => "main",
                                                                     'description' => ""._ACCESSTNG."",
                                                                     'target'      => $target,
                                                                     'RefType'     => $TNGstyle
                                                                     ));
 
-    if ($have_info == 1){
+    if ($have_info == 1)
+    {
         $TNG_conn->Close();
     }
 
     // Can turn off caching by using the following
-    if ( $vars['usecache'] == 0 ) {
-    	$zcaching = false;
-    } else {
-    	$zcaching = true;
+    if ( $vars['usecache'] == 0 )
+    {
+        $zcaching = false;
+    } else
+    {
+        $zcaching = true;
     }
 
     // Create output object
@@ -399,25 +468,31 @@ function TNGz_ThisDayblock_modify($blockinfo)
     $vars = pnBlockVarsFromContent($blockinfo['content']);
 
     // Defaults
-    if (empty($vars['showdate'])) {
+    if (empty($vars['showdate']))
+    {
         $vars['showdate']   = "Y";
     }
-    if (empty($vars['showbirth'])) {
+    if (empty($vars['showbirth']))
+    {
         $vars['showbirth'] = "L";
     }
-    if (empty($vars['showmarriage'])) {
+    if (empty($vars['showmarriage']))
+    {
         $vars['showmarriage'] = "N";
     }
-    if (empty($vars['showdeath'])) {
+    if (empty($vars['showdeath']))
+    {
         $vars['showdeath']  = "Y";
     }
     if (empty($vars['sortby'])) {
         $vars['sortby']     = "D";
     }
-    if (empty($vars['showwiki'])) {
+    if (empty($vars['showwiki']))
+    {
         $vars['showwiki']   = "Y";
     }
-    if (empty($vars['usecache'])) {
+    if (empty($vars['usecache']))
+    {
         $vars['usecache']   = 0;
     }
 
@@ -488,9 +563,9 @@ function TNGz_ThisDayblock_update($blockinfo)
     // write back the new contents
     $blockinfo['content'] = pnBlockVarsToContent($vars);
 
-	// clear the block cache
-//	$pnRender =& new pnRender('TNGz');
-//	$pnRender->clear_cache('example_block_first.htm');
+    // clear the block cache
+    //	$pnRender =& new pnRender('TNGz');
+    //	$pnRender->clear_cache('example_block_first.htm');
 
     return $blockinfo;
 }
