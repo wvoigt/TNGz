@@ -20,35 +20,27 @@ $TNGtemplatestyle = "templatestyle.css";
 // Look for css in the current Theme directory
 $CurrentTheme =  pnVarPrepForOs( pnUserGetTheme() );
 
-if( file_exists( "themes/$CurrentTheme/style/genstyle.css" ) )
-{
+if( file_exists( "themes/$CurrentTheme/style/genstyle.css" ) ) {
     $TNGstyle = "themes/$CurrentTheme/style/genstyle.css";
-} else
-{
+} else {
     $TNGstyle = $cms[tngpath]."genstyle.css";
 }
 
-if( file_exists( "themes/$CurrentTheme/style/tngrss.css" ) )
-{
+if( file_exists( "themes/$CurrentTheme/style/tngrss.css" ) ) {
     $TNGrss = "themes/$CurrentTheme/style/tngrss.css";
-} else
-{
+} else {
     $TNGrss = $cms[tngpath]."tngrss.php";
 }
 
-if( file_exists( "themes/$CurrentTheme/style/mytngstyle.css" ) )
-{
+if( file_exists( "themes/$CurrentTheme/style/mytngstyle.css" ) ) {
     $TNGmystyle = "themes/$CurrentTheme/style/mytngstyle.css";
-} else
-{
+} else {
     $TNGmystyle = $cms[tngpath]."mytngstyle.css";
 }
 
-if( file_exists( "themes/$CurrentTheme/style/templatestyle.css" ) )
-{
+if( file_exists( "themes/$CurrentTheme/style/templatestyle.css" ) ) {
     $TNGtemplatestyle = "themes/$CurrentTheme/style/templatestyle.css";
-} else
-{
+} else {
     $TNGtemplatestyle = $cms[tngpath]."templatestyle.css";
 }
 

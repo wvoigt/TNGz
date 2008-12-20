@@ -28,11 +28,9 @@ function TNGz_userapi_GetTNGpaths()
 
     $TNG['configpath'] = $TNG['TNGpath']; // Start in the main TNG directory
     $subrootfile = $TNG['configpath'] . "subroot.php";
-    if (file_exists($subrootfile) ) // Versions before TNG 7.0 did not have this file
-    {
+    if (file_exists($subrootfile) ) { // Versions before TNG 7.0 did not have this file
         include($subrootfile);        // Sets $tngconfig['subroot'] to be "" or the full path to all the config files
-        if ( $tngconfig['subroot'] )
-        {
+        if ( $tngconfig['subroot'] ) {
             $TNG['configpath'] = $tngconfig['subroot']; // If it is set, use the subroot path for all config files
         }
     }
@@ -44,8 +42,7 @@ function TNGz_userapi_GetTNGpaths()
 function TNGz_userapi_ShowPage($args)
 {
 
-    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_OVERVIEW))
-    {
+    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_OVERVIEW)) {
         return LogUtil::registerError(_MODULENOAUTH);
     }
 
@@ -57,8 +54,7 @@ function TNGz_userapi_ShowPage($args)
 
     // This seems like a kluge, but it is needed to get the included TNG functions to work properly
     $global_variables = pnModGetVar('TNGz', '_globals');
-    if ($global_variables)
-    {
+    if ($global_variables) {
         eval("global " . $global_variables .";");
     }
 
@@ -95,13 +91,11 @@ function TNGz_userapi_ShowPage($args)
 
     $newlanguage = false; // default to use language setting from TNG
     $zikulalang = SessionUtil::getVar('lang');  // get language used in Zikula
-    if ( isset($languages[$zikulalang]) ) // is it defined?
-    {
+    if ( isset($languages[$zikulalang]) ) { // is it defined?
         // If the Zikula language has been installed in TNG, then use it
         // NOTE: May want to add a Zikula Administration setting to turn this on/off
         // QUESTION: Is there a TNG setting that must be enabled for this to work?
-        if (file_exists($TNG['directory']. "/" . $languages[$zikulalang] . "/text.php") )
-        {
+        if (file_exists($TNG['directory']. "/" . $languages[$zikulalang] . "/text.php") ) {
             $newlanguage = $languages[$zikulalang];
         }
     }
@@ -111,16 +105,14 @@ function TNGz_userapi_ShowPage($args)
     //////////////////////////////////////////////////////
     $cms[tngpath] = $TNG['TNGpath'];
     $have_info = false;
-    if (file_exists($TNG['configfile']) )
-    {
+    if (file_exists($TNG['configfile']) ) {
         include $TNG['configfile'];
         $TNGhomepage = $homepage;
         $TNG_conn = &ADONewConnection('mysql');
         $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
         $have_info = true;
     }
-    if (!$have_info)
-    {
+    if (!$have_info) {
         return LogUtil::registerError("Error accessing TNG config file.");
     }
 
@@ -157,22 +149,17 @@ function TNGz_userapi_ShowPage($args)
     // Now fix Zikula's $register_globals=off code for TNG
     // NOTE: Is this still needed?
     $register_globals = (bool) ini_get('register_globals');
-    if( $register_globals )
-    {
+    if( $register_globals ) {
         $the_globals = $_SERVER + $_ENV + $_GET +$_POST;
-        if( $the_globals && is_array( $the_globals ) )
-        {
-            foreach ( $the_globals as $key=>$value )
-            {
+        if( $the_globals && is_array( $the_globals ) ) {
+            foreach ( $the_globals as $key=>$value ) {
                 if ($key == 'cms' || $key == 'lang' || $key == 'mylanguage') die("sorry!");
                     ${$key} = $value;
             }
         }
         unset($the_globals);
-        if( $_FILES && is_array( $_FILES ) )
-        {
-            foreach( $_FILES as $key=>$value )
-            {
+        if( $_FILES && is_array( $_FILES ) ) {
+            foreach( $_FILES as $key=>$value ) {
                 ${$key} = $value[tmp_name];
             }
         }
@@ -182,8 +169,7 @@ function TNGz_userapi_ShowPage($args)
     // Check Arguments
     //////////////////////////////////////////////////////
     $TNGshowpage   = (isset($args['showpage'])) ? $args['showpage'] : $TNGhomepage;
-    if ( !strpos( $TNGshowpage, ".php") )
-    {
+    if ( !strpos( $TNGshowpage, ".php") ) {
         $TNGshowpage .= ".php";
     }
     $TNGrenderpage = (isset($args['render']))   ? $args['render']   : true;  // Default value
@@ -192,16 +178,12 @@ function TNGz_userapi_ShowPage($args)
     //////////////////////////////////////////////////////
     // Get User Login information
     //////////////////////////////////////////////////////
-    if (pnUserLoggedIn())
-    {
+    if (pnUserLoggedIn()) {
         $TNGusername = pnUserGetVar('uname');
-    } else
-    {
-        if (pnModGetVar('TNGz', '_guest') == 1)
-        {
+    } else {
+        if (pnModGetVar('TNGz', '_guest') == 1) {
             $TNGusername = ($TNGguestname=="") ? "Guest" : pnModGetVar('TNGz', '_gname');
-        } else
-        {
+        } else {
             pnRedirect(pnModURL('Users','user','loginscreen')) ;
         }
     }
@@ -210,8 +192,7 @@ function TNGz_userapi_ShowPage($args)
     // Create User if needed
     //////////////////////////////////////////////////////
     $ok = pnModAPIFunc('TNGz','user','ModifyCreateUser',array() );
-    if (!$ok )
-    {
+    if (!$ok ) {
         return LogUtil::registerError("Error Creating User information. ");
     }
 
@@ -220,24 +201,20 @@ function TNGz_userapi_ShowPage($args)
     //////////////////////////////////////////////////////
     $TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
     $query = "SELECT * FROM $users_table WHERE username = '$TNGusername' ";
-    if (!$result = &$TNG_conn->Execute($query) )
-    {
+    if (!$result = &$TNG_conn->Execute($query) ) {
         return(false);
     }
     $found = $result->RecordCount();
-    if( $found == 1 )
-    {
+    if( $found == 1 ) {
         $row = $result->fields;
         $check = ( $row[allow_living] == -1 );
     }
 
-    if( $found == 1 && !$check )
-    {
+    if( $found == 1 && !$check ) {
         // Update time of last login/use
         $newdate = date ("Y-m-d H:i:s", time() + ( 3600 * $time_offset ) );
         $query = "UPDATE $users_table SET lastlogin=\"$newdate\" WHERE userID=\"$row[userID]\"";
-        if (!$result = &$TNG_conn->Execute($query) )
-        {
+        if (!$result = &$TNG_conn->Execute($query) ) {
             return LogUtil::registerError("$admtext[cannotexecutequery]: $query");
         }
 
@@ -256,8 +233,7 @@ function TNGz_userapi_ShowPage($args)
     session_register('currentuser');
     session_register('currentuserdesc');
     session_register('session_rp');
-    if ($newlanguage)
-    {
+    if ($newlanguage) {
         session_register('session_language');
         $session_language = $_SESSION[session_language] = $newlanguage;
     }
@@ -271,9 +247,9 @@ function TNGz_userapi_ShowPage($args)
         $allow_admin_db = $_SESSION[allow_admin_db] = 1;
     else
         $allow_admin_db = $_SESSION[allow_admin_db] = 0;
-    if( !$livedefault ) //depends on permissions
+    if ( !$livedefault ) //depends on permissions
         $allow_living_db = $_SESSION[allow_living_db] = $row[allow_living];
-    elseif( $livedefault == 2 ) //always do living
+    elseif ( $livedefault == 2 ) //always do living
         $allow_living_db = $_SESSION[allow_living_db] = 1;
     else //never do living
         $allow_living_db = $_SESSION[allow_living_db] = 0;
@@ -310,25 +286,21 @@ function TNGz_userapi_ShowPage($args)
 
     // Email Filters
     $TNGemail  = pnModGetVar('TNGz', '_email');
-    if ($TNGemail == "A" )
-    {
+    if ($TNGemail == "A" ) {
         $TNGoutput = pnModAPIFunc('TNGz','user','CleanEmail', array('source' => $TNGoutput, 'mode' => 'both', 'text2link' => true ));
-    } elseif ($TNGemail == "E" )
-    {
+    } elseif ($TNGemail == "E" ) {
         $TNGoutput = pnModAPIFunc('TNGz','user','CleanEmail', array('source' => $TNGoutput, 'mode' => 'both', 'text2link' => false ));
     }
 
     // Short URL Filter
     $shorturls     = pnConfigGetVar('shorturls');
     $shorturlstype = pnConfigGetVar('shorturlstype');
-    if ($shorturls && $shorturlstype == 0 ) // This has problems, so disable for now
-    {
+    if ($shorturls && $shorturlstype == 0 ) { // This has problems, so disable for now
         //$TNGoutput = preg_replace_callback( "/(\s+href\s*=\s*[\"\'])(.*)([\"\'])/iU", "TNGz_userapi_ShortURLencode", $TNGoutput);
     }
 
     // Get Title information to add to Zikula title
-    if (preg_match("/<meta name=\"Keywords\" content=\"(.+)\"/", $TNGoutput, $tng_title) )
-    {
+    if (preg_match("/<meta name=\"Keywords\" content=\"(.+)\"/", $TNGoutput, $tng_title) ) {
         $GLOBALS['info']['title'] = $tng_title[1];
     }
 
@@ -369,8 +341,7 @@ function TNGz_userapi_ShowPage($args)
     // Now get ready to display
     //////////////////////////////////////////////////////
 
-    if (!$TNGrenderpage)
-    {
+    if (!$TNGrenderpage) {
         echo $TNGoutput;   // do not wrap with Zikula
         return true;       // signal output has already been displayed
     }
@@ -397,16 +368,13 @@ function TNGz_userapi_GetTNGglobals($args)
 {
 
     $dir = $args['dir'];
-    if (!is_dir($dir))  // Make sure it is a real directory
-    {
+    if (!is_dir($dir))  { // Make sure it is a real directory
         return false;  // Error
     }
-    if (!$dh  = opendir($dir) ) //Open the directory
-    {
+    if (!$dh  = opendir($dir) ) { //Open the directory
         return false;  // Error
     }
-    while (false !== ($filename = readdir($dh)))  // Get all the files in the directory
-    {
+    while (false !== ($filename = readdir($dh))) { // Get all the files in the directory
         $files[] = $filename;
     }
     closedir($dh);
@@ -415,24 +383,18 @@ function TNGz_userapi_GetTNGglobals($args)
     // Now scan through all the .php files looking for global variable declarations
     //////////////////////////////////////////////////////
     $allglobals = array();                                                           // Holder for the global variables found
-    foreach ($files as $filename)
-    {                                                  // Look through each file
-        if ( strpos( $filename, ".php") )
-        {                                          // only need to check .php files
-            if ($thefile = file_get_contents("$dir/$filename") ) // read in the file, keep going if no error
-            {
+    foreach ($files as $filename) {                                                  // Look through each file
+        if ( strpos( $filename, ".php") ) {                                          // only need to check .php files
+        if ($thefile = file_get_contents("$dir/$filename") ) { // read in the file, keep going if no error
                 $globalmatches = array();                                            // holder for all the global statements found
                 preg_match_all('/[\s|^]global[\s]+(.*)\;/',$thefile,$globalmatches); // Look for php global variable statements
                 $match = $globalmatches[0];                                          // all the matches in an array
-                foreach ($match as $line)
-                {                                          // Look through each of the statements found
+                foreach ($match as $line) {                                          // Look through each of the statements found
                     $line = preg_replace('/[\s]*global[\s]+/', "", $line);           // take out "global" at the beginning (and spaces)
                     $line = preg_replace('/[\s]*\;/', "", $line);                    // take out ; at the end (and spaces)
                     $theglobals = preg_split('/[\s]*,[\s]*/', $line);                // now get each of the global variables listed
-                    foreach ($theglobals as $aglobal) // Look at each global variable
-                    {
-                        if ( !$allglobals[$aglobal] )  //   if not already found, add to the list
-                        {
+                    foreach ($theglobals as $aglobal) {// Look at each global variable
+                    if ( !$allglobals[$aglobal] )  {//   if not already found, add to the list
                                     $allglobals[$aglobal] = $aglobal;
                         }
                     }
@@ -459,17 +421,14 @@ function TNGz_userapi_ranpass($args)
     extract($args);
 
     // Optional arguments.
-    if (!isset($length))
-    {
+    if (!isset($length)) {
         $length = 8;
     }
 
     $pass = NULL;
-    for($i=0; $i<$length; $i++)
-    {
+    for($i=0; $i<$length; $i++) {
         $char = chr(rand(48,122));
-        while (!ereg("[a-zA-Z0-9]", $char))
-        {
+        while (!ereg("[a-zA-Z0-9]", $char)) {
             if($char == $lchar) continue;
                 $char = chr(rand(48,90));
     }
@@ -493,10 +452,8 @@ function TNGz_userapi_ModifyCreateUser()
     $guestname = pnModGetVar('TNGz', '_gname');
     $loggedin  = pnUserLoggedIn();
 
-    if ( $loggedin || $guest == 1 )
-    {
-        if ( $loggedin )
-        {
+    if ( $loggedin || $guest == 1 ) {
+        if ( $loggedin ) {
             $uid    = pnSessionGetVar('uid');  // find out which user #
             $u      = pnUserGetVars($uid, true);     // $u[] has all the logged in user vars
             // Start Fix... Starting with Zikula, user values have changed.  So fix up so it looks like old
@@ -518,10 +475,8 @@ function TNGz_userapi_ModifyCreateUser()
             $vars['_SIGNATURE']      = 'user_sig';
             $vars['_EXTRAINFO']      = 'bio';
             // map new names to old names  Note: these should only exist starting with Zikula
-            foreach ( $vars as $key => $value)
-            {
-                if (isset($u[$key]))
-                {
+            foreach ( $vars as $key => $value) {
+                if (isset($u[$key])) {
                     $u[$value] = $u[$key];
                 }
             }
@@ -530,8 +485,7 @@ function TNGz_userapi_ModifyCreateUser()
             // End of fix...
 
             $userid = $u['uname'];
-        } else
-        {
+        } else {
             $guestname = ($guestname == "") ? "Guest" : $guestname;
             $userid = $guestname ;  // If not logged in, then must be a guest
         }
@@ -543,29 +497,24 @@ function TNGz_userapi_ModifyCreateUser()
 
         // Check to be sure we can get to the TNG information
         $have_info = 0;
-        if (file_exists($TNG['configfile']) )
-        {
+        if (file_exists($TNG['configfile']) ) {
             include($TNG['configfile']);
             $TNG_conn = &ADONewConnection('mysql');
             $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
             $have_info = 1;
         }
-        if (!$have_info)
-        {
+        if (!$have_info) {
             return(false);
         }
 
         $query     =  "SELECT userID, email, realname, website, password FROM $users_table WHERE username = '$userid' ";
-        if (!$result = &$TNG_conn->Execute($query) )
-        {
+        if (!$result = &$TNG_conn->Execute($query) ) {
             return(false);
         }
         $found = $result->RecordCount();
-        if ( $found == 0 )
-        {
+        if ( $found == 0 ) {
             // username not found, prepare to create it in TNG
-            if ( !$loggedin && $guest == 1)
-            {
+            if ( !$loggedin && $guest == 1) {
                 // Base Guest account
                 $TNG_user     = $guestname;
                 $TNG_email    = "";
@@ -579,8 +528,7 @@ function TNGz_userapi_ModifyCreateUser()
                 $TNG_pwd      = pnModAPIFunc('TNGz','user','ranpass',array());
         $TNG_pwd_safe = md5( $TNG_pwd );
 
-            } elseif ( $TNG_create == 1)
-            {
+            } elseif ( $TNG_create == 1) {
                 // A registered Zikula user
                 $TNG_user     = $u['uname'] ;
                 $TNG_email    = $u['email'];
@@ -594,24 +542,19 @@ function TNGz_userapi_ModifyCreateUser()
                 $TNG_pwd      = "";
 //              $TNG_pwd      = pnModAPIFunc('TNGz','user','ranpass',array());
 //		        $TNG_pwd_safe = base64_encode( $TNG_pwd );
-                if ($use_password)
-                {
+                if ($use_password) {
                     $TNG_pwd_safe = $u['pass']; // can use same md5 password
-                } else
-                { // otherwise generate a random one just for TNG
+                } else { // otherwise generate a random one just for TNG
                     $TNG_pwd_safe  = md5(pnModAPIFunc('TNGz','user','ranpass',array()) );
                 }
 
-                if ($TNG_name != "")
-                {
+                if ($TNG_name != "") {
                     $TNG_desc = $TNG_name;
-                } else
-                {
+                } else {
                     $TNG_desc = $TNG_user;
                 }
             }
-            if ( ($loggedin && $TNG_create == 1) || (!$loggedin && $guest == 1))
-            {
+            if ( ($loggedin && $TNG_create == 1) || (!$loggedin && $guest == 1)) {
                 $adding  = "INSERT INTO $users_table ";
                 $adding .= "(";
                 $adding .= "description, username, realname  , email      , website      , gedcom , allow_living, allow_ged  , allow_lds, lastlogin ";
@@ -623,8 +566,7 @@ function TNGz_userapi_ModifyCreateUser()
                 $adding .= ") ";
 
 
-                if (!$added = &$TNG_conn->Execute($adding) )
-                {
+                if (!$added = &$TNG_conn->Execute($adding) ) {
                         return(false);
                 }
                 $added->Close();
@@ -641,43 +583,36 @@ function TNGz_userapi_ModifyCreateUser()
                 */
                 $return_code = 2;
             }
-        } elseif ($TNG_sync == 1 && $loggedin )
-        {
+        } elseif ($TNG_sync == 1 && $loggedin ) {
             // The user was found, so check for updates
             $TNG_changed = false;
             list($TNG_uid, $TNG_email, $TNG_name, $TNG_website, $TNG_password ) = $result->fields;
             $adding =  "UPDATE $users_table SET ";
-            if ( $TNG_email != $u['email'] )
-            {
+            if ( $TNG_email != $u['email'] ) {
                 $TNG_email = $u['email'];
                 $adding .= " email='$TNG_email',";
                 $TNG_changed = true;
             }
 
-            if ( $TNG_name != $u['name'] )
-            {
+            if ( $TNG_name != $u['name'] ) {
                 $TNG_name = $u['name'];
                 $adding .= " realname='$TNG_name',";
                 $TNG_changed = true;
             }
-            if ( $TNG_website != $u['url'] )
-            {
+            if ( $TNG_website != $u['url'] ) {
                 $TNG_website = $u['url'];
                 $adding .= " website='$TNG_website',";
                 $TNG_changed = true;
             }
-            if ( $TNG_password != $u['pass'] && $use_password)
-            {
+            if ( $TNG_password != $u['pass'] && $use_password) {
                 $TNG_password   = $u['pass'];
                 $adding .= " password='$TNG_password',";
                 $TNG_changed = true;
             }
-            if ($TNG_changed == true)
-            {
+            if ($TNG_changed == true) {
                 $adding = rtrim($adding, " ,"); // take off last comma and spaces
                 $adding .=  " WHERE userID='$TNG_uid'";
-                if (!$added = &$TNG_conn->Execute($adding) )
-                {
+                if (!$added = &$TNG_conn->Execute($adding) ) {
                     return(false);
                 } else {
                     $return_code = 1;
@@ -713,8 +648,7 @@ function TNGz_userapi_CleanEmail($args)
     $regex_html_email = '!<a\s([^>]*)href=["\']mailto:([^"\']+)["\']([^>]*)>(.*?)</a[^>]*>!is';
     $regex_text_email = '![a-zA-Z0-9\-_]+@[a-zA-Z0-9\-_]+.[a-z]{2,3}!is';
     $hex_mailto       = "&#109;&#097;&#105;&#108;&#116;&#111;&#058;";
-    switch($mode)
-    {
+    switch($mode) {
         case false:    return $source; break;                                 // fast return
         case 'mailto': $regexes = array('html' => $regex_html_email); break;  // Just work on mailto
         case 'text'  : $regexes = array('text' => $regex_text_email); break;  // Just work on text emails
@@ -722,36 +656,28 @@ function TNGz_userapi_CleanEmail($args)
         default:       $regexes = array('html' => $regex_html_email,
                                         'text' => $regex_text_email); break;
     }
-    foreach($regexes as $regex_type => $regex)
-    {
+    foreach($regexes as $regex_type => $regex) {
         preg_match_all($regex, $source, $matches);
-        if(empty($matches[0]))
-        {
+        if(empty($matches[0])) {
             continue; // no matches
         }
         $modifications = $matches[0];
-        foreach($modifications as $key => $match)
-        {
-        if($regex_type === 'html')
-        {
+        foreach($modifications as $key => $match) {
+        if($regex_type === 'html') {
         $address = $matches[2][$key];
             $display = $matches[4][$key];
-        } elseif($regex_type === 'text')
-        {
+        } elseif($regex_type === 'text') {
             $address = $matches[0][$key];
             $display = str_replace( $symbols_email, $symbols_new , $matches[0][$key]); //substitute characters
     }
         // Encode the email address
         $hex_address = '';
         $length = strlen($address);
-        for($x = 0; $x < $length; $x++)
-        {
+        for($x = 0; $x < $length; $x++) {
                 $char = substr($address,$x,1);
-                if ( ( ($x % $random_max ) == $random_char ) && !(strpos("@.", $char) !== false) )
-                {
+                if ( ( ($x % $random_max ) == $random_char ) && !(strpos("@.", $char) !== false) ) {
                     $hex_address .= $char;  // every once in a while, keep it the same to make it harder to decode
-                } else
-                {
+                } else {
                     $hex_address .= '&#' . ord($char) . ';';
                 }
         }
@@ -759,24 +685,19 @@ function TNGz_userapi_CleanEmail($args)
             // Encode the display information
         $hex_display = '';
         $length = strlen($display);
-        for($x = 0; $x < $length; $x++)
-        {
+        for($x = 0; $x < $length; $x++) {
                 $char = substr($display,$x,1);
-                if ( ( ($x % $random_max ) == $random_char ) && !(strpos("@.", $char) !== false) )
-                {
+                if ( ( ($x % $random_max ) == $random_char ) && !(strpos("@.", $char) !== false) ) {
                     $hex_display .= $char;  // every once in a while, keep it the same to make it harder to decode
-                } else
-                {
+                } else {
                     $hex_display .= '&#' . ord($char) . ';';
                 }
         }
 
         // now put it back together
-    if ($regex_type === 'text' && $text2link!=true )
-    {
+    if ($regex_type === 'text' && $text2link!=true ) {
         $modifications[$key] = $hex_display;
-    } else
-    {
+    } else {
             $modifications[$key] = '<a href="'.$hex_mailto.$hex_address.'" title="'.$hex_display.'">'.$hex_display.'</a>';
     }
     $source = str_replace($matches[0], $modifications, $source);
@@ -800,15 +721,13 @@ function TNGz_userapi_GetTNGurl($args)
     $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
 
     $have_info = false;
-    if (file_exists($TNG['configfile']) )
-    {
+    if (file_exists($TNG['configfile']) ) {
     include $TNG['configfile'];
         $TNG_conn = &ADONewConnection('mysql');
         $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
         $have_info = true;
     }
-    if (!$have_info)
-    {
+    if (!$have_info) {
         return false;
     }
 
@@ -823,12 +742,10 @@ function TNGz_userapi_GetTNGurl($args)
     $query = "SELECT * FROM $users_table WHERE username = '$username' ";
     $result = mysql_query($query) or die ("Cannot execute query: $query");
     $found = mysql_num_rows( $result );
-    if( $found == 1 )
-    {
+    if( $found == 1 ) {
         $row = mysql_fetch_assoc( $result );
         $userpass = $row[password];
-    } else
-    {
+    } else {
         $userpass = "";
     }
     mysql_free_result($result);
@@ -876,41 +793,33 @@ function TNGz_userapi_MakeRef_old($args)
     // $RefType, $func="main" $target $description
 
     // Optional arguments.
-    if (!isset($RefType))
-    {
+    if (!isset($RefType)) {
         $RefType = 0;
     }
 
     $RefType = 0; // FIX
 
-    if (!isset($target))
-    {
+    if (!isset($target)) {
         $target = "";
     }
-    if ($target !="" )
-    {
+    if ($target !="" ) {
         $target = "target = \"$target\"";
     }
-    if (!isset($func))
-    {
+    if (!isset($func)) {
         $func = "main";
     }
-    if (!isset($description))
-    {
+    if (!isset($description)) {
         $description = "";
     }
-    if (!isset($url))
-    {
+    if (!isset($url)) {
         $url = false;
         $amp = "&amp;";
-    } else
-    {
+    } else {
         $url = true;
         $amp = "&";
     }
 
-    switch ($RefType)
-    {
+    switch ($RefType) {
         case "1":
                 $Ref = "index.php?module=TNGz".$amp."func=";
                 break;
@@ -920,8 +829,7 @@ function TNGz_userapi_MakeRef_old($args)
     }
 
 
-    switch ($func)
-    {
+    switch ($func) {
         case "getperson":
                 $Ref .= "getperson".$amp."personID=$personID".$amp."tree=$tree";
                 break;
@@ -967,8 +875,7 @@ function TNGz_userapi_MakeRef($args)
 
     $target = (isset($args['target'])) ? $args['target'] : false ;
     unset($args['target']);
-    if ( $target )
-    {
+    if ( $target ) {
         $target = "target = \"$target\"";
     }
 
@@ -980,28 +887,23 @@ function TNGz_userapi_MakeRef($args)
 
     $tree = (isset($args['tree'])) ? $args['tree'] : false ;
     unset($args['tree']);
-    if ($tree)
-    {
+    if ($tree) {
         $args = array_merge(array("tree"=>$tree),$args); // move to the front (so comes out first)
     }
 
-    if ( $prog )
-    {
+    if ( $prog ) {
         $func = 'main';
         $args = array_merge(array("show"=>$prog),$args); // add show to the front (so comes out first)
-    } else
-    {
+    } else {
         $func = $prog;
         $args = array();  // just pass the rest of the parameters
     }
 
     $ref = pnModURL('TNGz', 'user', $func, $args);
 
-    if ($url)
-    {
+    if ($url) {
         return $ref;
-    } else
-    {
+    } else {
         return "<a href=\"" . $ref . "\" $target >$description</a>";
     }
 
@@ -1022,37 +924,30 @@ function TNGz_userapi_PhotoRef($args)
     extract($args);
 
     // Optional arguments.
-    if (!isset($text))
-    {
+    if (!isset($text)) {
         $text = "";
     }
-    if (!isset($description))
-    {
+    if (!isset($description)) {
         $description = "";
     }
-    if (!isset($max_height) || !is_numeric($max_height))
-    {
+    if (!isset($max_height) || !is_numeric($max_height)) {
         $max_height = 100;
     }
-    if (!isset($max_width) || !is_numeric($max_width))
-    {
+    if (!isset($max_width) || !is_numeric($max_width)) {
         $max_width = 100;
     }
 
     list($width, $height, $type, $attr) = getimagesize($photo_file);
     $height_scale = $height / $max_height;
     $width_scale  = $width  / $max_width;
-    if (($height_scale > 1) || ($width_scale > 1))
-        {
+    if (($height_scale > 1) || ($width_scale > 1)) {
         if ($height_scale > $width_scale)
         {
             $scale = $height_scale;
-        } else
-        {
+        } else {
             $scale = $width_scale;
         }
-    } else
-    {
+    } else {
         $scale = 1;
     }
     $new_width = floor($width / $scale);
@@ -1067,43 +962,33 @@ function TNGz_userapi_getRecords($args)
     extract($args);
 
     // check out $kind
-    if (!isset($kind))
-    {
+    if (!isset($kind)) {
         $kind = "people";
     }
-    if ( ($kind != "people") && ($kind != "family"))
-    {
+    if ( ($kind != "people") && ($kind != "family")) {
         return(false);
     }
 
     $limit = true;      // first assume number of records returned are limited unless found otherwise.
     // Check out $start
-    if (!isset($start))
-    {
+    if (!isset($start)) {
         $limit = false;    // No starting value given
-    } elseif (!is_numeric($start))
-    {
+    } elseif (!is_numeric($start)) {
         $limit = false;    // not a number
-    } elseif ( $start < 0 )
-                        {
+    } elseif ( $start < 0 ) {
         $limit = false;    // Invalid starting value given
-    } else
-    {
+    } else {
         $start = intval($start);
     }
 
     // Check out $count
-    if (!isset($count))
-    {
+    if (!isset($count)) {
         $limit = false;    // No starting value given
-    } elseif (!is_numeric($count))
-    {
+    } elseif (!is_numeric($count)) {
         $limit = false;    // not a number
-    } elseif ( $count < 0 )
-    {
+    } elseif ( $count < 0 ) {
         $limit = false;    // Invalid starting value given
-    } else
-    {
+    } else {
         $count = intval($count);
     }
     // $limit is still true only if $start and $count are valid
@@ -1113,44 +998,35 @@ function TNGz_userapi_getRecords($args)
 
     // Check to be sure we can get to the TNG information
     $have_info = 0;
-    if (file_exists($TNG['configfile']) )
-    {
+    if (file_exists($TNG['configfile']) ) {
         include($TNG['configfile']);
         $TNG_conn = &ADONewConnection('mysql');
         $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
         $have_info = 1;
     }
-    if (!$have_info)
-    {
+    if (!$have_info) {
         return(false);
     }
-    if ($kind == "people")
-    {
+    if ($kind == "people") {
         $query  =  "SELECT gedcom, personID, changedate FROM $people_table";
-    } elseif ( $kind == "family")
-    {
+    } elseif ( $kind == "family") {
         $query   =  "SELECT gedcom, familyID, changedate FROM $families_table";
     }
-    if ($limit)
-    {
+    if ($limit) {
         $query  .= " LIMIT ". $start . ", " . $count;
 
     }
 
-    if (!$result = &$TNG_conn->Execute($query) )
-    {
+    if (!$result = &$TNG_conn->Execute($query) ) {
         return(false);
     }
     $thelist = array();
-    if($result->RecordCount()>0)
-    {
-        for (; !$result->EOF; $result->MoveNext())
-        {
+    if($result->RecordCount()>0) {
+        for (; !$result->EOF; $result->MoveNext()) {
             $items = array();
             list( $items['tree'],$items['id'],$items['changedate'] ) = $result->fields;
             $items['changedate'] = substr($items['changedate'],0,10);  // mod to handle date format change in TNGv6
-            if ($items['changedate'] == "0000-00-00" || $items['changedate'] == "" )
-            {
+            if ($items['changedate'] == "0000-00-00" || $items['changedate'] == "" ) {
                 $items['changedate'] = date("Y-m-d");
             }
             $thelist[] = $items;
@@ -1181,50 +1057,41 @@ function TNGz_userapi_getRecordsCount($args)
 
     // Check to be sure we can get to the TNG information
     $have_info = 0;
-    if (file_exists($TNG['configfile']) )
-    {
+    if (file_exists($TNG['configfile']) ) {
         include($TNG['configfile']);
         $TNG_conn = &ADONewConnection('mysql');
         $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
         $have_info = 1;
     }
-    if (!$have_info)
-    {
+    if (!$have_info) {
         return(false);
     }
 
     $query  =  "SELECT count(id) as pcount FROM $people_table";
-    if (!$result = &$TNG_conn->Execute($query) )
-    {
+    if (!$result = &$TNG_conn->Execute($query) ) {
         return(false);
     }
-    if($result->RecordCount()>0)
-    {
+    if($result->RecordCount()>0) {
         list( $facts['people'] ) = $result->fields;
     }
 
     $query  =  "SELECT count(id) as pcount FROM $families_table";
-    if (!$result = &$TNG_conn->Execute($query) )
-    {
+    if (!$result = &$TNG_conn->Execute($query) ) {
         return(false);
     }
-    if($result->RecordCount()>0)
-    {
+    if($result->RecordCount()>0) {
         list( $facts['family'] ) = $result->fields;
     }
 
     $facts['total'] = $facts['people'] + $facts['family'];
     $facts['sitemapindex'] = false;
 
-    if ($facts['total']>$MaxPerMap)
-    {
+    if ($facts['total']>$MaxPerMap) {
         $sitemaps = array();
-        for($i=0; $i < $facts['people']; $i+= $MaxPerMap)
-        {
+        for($i=0; $i < $facts['people']; $i+= $MaxPerMap) {
             $sitemaps[] = array( 'map' => 'people', 'start' => $i, 'count' => $MaxPerMap);
         }
-        for($i=0; $i < $facts['family']; $i+= $MaxPerMap)
-        {
+        for($i=0; $i < $facts['family']; $i+= $MaxPerMap) {
             $sitemaps[] = array( 'map' => 'family', 'start' => $i, 'count' => $MaxPerMap);
         }
         $facts['sitemapindex'] = $sitemaps;
@@ -1246,21 +1113,18 @@ function TNGz_userapi_ShortURLencode($matches)
 {
     global $cms;
 
-    if (strpos($matches[0], $cms[url] ) === false)
-    {
+    if (strpos($matches[0], $cms[url] ) === false) {
         return $matches[0];   // The URL is not for TNGz, so leave alone
     }
 
     list($garbage, $params) = explode($cms[url], $matches[2], 2);
     //echo "<pre>".$cms[url].":".$params." |".$matches[0]." ".$matches[1]." ".$matches[2]." ".$matches[3]."</pre>";
     $args = array();
-    if ( strpos($params, "=" ) !== false ) // must have at least one = or just have show by itself
-    {
+    if ( strpos($params, "=" ) !== false ) { // must have at least one = or just have show by itself
         $params = "show=".ltrim($params, " =");
         $pairs = explode('&', html_entity_decode(urldecode($params)));
         $args=array();
-        foreach ($pairs as $pair)
-        {
+        foreach ($pairs as $pair) {
             $x = explode('=', $pair);
             $args[$x[0]] = $x[1];
         }
@@ -1284,19 +1148,16 @@ function TNGz_userapi_ShortURLencode($matches)
 function TNGz_userapi_encodeurl($args)
 {
     // check we have the required input
-    if (!isset($args['modname']) || !isset($args['func']) || !isset($args['args']))
-    {
+    if (!isset($args['modname']) || !isset($args['func']) || !isset($args['args'])) {
         return LogUtil::registerError (_MODARGSERROR);
     }
 
-    if (!isset($args['type']))
-    {
+    if (!isset($args['type'])) {
         $args['type'] = 'user';
     }
 
     // don't display the function name if using main
-    if ($args['func'] == 'main')
-    {
+    if ($args['func'] == 'main') {
         $args['func'] = '';
     }
 
@@ -1304,49 +1165,39 @@ function TNGz_userapi_encodeurl($args)
     $vars = '';
 
     // Start with 'show' value if it is set
-    if ( isset($args['args']['show']))
-    {
+    if ( isset($args['args']['show'])) {
         $vars = $args['args']['show'];
         unset($args['args']['show']);
     }
 
     // Next if it is there, show the tree
-    if ( isset($args['args']['tree']))
-    {
+    if ( isset($args['args']['tree'])) {
         $vars .= "/tree/".$args['args']['tree'];
         unset($args['args']['tree']);
     }
 
     // Now add the rest of the arguments
-    foreach ($args['args'] as $k => $v)
-    {
+    foreach ($args['args'] as $k => $v) {
         if (is_array($v))
         {
-            foreach ($v as $k2 => $w)
-            {
-                if ($w != '')
-                {
+            foreach ($v as $k2 => $w) {
+                if ($w != '') {
                     $vars .= "/$k[$k2]/$w"; // &$k[$k2]=$w
                 }
             }
-        } elseif ($v != '')
-        {
+        } elseif ($v != '') {
             $vars .= "/$k/$v"; // &$k=$v
         }
     }
 
     // construct the custom url part
-    if (empty($args['func']) && empty($vars))
-    {
+    if (empty($args['func']) && empty($vars)) {
         return $args['modname'] . '/';
-    } elseif (empty($args['func']))
-    {
+    } elseif (empty($args['func'])) {
         return $args['modname'] . '/' . $vars . '/';
-    } elseif (empty($vars))
-    {
+    } elseif (empty($vars)) {
         return $args['modname'] . '/' . $args['func'] . '/';
-    } else
-    {
+    } else {
         return $args['modname'] . '/' . $args['func'] . '/' . $vars . '/';
     }
 }
@@ -1359,47 +1210,38 @@ function TNGz_userapi_encodeurl($args)
 function TNGz_userapi_decodeurl($args)
 {
     // check we actually have some vars to work with...
-    if (!isset($args['vars']))
-    {
+    if (!isset($args['vars'])) {
         return LogUtil::registerError (_MODARGSERROR);
     }
 
     // define the available user functions
     $funcs = array('main', 'admin', 'sitemap');
     // set the correct function name based on our input
-    if (empty($args['vars'][2]))
-    {
+    if (empty($args['vars'][2])) {
         pnQueryStringSetVar('func', 'main');
-    } elseif (!in_array($args['vars'][2], $funcs))
-    {
+    } elseif (!in_array($args['vars'][2], $funcs)) {
         pnQueryStringSetVar('func', 'main');
         $nextvar = 2;
-    } else
-    {
+    } else {
         pnQueryStringSetVar('func', $args['vars'][2]);
         $nextvar = 3;
     }
 
     // if it exists, show value should be next
-    if (isset($args['vars'][$nextvar]))
-    {
+    if (isset($args['vars'][$nextvar])) {
         pnQueryStringSetVar('show', (string)$args['vars'][$nextvar++]);
     }
 
     // Now just need to expand out the remaining parameters
     $argscount = count($args['vars']);
-    for ($i = $nextvar; $i < $argscount; $i = $i + 2)
-    {
-        if (isset($args['vars'][$i]))
-        {
+    for ($i = $nextvar; $i < $argscount; $i = $i + 2) {
+        if (isset($args['vars'][$i])) {
             pnQueryStringSetVar($args['vars'][$i], urldecode($args['vars'][$i+1]));
         }
     }
 
     return true;
 }
-
-
 
 
 /* **************************  POSTNUKE TO TNG Field Mappings **************************************************************
