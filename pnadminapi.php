@@ -24,8 +24,7 @@ function TNGz_adminapi_getlinks()
 
     pnModLangLoad('TNGz', 'admin');
 
-    if (SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN))
-    {
+    if (SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN)) {
         $links[] = array('url' => pnModURL('TNGz', 'admin', 'modifyconfig'), 'text' => _TNGZSETTINGS);
         $links[] = array('url' => pnModURL('TNGz', 'admin', 'TNGadmin'),     'text' => _TNGCONFG);
         $links[] = array('url' => pnModURL('TNGz', 'admin', 'Instruct'),     'text' => _TNGZINSTRUCT);

@@ -40,8 +40,7 @@ function TNGz_WhatsNewblock_display($blockinfo)
     if( !pnSecAuthAction( 0, 'TNGz:WhatsNewblock:', "$blockinfo[title]::", ACCESS_READ ) )
         return false;
 
-    if( !pnModAPILoad('TNGz','user',true) )
-    {
+    if( !pnModAPILoad('TNGz','user',true) ) {
         return false;
     }
 
@@ -50,34 +49,27 @@ function TNGz_WhatsNewblock_display($blockinfo)
     $vars = pnBlockVarsFromContent($blockinfo['content']);
 
     // Defaults
-    if (empty($vars['showpeople']))
-    {
+    if (empty($vars['showpeople'])) {
         $vars['showpeople'] = "Y";
     }
-    if (empty($vars['showfamily']))
-    {
+    if (empty($vars['showfamily'])) {
         $vars['showfamily']  = "Y";
     }
-    if (empty($vars['showhistory']))
-    {
+    if (empty($vars['showhistory'])) {
         $vars['showhistory']  = "Y";
     }
-    if (empty($vars['showphotos']))
-    {
+    if (empty($vars['showphotos'])) {
         $vars['showphotos']  = "Y";
     }
-    if (empty($vars['maxitems']) || !is_numeric($vars['maxitems']) )
-    {
+    if (empty($vars['maxitems']) || !is_numeric($vars['maxitems']) ) {
         $vars['maxitems']    = _TNGZ_WHATSNEW_HOWMANY_NUM;
     }
-    if (empty($vars['howlong'])  || !is_numeric($vars['howlong'])  )
-    {
+    if (empty($vars['howlong'])  || !is_numeric($vars['howlong'])  ) {
         $vars['howlong']     = _TNGZ_WHATSNEW_HOWLONG_NUM;
     }
     $howlong  = $vars['howlong'];
     $maxitems = $vars['maxitems'];
-    if (empty($vars['usecache']))
-    {
+    if (empty($vars['usecache'])) {
         $vars['usecache']   = 0;
     //    1 = Yes
     //    0 = No
@@ -98,8 +90,7 @@ function TNGz_WhatsNewblock_display($blockinfo)
 
     $target = "" ;
     $window=pnModGetVar('TNGz', '_window');
-    if ($window == 1 )
-    {
+    if ($window == 1 ) {
         $target = "target=_blank" ;
     }
 
@@ -112,39 +103,31 @@ function TNGz_WhatsNewblock_display($blockinfo)
     // $TNG_ref  = $TNG['WebRoot']   . "/" . $TNG['directory'];    // absolute path
 
     // Check to be sure we can get to the TNG information
-    if (file_exists($TNG['configfile']) )
-    {
+    if (file_exists($TNG['configfile']) ) {
         include($TNG['configfile']);
         $TNG_conn = &ADONewConnection('mysql');
         $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
         $view_error = "";
         $have_info = 1;
-    } else
-    {
+    } else {
         $have_info = 0;
         $whatsnew_error = ""._PEOPLEDBFERROR."";
     }
 
     //////////// PEOPLE ///////////////////////
     $view_people = "";
-    if ( ($vars['showpeople'] == 'Y') && ($have_info == 1))
-    {
+    if ( ($vars['showpeople'] == 'Y') && ($have_info == 1)) {
         $whatsnew_showpeople  = true;
     //select from people where date later than cutoff, order by changedate descending, limit = 10
     $query = "SELECT personID, firstname, lastname, living, DATE_FORMAT(changedate,'%d %b') as changedatef, gedcom FROM $people_table WHERE TO_DAYS(NOW()) - TO_DAYS(changedate) <= $howlong ORDER BY changedate DESC, lastname, firstname LIMIT $maxitems";
-    if (!$result = &$TNG_conn->Execute($query)  )
-        {
+    if (!$result = &$TNG_conn->Execute($query)  ) {
             $whatsnew_error = ""._TNGZ_WHATSNEW_SQLERROR . " " . $TNG_conn->ErrorMsg();
-        } else
-        {
+        } else {
             $found = $result->RecordCount();
-            if ($found == 0)
-            {
+            if ($found == 0) {
 
-            } else
-            {
-                for (; !$result->EOF; $result->MoveNext())
-                {
+            } else  {
+                for (; !$result->EOF; $result->MoveNext()) {
                     list($id,$first,$last,$living,$change_date,$gedcom) = $result->fields;
                     $title1 = $last ;
                     $title1 .= ", " ;
@@ -167,26 +150,20 @@ function TNGz_WhatsNewblock_display($blockinfo)
     }
     //////////// FAMILY ///////////////////////
     $view_family = "";
-    if (($vars['showfamily'] == 'Y')  && ($have_info == 1))
-    {
+    if (($vars['showfamily'] == 'Y')  && ($have_info == 1)) {
         $whatsnew_showfamily  = true;
     $query = "SELECT f.familyID, f.husband, f.wife, f.gedcom, h.firstname, h.lastname, w.firstname, w.lastname, DATE_FORMAT(f.changedate,'%d %b') as changedatef
         FROM $families_table f, $people_table h, $people_table w WHERE TO_DAYS(NOW()) - TO_DAYS(f.changedate) <= $howlong AND h.personID = f.husband AND w.personID = f.wife AND h.gedcom = f.gedcom AND w.gedcom = f.gedcom
         ORDER BY f.changedate DESC, h.lastname LIMIT $maxitems";
 
-    if (!$result = &$TNG_conn->Execute($query)  )
-    {
+    if (!$result = &$TNG_conn->Execute($query)  ) {
             $whatsnew_error = ""._TNGZ_WHATSNEW_SQLERROR." " . $TNG_conn->ErrorMsg();
-        } else
-        {
+        } else {
             $found = $result->RecordCount();
-            if ($found == 0)
-            {
+            if ($found == 0) {
 
-            } else
-            {
-                for (; !$result->EOF; $result->MoveNext())
-                {
+            } else {
+                for (; !$result->EOF; $result->MoveNext()) {
                     list($familyID,$husbandID,$wifeID,$gedcom,$husband_first, $husband_last, $wife_first, $wife_last,$change_date) = $result->fields;
                     $title1 = "$husband_last - $wife_last ";
 //                  $title1 .= " <i>($change_date)</i>";
@@ -256,8 +233,7 @@ function TNGz_WhatsNewblock_display($blockinfo)
 */
     //////////// PHOTOS ///////////////////////
 
-    if (($vars['showphotos'] == 'Y')  && ($have_info == 1))
-    {
+    if (($vars['showphotos'] == 'Y')  && ($have_info == 1)) {
         $whatsnew_showphotos = true;
     $query = "SELECT DISTINCT mediaID, description,path, thumbpath, DATE_FORMAT(changedate,'%d %b') as changedatef
                         FROM $media_table p
@@ -266,29 +242,24 @@ function TNGz_WhatsNewblock_display($blockinfo)
                         ORDER BY changedate
                         DESC LIMIT $maxitems";
 
-    if (!$result = &$TNG_conn->Execute($query)  )
-                            {
+    if (!$result = &$TNG_conn->Execute($query)  ) {
             $whatsnew_error .= ""._TNGZ_WHATSNEW_SQLERROR." " . $TNG_conn->ErrorMsg();
-        } else
-        {
-            for (; !$result->EOF; $result->MoveNext())
-            {
+        } else {
+            for (; !$result->EOF; $result->MoveNext()) {
                 list($mediaID,$description,$picpath, $thumbpath,$change_date) = $result->fields;
 
                 // First try to use thumbnail
                 $photo_file = "$TNG_path/$photopath/$thumbpath";
                 $photo_ref  = "$TNG_ref/$photopath/". str_replace("%2F","/",rawurlencode($thumbpath));
                 $photo_path = $thumbpath;
-                if (!file_exists($photo_file))
-                {
+                if (!file_exists($photo_file)) {
                     // No thumbnail, so use actual picture
                     $photo_file = "$TNG_path/$photopath/$picpath";
                     $photo_ref  = "$TNG_ref/$photopath/". str_replace("%2F","/",rawurlencode($picpath));
                     $photo_path = $picpath;
                 }
 
-            if( $photo_path != "" && file_exists($photo_file) )
-            {
+            if( $photo_path != "" && file_exists($photo_file) ) {
                     $temp1 = pnModAPIFunc('TNGz','user','PhotoRef',
                                     array('photo_file'  => $photo_file,
                                         'web_ref'     => $photo_ref,
@@ -311,17 +282,14 @@ function TNGz_WhatsNewblock_display($blockinfo)
     }
 
 
-    if ( have_info == 1)
-    {
+    if ( have_info == 1) {
         $TNG_conn->Close();
     }
 
     // Can turn off caching by using the following
-    if ( $vars['usecache'] == 0 )
-    {
+    if ( $vars['usecache'] == 0 ) {
         $zcaching = false;
-    } else
-    {
+    } else {
             $zcaching = true;
     }
 
@@ -355,32 +323,25 @@ function TNGz_WhatsNewblock_modify($blockinfo)
     $vars = pnBlockVarsFromContent($blockinfo['content']);
 
     // Defaults
-    if (empty($vars['showpeople']))
-    {
+    if (empty($vars['showpeople'])) {
         $vars['showpeople'] = "Y";
     }
-    if (empty($vars['showfamily']))
-    {
+    if (empty($vars['showfamily'])) {
         $vars['showfamily']  = "Y";
     }
-    if (empty($vars['showhistory']))
-    {
+    if (empty($vars['showhistory'])) {
         $vars['showhistory']  = "Y";
     }
-    if (empty($vars['showphotos']))
-    {
+    if (empty($vars['showphotos'])) {
         $vars['showphotos']  = "Y";
     }
-    if (empty($vars['maxitems']) || !is_numeric($vars['maxitems']) )
-    {
+    if (empty($vars['maxitems']) || !is_numeric($vars['maxitems']) ) {
         $vars['maxitems']    = 10;
     }
-    if (empty($vars['howlong'])  || !is_numeric($vars['howlong'])  )
-    {
+    if (empty($vars['howlong'])  || !is_numeric($vars['howlong'])  ) {
         $vars['howlong']     = 60;
     }
-    if (empty($vars['usecache']))
-    {
+    if (empty($vars['usecache'])) {
         $vars['usecache']   = 0;
     }
 
@@ -422,18 +383,15 @@ function TNGz_WhatsNewblock_update($blockinfo)
     $vars['howlong']    = pnVarCleanFromInput('howlong');
     $vars['usecache']  = pnVarCleanFromInput('usecache');
 
-    if (!is_numeric($vars['maxitems']) )
-    {
+    if (!is_numeric($vars['maxitems']) ) {
         $vars['maxitems'] = _TNGZ_WHATSNEW_HOWMANY_NUM;
     }
-    if (!is_numeric($vars['howlong']) )
-    {
+    if (!is_numeric($vars['howlong']) ) {
         $vars['howlong']   = _TNGZ_WHATSNEW_HOWLONG_NUM;
     }
 
     // write back the new contents
     $blockinfo['content'] = pnBlockVarsToContent($vars);
-
 
     return $blockinfo;
 }
