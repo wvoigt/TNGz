@@ -24,8 +24,7 @@ function TNGz_admin_main()
     // anything and so we refuse access altogether.  The lowest level of access
     // for administration depends on the particular module, but it is generally
     // either 'edit' or 'delete'
-    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_EDIT))
-    {
+    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_EDIT)) {
         return LogUtil::registerError(_MODULENOAUTH);
     }
 
@@ -48,8 +47,7 @@ function TNGz_admin_modifyconfig()
 {
     // Security check - important to do this as early as possible to avoid
     // potential security holes or just too much wasted processing
-    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN))
-    {
+    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN)) {
         return LogUtil::registerError(_MODULENOAUTH);
     }
 
@@ -70,17 +68,14 @@ function TNGz_admin_modifyconfig()
     $TNG_rootpathimage = 'red_dot.gif';
 
 
-    if (file_exists($TNG['configfile']) )
-    {
+    if (file_exists($TNG['configfile']) ) {
         include($TNG['configfile']);
-        if ( $tngconfig )
-        {
+        if ( $tngconfig ) {
             $TNG_config        = true;
             $TNG_found         = _TNGZFOUND;
             $TNG_foundimage    = 'green_dot.gif';
         }
-        if ( $rootpath ==  $TNG_checkpath )
-        {
+        if ( $rootpath ==  $TNG_checkpath ) {
             $TNG_rootpath      = true;
             $TNG_rootpathsay   = _TNGZROOTPATHGOOD;
             $TNG_rootpathimage = 'green_dot.gif';
@@ -98,14 +93,11 @@ function TNGz_admin_modifyconfig()
     $TNG_versionlast  =  pnModGetVar('TNGz', '_version');
 
     $TNGversionfile = dirname($TNG['configfile']) . "/version.php";
-    if (file_exists($TNGversionfile) )
-    {
+    if (file_exists($TNGversionfile) ) {
         include($TNGversionfile);
-        if ( $tng_version )
-        {
+        if ( $tng_version ) {
             $TNG_version = $tng_version ;
-        if ( ($TNG_version == $TNG_versionlast) && ($TNG_version != _TNGVERSIONUNKNOWN) )
-        {
+        if ( ($TNG_version == $TNG_versionlast) && ($TNG_version != _TNGVERSIONUNKNOWN) ) {
                 $TNG_versioncheck = true;
                 $TNG_versionsay  = _TNGZVERSIONSAME;
                 $TNG_versionimage  = 'green_dot.gif';
@@ -196,8 +188,7 @@ function TNGz_admin_updateconfig()
 {
     // Security check - important to do this as early as possible to avoid
     // potential security holes or just too much wasted processing
-    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN))
-    {
+    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN)) {
         return LogUtil::registerError(_MODULENOAUTH);
     }
 
@@ -229,8 +220,7 @@ function TNGz_admin_updateconfig()
     // authorisation code attached to it.  If it did not then the function will
     // proceed no further as it is possible that this is an attempt at sending
     // in false data to the system
-    if (!SecurityUtil::confirmAuthKey())
-    {
+    if (!SecurityUtil::confirmAuthKey()) {
         LogUtil::registerStatus(_BADAUTHKEY);
         pnRedirect(pnModURL('TNGz', 'admin', 'main'));
         return true;
@@ -283,8 +273,7 @@ function TNGz_admin_updateconfig()
     // Also, we do this every time to make sure we have the latest, just in case files are changed
     $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
 
-    if ($TNGglobals = pnModAPIFunc('TNGz','user','GetTNGglobals', array('dir' => $TNG['SitePath']."/".$TNG['directory'])))
-    {
+    if ($TNGglobals = pnModAPIFunc('TNGz','user','GetTNGglobals', array('dir' => $TNG['SitePath']."/".$TNG['directory']))) {
         pnModSetVar('TNGz', '_globals'     , $TNGglobals);
     }
 
@@ -302,19 +291,16 @@ function TNGz_admin_updateconfig()
 function TNGz_admin_TNGadmin()
 {
 
-    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN))
-    {
+    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN)) {
         return LogUtil::registerError(_MODULENOAUTH);
     }
 
-    if (!pnUserLoggedIn())
-    {
+    if (!pnUserLoggedIn()) {
         // Must be logged in to even have a chance at getting to the administration page
         pnRedirect(pnModURL('Users','user','loginscreen')) ;
     }
 
-    if (!$url=pnModAPIFunc('TNGz','user','GetTNGurl') )
-    {
+    if (!$url=pnModAPIFunc('TNGz','user','GetTNGurl') ) {
         return LogUtil::registerError("Error accessing TNG config file.");
     }
 
@@ -337,8 +323,7 @@ function TNGz_admin_TNGadmin()
 
 function TNGz_admin_Instruct()
 {
-    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN))
-    {
+    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN)) {
         return LogUtil::registerError(_MODULENOAUTH);
     }
 
@@ -346,8 +331,7 @@ function TNGz_admin_Instruct()
     $pnTNGmodinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
 
     $helpfile = 'modules/'.DataUtil::formatForOS($pnTNGmodinfo['directory']).'/'.DataUtil::formatForOS($pnTNGmodinfo['help']);
-    if (file_exists($helpfile))
-    {
+    if (file_exists($helpfile)) {
         $helpfile = "<pre>" . implode('',file($helpfile)) . "</pre>";
         $helpfile = DataUtil::formatForDisplayHTML($helpfile);
     }
@@ -369,8 +353,7 @@ function TNGz_admin_Instruct()
 
 function TNGz_admin_Info()
 {
-    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN))
-    {
+    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN)) {
         return LogUtil::registerError(_MODULENOAUTH);
     }
 
@@ -380,8 +363,7 @@ function TNGz_admin_Info()
 
 
     $changelog = 'modules/'.DataUtil::formatForOS($pnTNGmodinfo['directory']).'/'.DataUtil::formatForOS($pnTNGmodinfo['changelog']);
-    if (file_exists($changelog))
-    {
+    if (file_exists($changelog)) {
         $changelog = "<pre>" . implode('',file($changelog)) . "</pre>";
         $changelog = DataUtil::formatForDisplayHTML($changelog);
     }
@@ -397,12 +379,10 @@ function TNGz_admin_Info()
 
     $pnRender->assign('changelog'  , $changelog );
 
-    foreach ($pnTNGmodinfo as $key => $value)
-    {
+    foreach ($pnTNGmodinfo as $key => $value) {
         $debuglist[] = array( 'key' => $key, 'value' => $value );
     }
-    foreach ($pnTNGmodvars as $key => $value)
-    {
+    foreach ($pnTNGmodvars as $key => $value) {
         $debuglist[] = array( 'key' => $key, 'value' => $value );
     }
     $pnRender->assign('debuglist'  , $debuglist);

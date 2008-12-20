@@ -38,8 +38,7 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
     if( !pnSecAuthAction( 0, 'TNGz:RandomPhotoblock:', "$blockinfo[title]::", ACCESS_READ ) )
         return;
 
-    if( !pnModAPILoad('TNGz','user',true) )
-    {
+    if( !pnModAPILoad('TNGz','user',true) ) {
         return false;
     }
 
@@ -47,38 +46,32 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
     $vars = pnBlockVarsFromContent($blockinfo['content']);
 
     // Defaults
-    if (empty($vars['showliving']))
-    {
+    if (empty($vars['showliving'])) {
         $vars['showliving']  = 'L';
     //    N = No or None
     //    D = show only dead people (no living)
     //    Y = show all
     //    L = show living only if user is logged in
     }
-    if (empty($vars['phototype']))
-    {
+    if (empty($vars['phototype'])) {
         $vars['phototype']  = 'T';
     //    T = use Thumbnail
     //    P = use Photo
     }
-    if (empty($vars['max_height']))
-    {
+    if (empty($vars['max_height'])) {
         $vars['max_height']  = '150';
     //  max_height = largest height of picture -- scale to this if bigger
     }
-    if (empty($vars['max_width']))
-    {
+    if (empty($vars['max_width'])) {
         $vars['max_width']    = '150';
 // max_width  = largest width of picture  -- scale to this if bigger
     }
-    if (empty($vars['usecache']))
-    {
+    if (empty($vars['usecache'])) {
         $vars['usecache']   = 0;
     //    1 = Yes
     //    0 = No
     }
-    if (empty($vars['photolist']))
-    {
+    if (empty($vars['photolist'])) {
         $vars['photolist']   = "";
     // Empty is no photos in list
     }
@@ -86,10 +79,8 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
     $PhotoList   = "";
     $record_sep  = "";
     $entrylist   = preg_split("/[\s ]*[,;\s]+[\s ]*/",trim($vars['photolist']));
-    foreach ($entrylist as $entry)
-    {
-        if (preg_match("/^[0-9]+$/",$entry) )
-        {
+    foreach ($entrylist as $entry) {
+        if (preg_match("/^[0-9]+$/",$entry) ) {
             $PhotoList .= $record_sep . $entry;
             $record_sep =", ";
         }
@@ -110,42 +101,34 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
     // $TNG_ref  = $TNG['WebRoot']   . "/" . $TNG['directory'];    // absolute path
 
     // Check to be sure we can get to the TNG information
-    if (file_exists($TNG['configfile']) )
-    {
+    if (file_exists($TNG['configfile']) ) {
         include($TNG['configfile']);
         $TNG_conn = &ADONewConnection('mysql');
         $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
         $have_info = 1;
-    } else
-    {
+    } else {
         $have_info = 0;
         $photo_error  = ""._PEOPLEDBFERROR."";
     }
 
 
-    if ($window == 1 )
-    {
+    if ($window == 1 ) {
         $target = "target=_blank" ;
     }
 
-    if ($vars['showliving'] != 'N' && $have_info == 1 )
-    {
+    if ($vars['showliving'] != 'N' && $have_info == 1 ) {
 
         // determine if we show living information
         $showliving = false;  // default to no
-        if ($vars['showliving'] == 'Y')
-        {
+        if ($vars['showliving'] == 'Y') {
             $showliving = true;
-        } elseif ( $vars['showliving'] == 'L' && pnUserLoggedIn() )
-        {
+        } elseif ( $vars['showliving'] == 'L' && pnUserLoggedIn() ) {
             // now check to make sure TNG says user can see the living
             $userid = pnUserGetVar('uname');
             $query = "SELECT allow_living FROM $users_table WHERE username = '$userid' ";
-            if ($result = &$TNG_conn->Execute($query) )
-            {
+            if ($result = &$TNG_conn->Execute($query) ) {
                 list($TNG_living) = $result->fields;
-                if ($TNG_living == "1")
-                {
+                if ($TNG_living == "1") {
                     $showliving = true;
                 }
             }
@@ -155,21 +138,18 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
         $need_photo = true;
         $photos_with_living = "";   // comma separated list of photoIDs we don't want to display because linked to a living person
 
-        if (!$showliving )
-        {
+        if (!$showliving ) {
                 // get the list of photoIDs that have at least 1 living person --- don't want to show those
                 $query = "SELECT living.mediaID AS mediaID
                         FROM $medialinks_table AS living, $people_table AS person
                         WHERE living.personID = person.personID AND person.living = 1
                         GROUP BY living.mediaID";
-                if (!$result = &$TNG_conn->Execute($query) )
-                {
+                if (!$result = &$TNG_conn->Execute($query) ) {
                     $photo_error .= ""._PEOPLEDBFERROR." [0] " . $TNG_conn->ErrorMsg() . " ";
                 }
                 // now make a comma separated list of the photoIDs
                 $record_sep = "";
-                for (; !$result->EOF; $result->MoveNext())
-                {
+                for (; !$result->EOF; $result->MoveNext()) {
                     list($mediaID) = $result->fields;
                     $photos_with_living .= $record_sep . $mediaID;
                     $record_sep =", ";
@@ -182,27 +162,22 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
                 FROM $media_table, $medialinks_table AS photolist
                 WHERE photolist.mediaID = $media_table.mediaID
                         AND $media_table.mediatypeID = \"photos\" ";
-        if ($PhotoList != "")
-        {
+        if ($PhotoList != "") {
             // Only include those that are already specified
             $query .= "AND photolist.mediaID IN ( $PhotoList ) ";
         }
-        if (!$showliving )
-        {
+        if (!$showliving ) {
             // but don't include photo's of living people
             $query .= "AND photolist.mediaID NOT IN ( $photos_with_living ) ";
         }
 
-        if (!$result = &$TNG_conn->Execute($query)  )
-        {
+        if (!$result = &$TNG_conn->Execute($query)  ) {
                 $photo_error .= ""._PEOPLEDBFERROR." [1] " . $TNG_conn->ErrorMsg() . " ";
-        } else
-        {
+        } else {
 
             $num_photos = $result->RecordCount();  // the number of photo links to pick from
 
-            for ( $strikes = 0 ; $strikes <= $max_strikes && $need_photo; $strikes++ )
-            {
+            for ( $strikes = 0 ; $strikes <= $max_strikes && $need_photo; $strikes++ ) {
                 // just in case of problems, try at most max_strikes times
                 $result->Move( RAND(0,$num_photos - 1) );
                 list($linkID) = $result->fields;
@@ -213,27 +188,22 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
                         WHERE $medialinks_table.mediaID = \"$linkID\"
                                 AND $media_table.mediaID = $medialinks_table.mediaID ";
 
-                if (!$result2 = &$TNG_conn->Execute($query))
-                {
+                if (!$result2 = &$TNG_conn->Execute($query)) {
                     $photo_error .= ""._PEOPLEDBFERROR." [2] " . $TNG_conn->ErrorMsg()  . " ";
-                } else
-                {
+                } else {
                     list($t_path,$t_thumbpath,$t_description,$t_notes,$t_medialinkID,$t_personID,$t_gedcom,$t_mediaID,$usecollfolder) = $result2->fields;
                     $result2->Close();
 
-                    if ($vars['phototype']  == 'P')
-                    {
+                    if ($vars['phototype']  == 'P') {
                         $picture = $t_path;
-                    } else
-                    {
+                    } else {
                         $picture = $t_thumbpath;
                     }
                     $picture_file = "$TNG_path/$photopath/$picture";
                     $picture_ref  = "$TNG_ref/$photopath/". str_replace("%2F","/",rawurlencode($picture));
 
                     // check to make sure a picture defined and the file exists
-                    if ($picture != "" && file_exists($picture_file))
-                    {
+                    if ($picture != "" && file_exists($picture_file)) {
                         // Found the photo thumbnail to display
                         $temp1 = pnModAPIFunc('TNGz','user','PhotoRef',
                                         array('photo_file'  => $picture_file,
@@ -262,24 +232,20 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
             }
             $result->Close();
         }
-        if ( $need_photo )
-        {
+        if ( $need_photo ) {
             // Didn't get a photo this time
             $photo_error  .= ""._NOPHOTOFOUND." ";
         }
 
     }
-    if ($have_info == 1 )
-    {
+    if ($have_info == 1 ) {
         $TNG_conn->Close();
     }
 
     // Can turn off caching by using the following
-    if ( $vars['usecache'] == 0 )
-    {
+    if ( $vars['usecache'] == 0 ) {
         $zcaching = false;
-    } else
-    {
+    } else {
         $zcaching = true;
     }
 
@@ -306,28 +272,22 @@ function TNGz_RandomPhotoblock_modify($blockinfo)
     $vars = pnBlockVarsFromContent($blockinfo['content']);
 
     // Defaults
-    if (empty($vars['showliving']))
-    {
+    if (empty($vars['showliving'])) {
         $vars['showliving'] = "L";
     }
-    if (empty($vars['phototype']))
-    {
+    if (empty($vars['phototype'])) {
         $vars['phototype'] = "T";
     }
-    if (empty($vars['max_height']))
-    {
+    if (empty($vars['max_height'])) {
         $vars['max_height']  = "150";
     }
-    if (empty($vars['max_width']))
-    {
+    if (empty($vars['max_width'])) {
         $vars['max_width']   = "150";
     }
-    if (empty($vars['usecache']))
-    {
+    if (empty($vars['usecache'])) {
         $vars['usecache']   = 0;
     }
-    if (empty($vars['photolist']))
-    {
+    if (empty($vars['photolist'])) {
         $vars['photolist']   = "";
     }
 

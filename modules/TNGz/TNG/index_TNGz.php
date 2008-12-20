@@ -27,7 +27,7 @@ $parm      = $form_vars['parm'] ;
 
 list($paramcheck,$f_username,$f_pwd, $goto_url) = explode('|', $parm);
 
-if ( ($f_username=="") || ($parmcheck != md5(implode('|', array($f_username,$f_pwd, $goto_url) ) ) )){
+if ( ($f_username=="") || ($parmcheck != md5(implode('|', array($f_username,$f_pwd, $goto_url) ) ) )) {
 	$login_url = getURL( "login", 1 );
 	header( "Location: " . "$login_url" . "message=loginfailed" );
 }
