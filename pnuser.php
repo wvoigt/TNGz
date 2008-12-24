@@ -147,7 +147,7 @@ function TNGz_user_sitemap()
 
     // Return a sitemap (either full, or a partial one)
     $pnRender =& new pnRender('TNGz');
-    $pnRender->assign('records', utf8_encode($records));
+    $pnRender->assign('records', $records);
     $pnRender->display('TNGz_user_sitemap.htm');
     return true;
 
