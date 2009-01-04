@@ -14,10 +14,4 @@
  * @version $Id$
  */
 
-
-define('_TNGZ_SEARCH_LIVING', 'The following individual is flagged as living - Details withheld.');
-define('_TNGZ_SEARCH', 'Genealogy People Search');
-define('_TNGZ_SEARCH_BORN', 'b.');
-define('_TNGZ_SEARCH_DIED', 'd.');
-define('_TNGZ_SEARCH_RESULTS', 'people found');
-define('_TNGZ_SEARCH_NONEFOUND', 'None found');
+require_once dirname(realpath(__FILE__)).'/common.php';
