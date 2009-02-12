@@ -1,4 +1,4 @@
-.wordcloud {
+.surnames-cloud {
   	font-family: Verdana, Tahoma, Arial;
   	padding: 4px 4px 4px 4px;
   	letter-spacing: 3px;
@@ -45,3 +45,35 @@ a.size9:visited { color: #000000; }
 span.size0      { color: #000000; font-size: 0.6em; }
 a.size0:link    { color: #000000; }
 a.size0:visited { color: #000000; }
+
+.surnames-list {
+}
+
+.surnames-table {
+	border-width: 1px 1px 1px 1px;
+	border-style: none none none none;	
+	border-spacing: 2px;
+}
+
+.surnames-table tr {
+}
+
+.surnames-table td {
+	padding: 3px 3px 3px 3px;
+}
+
+.places-list {
+}
+
+.places-table {
+	border-width: 1px 1px 1px 1px;
+	border-style: none none none none;	
+	border-spacing: 2px;
+}
+
+.places-table tr {
+}
+
+.places-table td {
+	padding: 3px 3px 3px 3px;
+}
