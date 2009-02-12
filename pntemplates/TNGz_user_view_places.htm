@@ -8,27 +8,7 @@
 
 
 	<!--[if $places ]-->
-	<!--[* Requires Smarty 2.6.0 or later *]-->
-	<!--[* $data is the array you want to display *]-->
-	<!--[* $numCols is the number of columns *]-->
-	<!--[assign var="numCols" value="5"]-->
-	<table>
-		<tr>
-			<!--[assign var="col" value="0"]-->
-			<!--[section name=element loop=$places]-->
-			<!--[if $col == $numCols]-->
-		</tr>
-		<tr><!--[assign var="col" value="0"]-->
-			<!--[/if]-->
-			<td><!--[$places[element].rank|string_format:"%2s"]-->. <!--[$places[element].name]--><!--[$places[element].link]--></td>
-			<!--[assign var="col" value="`$col+1`"]-->
-			<!--[/section]-->
-			<!--[assign var="remainder" value="`$numCols-$col`"]-->
-			<!--[section name=emptyElement loop=$remainder]-->
-			<td>&nbsp;</td>
-			<!--[/section]-->
-		</tr>
-	</table>
+	<!--[places top=$top cols=4 sort=rank]-->
 	<!--[/if]-->
 	<div>
 		<form style="margin:0px" action="index.php" method="post">
@@ -47,5 +27,5 @@
 	<div>
 		<a href="<!--[pnmodurl fqurl=true modname=TNGz show=places ]-->"><!--[ pnml name="_TNGZ_MAINPLACESPAGE" ]--></a>
 	</div>
-	<img height="400" width="800" src="<!--[pnmodurl fqurl=true modname=TNGz func=worldmap size=large ]-->" />
+	<img height="400" width="800" src="<!--[pnmodurl fqurl=true modname=TNGz func=worldmap size=large ]-->">
 </div>

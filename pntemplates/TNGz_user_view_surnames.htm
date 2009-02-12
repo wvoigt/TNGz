@@ -3,42 +3,23 @@
 
 <!--[* Surname Word Cloud *]-->
 <!--[if $SurnameAlpha ]-->
-<div class='wordcloud'>
-	<!--[section name=element loop=$SurnameAlpha]-->
-	<span class='wordcloud size<!--[$SurnameAlpha[element].class]-->'><a class='wordcloud size<!--[$SurnameAlpha[element].class]-->' href="<!--[pnmodurl modname=TNGz show=search mylastname=$SurnameAlpha[element].surnameuc mybool=AND  ]-->"><!--[$SurnameAlpha[element].surname]--></a></span>
-	<!--[/section]-->
-</div>
+<!--[surnames type=cloud top=$top]-->
+<hr>
+<br/>
 <!--[/if]-->
 
-<br/>
-
-<!--[* Surname Listing *]-->
+<!--[* Surname Table *]-->
 <!--[if $SurnameRank ]-->
 <div>
 	<div style="text-align:center;">
 		<!--[ pnml name="_TNGZ_TOP" ]--> <!--[ $top ]--> <!--[ pnml name="_TNGZ_SURNAMES" ]--> <!--[ pnml name="_TNGZ_OUTOF" ]--> <!--[ $SurnameCount ]--> <!--[ pnml name="_TNGZ_TOTALSURNAMES" ]-->
 	</div>
-
-	<!--[* $numCols is the number of columns *]-->
-	<!--[assign var="numCols" value="5"]-->
-	<table>
-		<tr>
-			<!--[assign var="col" value="0"]-->
-			<!--[section name=element loop=$SurnameRank]-->
-			<!--[if $col == $numCols]-->
-		</tr>
-		<tr><!--[assign var="col" value="0"]-->
-			<!--[/if]-->
-			<td><!--[$SurnameRank[element].rank|string_format:"%2s"]-->. <a href="<!--[pnmodurl modname=TNGz show=search mylastname=$SurnameRank[element].surnameuc mybool=AND  ]-->"><!--[$SurnameRank[element].surname]--></a> (<!--[$SurnameRank[element].count]-->)</td>
-			<!--[assign var="col" value="`$col+1`"]-->
-			<!--[/section]-->
-			<!--[assign var="remainder" value="`$numCols-$col`"]-->
-			<!--[section name=emptyElement loop=$remainder]-->
-			<td>&nbsp;</td>
-			<!--[/section]-->
-		</tr>
-	</table>
+	<div align='center'>
+        <!--[surnames type=table top=$top cols=5 sort='rank']-->
+	</div>
 </div>
+<hr>
+<br/>
 <!--[/if]-->
 
 <!--[* Surname Links elsewhere *]-->
@@ -60,4 +41,17 @@
 <div>
 	<a href="<!--[pnmodurl fqurl=true modname=TNGz show=surnames ]-->"><!--[ pnml name="_TNGZ_MAINSURNAMESPAGE" ]--></a>
 </div>
+<div>
+<hr>
+<table>
+    <tr>
+        <td>
+            <!--[surnames type=list top=$top sort=rank]-->
+        </td>
+        <td>
+            <!--[surnames type=list top=$top sort=alpha]-->
+        </td>
+    </tr>
+</table>
 
+</div>
