@@ -1100,10 +1100,165 @@ function TNGz_userapi_getRecordsCount($args)
     return($facts);
 }
 
+
+/*
+* GetSurnames
+* @param string args['top'] number of top surnames to return
+* @return mixed array.  output['alpha'] is alphabatized.  output['rank'] by surname usage
+*/
+function TNGz_userapi_GetSurnames($args)
+{
+    $top = $args['top'];
+    $top  = (is_numeric($top) && $top > 0)? intval($top) : 50;  // Get valid value or set default
+       
+    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
+
+    // Check to be sure we can get to the TNG information
+    $have_info = 0;
+    if (file_exists($TNG['configfile']) ) {
+        include($TNG['configfile']);
+        $TNG_conn = &ADONewConnection('mysql');
+        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
+        $have_info = 1;
+    }
+    if (!$have_info) {
+        return pnVarPrepHTMLDisplay("Failed to find TNG database");
+    }
+
+    $cms['tngpath']    = $TNG['directory']. "/";
+
+    // First get all unique surnames
+    $query = "SELECT ucase( $binary TRIM(CONCAT_WS(' ',lnprefix,lastname) ) ) as surnameuc, TRIM(CONCAT_WS(' ',lnprefix,lastname) ) as surname, count( ucase($binary lastname ) ) as count FROM $people_table WHERE lastname<>'' GROUP BY surname ORDER by count DESC ";
+    $saved_fetch_mode = &$TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
+    if (!$result = &$TNG_conn->Execute($query) ) {
+        return pnVarPrepHTMLDisplay("Failed the TNG query");
+    }
+
+    $SurnameCount = $result->RecordCount();
+    $name         = $result->fields;       // Look at first record, since already sorted by Surname Count
+    $SurnameMax   = $name['count'];        // First record should have the most
+    
+    $SurnameRank  = array();
+    
+    for ($rank=1; !$result->EOF && $rank<=$top; $result->MoveNext(), $rank++) {
+        $name = $result->fields;
+        $name['surname']   = $name['surname'];
+        $name['surnameuc'] = urlencode($name['surnameuc']);
+        $name['rank']      = $rank;
+        // Now assign a class to each surname based upon relative number to most used surname
+        $percent = 100 * $name['count'] / $SurnameMax;
+        if ($percent > 98) {
+            $class = 1;
+        } else if ($percent > 70) {
+            $class = 2;
+        } else if ($percent > 50) {
+            $class = 3;
+        } else if ($percent > 30) {
+            $class = 4;
+        } else if ($percent > 25) {
+            $class = 5;
+        } else if ($percent > 20) {
+            $class = 6;
+        } else if ($percent > 15) {
+            $class = 7;
+        } else if ($percent > 10) {
+            $class = 8;
+        } else if ($percent > 5 ) {
+            $class = 9;
+        } else {
+            $class = 0;
+        }
+        $name['class'] = $class;
+        $SurnameRank[]  = $name;
+    }
+    // Now get a array $SurnameAlpha sorted on the upper case surname
+    $SurnameAlpha = $SurnameRank;
+    foreach ($SurnameAlpha as $key => $row) {
+        $surname[$key]  = $row['surnameuc'];
+    }
+    array_multisort($surname, SORT_ASC, $SurnameAlpha);
+    
+    // Clean up
+    $saved_fetch_mode= &$TNG_conn->SetFetchMode($saved_fetch_mode);
+    $TNG_conn->Close();
+    
+    return array( 'alpha' => $SurnameAlpha,
+                  'rank'  => $SurnameRank,
+                  'count' => $SurnameCount,
+                  'max'   => $SurnameMax );
+}
+
+
+/*
+* GetPlaces
+* @param string args['top']  number of top places to return
+* @param string args['sort'] sort order of places.  By alpha or rank
+* @return mixed array of places
+*/
+function TNGz_userapi_GetPlaces($args)
+{
+    $top = $args['top'];
+    $top  = (is_numeric($top) && $top > 0)? intval($top) : 50;  // Get valid value or set default
+    
+    $validsorts = array('rank', 'alpha');  // first in list is the default
+    $sort = (in_array($args['sort'], $validsorts))? $args['sort'] : $validsorts[0];    
+       
+    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
+
+    // Check to be sure we can get to the TNG information
+    $have_info = 0;
+    if (file_exists($TNG['configfile']) ) {
+        include($TNG['configfile']);
+        $TNG_conn = &ADONewConnection('mysql');
+        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
+        $have_info = 1;
+    }
+    if (!$have_info) {
+        return pnVarPrepHTMLDisplay("Failed to find TNG database");
+    }
+    $cms['tngpath']    = $TNG['directory']. "/";
+
+    $thePlaces = array();
+
+    $query = "SELECT distinct trim(substring_index(place,',',-1)) as myplace, count(distinct place) as placecount FROM $places_table WHERE trim(substring_index(place,',',-1)) != \"\" GROUP BY myplace ORDER by placecount DESC LIMIT $top";
+    $saved_fetch_mode = &$TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
+    if (!$result = &$TNG_conn->Execute($query) ) {
+        return pnVarPrepHTMLDisplay("Failed the TNG query");
+    }
+    $count = 1;
+    for (; !$result->EOF; $result->MoveNext()) {
+        $place = $result->fields;
+        $place2 = urlencode($place['myplace']);
+        if( $place2 != "" ) {
+            $query = "SELECT count(distinct place) as placecount FROM $places_table WHERE place = \"$place[myplace]\"";
+            if (!$result2 = &$TNG_conn->Execute($query) ) {
+                return pnVarPrepHTMLDisplay("Failed to TNG query");
+            }
+            $countrow = $result2->fields;
+            $specificcount = $countrow['placecount'];
+
+            $searchlink = ($specificcount) ? " <a href=\"". pnModURL('TNGz', 'user', 'main', array('show'=>'placesearch', 'psearch'=>$place2)). "\"><img src=\"". $cms['tngpath']. "tng_search_small.gif\" border=\"0\" alt=\"\" width=\"9\" height=\"9\" /></a>" : "";
+            $name = ($place['placecount'] > 1 || !$specificcount) ? "<a href=\"". pnModURL('TNGz', 'user', 'main', array('show'=>'places-oneletter', 'offset'=>'1', 'psearch'=>$place2))."\">" . str_replace(array("<",">"), array("&lt;","&gt;"), $place['myplace']) . "</a> (".$place['placecount'].")" : $place['myplace'];
+            $thePlaces[$name] = array('rank'=> $count, 'name'=>$name, 'count'=> $place['placecount'], 'link'=>$searchlink);
+            $count++;
+        }
+    }
+    
+    // Clean up
+    $saved_fetch_mode= &$TNG_conn->SetFetchMode($saved_fetch_mode);
+    $TNG_conn->Close();
+    
+    if ($sort == 'alpha') {
+        ksort($thePlaces);
+    }
+    
+    return $thePlaces;
+}
+
+
 /**
 * Change all local TNGz hrefs in page to short URLs (directory style)
-* @param  array $matches    array from preg_replace for matching an HTML anchor with href
-*                           $matches[0] = whole string
+* @param  array $args     $matches[0] = whole string
 *                           $matches[1] = '<a href="'
 *                           $matches[2] = the url to convert
 *                           $matches[3] = '" >'
