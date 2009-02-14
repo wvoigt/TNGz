@@ -126,9 +126,7 @@ define('_SELECTFAMILYSHORT',         'Surnames only');
 
 define('_WANTEDINSTRUCTIONS',        '<strong>All Fields below are optional.</strong><br /> Fields left blank will be ommited in the output.<br />IDs which are not in the right format, are not in TNG, or contain errors will be omitted in the output.');
 define('_WANTEDTEXT',                'Explanation text at the top of the block (can included HTML)');
-define('_WANTEDPEOPLELABEL',         'Person List Title (e.g. People)');
 define('_WANTEDPEOPLELIST',          'List of PersonIDs (e.g. I001, I002)');
-define('_WANTEDFAMILYLABEL',         'Family List Title (e.g. Families)');
 define('_WANTEDFAMILYLIST',          'List of FamilyIDs (e.g. F001, F002)');
 define('_WANTEDMENULINK',            'Show TNG Menu Link at the bottom?');
 define('_MARRIAGE_AND',              'and');
