@@ -5,9 +5,7 @@
         <div style="text-align:center;"><!--[$WantedText|pnvarprephtmldisplay]--><br /></div>
     <!--[/if]-->   
     <!--[if $WantedPeopleList ]-->
-        <!--[if $WantedPeopleLabel ]-->
-        <div style="text-align:center;"><strong><br /><!--[$WantedPeopleLabel]--></strong></div>   
-        <!--[/if]-->
+        <div style="text-align:center;"><strong><br /><!--[pnml name="_TNGZ_WHATSNEW_HEAD_PEOPLE"|pnvarprephtmldisplay]--></strong></div>
         <ul>  
         <!--[foreach item=item from=$WantedPeopleList]-->
         <li><!--[$item]--></li>
@@ -16,9 +14,7 @@
         <!--[counter name=ItemCount assign=ItemCount ]-->    
     <!--[/if]-->
     <!--[if $WantedFamilyList ]-->
-        <!--[if $WantedFamilyLabel ]-->
-        <div style="text-align:center;"><strong><br /><!--[$WantedFamilyLabel]--></strong></div>   
-        <!--[/if]-->    
+        <div style="text-align:center;"><strong><br /><!--[pnml name="_TNGZ_WHATSNEW_HEAD_FAMILY"|pnvarprephtmldisplay]--></strong></div> 
         <ul>    
         <!--[foreach item=item from=$WantedFamilyList]-->
         <li><!--[$item]--></li>
