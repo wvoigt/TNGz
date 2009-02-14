@@ -48,14 +48,11 @@ function TNGz_MostWantedblock_display($blockinfo)
     if (empty($vars['wantedtext'])) {
         $vars['wantedtext']   = "";
     }
-    if (empty($vars['wantedpeoplelabel'])) {
-        $vars['wantedpeoplelabel'] = "";
-    }
+    if (!isset($vars['wantedintro'])) {
+        $vars['wantedintro'] = array();
+    }    
     if (empty($vars['wantedpeoplelist'])) {
         $vars['wantedpeoplelist'] = "";
-    }
-    if (empty($vars['wantedfamilylabel'])) {
-        $vars['wantedfamilylabel'] = "";
     }
     if (empty($vars['wantedfamilylist'])) {
         $vars['wantedfamilylist'] = "";
@@ -78,10 +75,18 @@ function TNGz_MostWantedblock_display($blockinfo)
     //    E = Order Entered
     }
 
+    // get language and default to eng
+    $userlanguage = pnUserGetLang();
+
+    // Upgrade from prior version that used $vars['wantedtext'] (i.e., a single language version)
+    // If nothing exists in existing language, use any value that was in 'wantedtext'
+    if (!array_key_exists($userlanguage, $vars['wantedintro'])) {
+        $vars['wantedintro'][$userlanguage] = $vars['wantedtext'];
+    }    
+
     $Mostwantedpeoplelist     = array();
     $Mostwantedfamilylist     = array();
     $MostWantedMenuLink       = "";
-    $MostWantedText           = "";
     $MostWanted_error         = "";
 
     // Get a good SQL clean list of PeopleIDs that are wanted
@@ -274,10 +279,8 @@ function TNGz_MostWantedblock_display($blockinfo)
 
     $pnRender = pnRender::getInstance('TNGz', $zcaching);
 
-    $pnRender->assign('WantedText',         $vars['wantedtext']);
-    $pnRender->assign('WantedPeopleLabel',  $vars['wantedpeoplelabel']);
+    $pnRender->assign('WantedText',         $vars['wantedintro'][$userlanguage]);
     $pnRender->assign('WantedPeopleList',   $Mostwantedpeoplelist);
-    $pnRender->assign('WantedFamilyLabel',  $vars['wantedfamilylabel']);
     $pnRender->assign('WantedFamilyList',   $Mostwantedfamilylist);
     $pnRender->assign('WantedMenuLink',     $MostWantedMenuLink);
 
@@ -293,17 +296,14 @@ function TNGz_MostWantedblock_modify($blockinfo)
     $vars = pnBlockVarsFromContent($blockinfo['content']);
 
     // Defaults
-    if (empty($vars['wantedtext'])) {
-        $vars['wantedtext']   = "";
+    if (empty($vars['wantedtext'])) {  // This will no longer be used in the future
+        $vars['wantedtext']   = "";    // Will always be "" after the first save
     }
-    if (empty($vars['wantedpeoplelabel'])) {
-        $vars['wantedpeoplelabel'] = "";
+    if (!isset($vars['wantedintro'])) {
+        $vars['wantedintro'] = array();
     }
     if (empty($vars['wantedpeoplelist'])) {
         $vars['wantedpeoplelist'] = "";
-    }
-    if (empty($vars['wantedfamilylabel'])) {
-        $vars['wantedfamilylabel'] = "";
     }
     if (empty($vars['wantedfamilylist'])) {
         $vars['wantedfamilylist'] = "";
@@ -317,6 +317,26 @@ function TNGz_MostWantedblock_modify($blockinfo)
     if (empty($vars['sortby'])) {
         $vars['sortby']     = "E";
     }
+
+    // get language and default to eng
+    Loader::loadClass('LanguageUtil');
+    $languages = LanguageUtil::getLanguages();
+    $userlanguage = pnUserGetLang();
+
+    // Upgrade from prior version that used $vars['wantedtext'] (i.e., a single language version)
+    // If nothing exists in existing language, use any value that was in 'wantedtext'
+    // Note: This only works the first time, after that, wantedtext will be empty
+    if (!array_key_exists($userlanguage, $vars['wantedintro'])) {
+        $vars['wantedintro'][$userlanguage] = $vars['wantedtext'];
+    }    
+
+    // make sure each language has an initial value
+    foreach($languages as $lang) {
+        if (!array_key_exists($lang, $vars['wantedintro'])) {
+            $vars['wantedintro'][$lang] = '';
+        }
+    }
+
     // Create output object
     $pnRender =& new pnRender('TNGz');
 
@@ -341,10 +361,8 @@ function TNGz_MostWantedblock_modify($blockinfo)
                                             ) );
 
     $pnRender->assign('sortby'           , $vars['sortby']);
-    $pnRender->assign('wantedtext'       , $vars['wantedtext']);
-    $pnRender->assign('wantedpeoplelabel', $vars['wantedpeoplelabel']);
+    $pnRender->assign('wantedintro'      , $vars['wantedintro']);
     $pnRender->assign('wantedpeoplelist' , $vars['wantedpeoplelist']);
-    $pnRender->assign('wantedfamilylabel', $vars['wantedfamilylabel']);
     $pnRender->assign('wantedfamilylist' , $vars['wantedfamilylist']);
     $pnRender->assign('wantedfamilyname' , $vars['wantedfamilyname']);
     $pnRender->assign('wantedmenulink'   , $vars['wantedmenulink']);
@@ -360,11 +378,9 @@ function TNGz_MostWantedblock_update($blockinfo)
 
     // alter the corresponding variable
     $vars['sortby']            = pnVarCleanFromInput('sortby');
-    $vars['wantedtext']        = pnVarCleanFromInput('wantedtext');
+    $vars['wantedintro']       = pnVarCleanFromInput('wantedintro');
     $vars['wantedmenulink']    = pnVarCleanFromInput('wantedmenulink');
-    $vars['wantedpeoplelabel'] = pnVarCleanFromInput('wantedpeoplelabel');
     $vars['wantedpeoplelist']  = pnVarCleanFromInput('wantedpeoplelist');
-    $vars['wantedfamilylabel'] = pnVarCleanFromInput('wantedfamilylabel');
     $vars['wantedfamilylist']  = pnVarCleanFromInput('wantedfamilylist');
     $vars['wantedfamilyname']  = pnVarCleanFromInput('wantedfamilyname');
 
