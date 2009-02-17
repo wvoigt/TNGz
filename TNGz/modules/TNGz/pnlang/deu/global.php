@@ -109,16 +109,16 @@ define('_MARRIED_ABR',     'm.');
 define('_DIVORCED_ABR',    'D');
 
 /*********** Surnames and Places ***********/
-define('_TNGZ_SURNAMES_INSTRUCTIONS', 'Select the number top Surnames to display, the type of display, and the ordering.  Ordering can be by most used (rank) or alphabetical.');
-define('_TNGZ_PLACES_INSTRUCTIONS',   'Select the number top Places to display, the type of display, and the ordering.  Ordering can be by most used (rank) or alphabetical.');
-define('_TNGZ_TEXT',                  'This is optional explanation text at the top of the block (can included HTML)');
-define('_TNGZ_TOP',                   'Number of top number to display');
-define('_TNGZ_SORTED',                'Show items');
-define('_TNGZ_COLS',                  'Number of columns (used only Table)');
-define('_TNGZ_TYPE',                  'Display as');
-define('_TNGZ_CLOUD',                 'Surname cloud');
-define('_TNGZ_TABLE',                 'Table');
-define('_TNGZ_LIST',                  'List');
+define('_TNGZ_SURNAMES_INSTRUCTIONS', 'Bitte Anzahl der Nachnamen, Anzeigetyp und Sortierung angeben. Sortierung nach Rang oder alphabetisch möglich.');
+define('_TNGZ_PLACES_INSTRUCTIONS',   'Bitte Anzahl der Orte, Anzeigetyp und Sortierung angeben. Sortierung nach Rang oder alphabetisch möglich.');
+define('_TNGZ_TEXT',                  'Optionaler Text im oberen Bereich des Blocks (darf HTML enthalten)');
+define('_TNGZ_TOP',                   'Anzahl der Top-Einträge');
+define('_TNGZ_SORTED',                'Zeige Einträge');
+define('_TNGZ_COLS',                  'Anzahl der Spalten (bei Tabellenbenutzung)');
+define('_TNGZ_TYPE',                  'Zeige als');
+define('_TNGZ_CLOUD',                 'Nachnamen-Wolke');
+define('_TNGZ_TABLE',                 'Tabelle');
+define('_TNGZ_LIST',                  'Liste');
 
 
 
