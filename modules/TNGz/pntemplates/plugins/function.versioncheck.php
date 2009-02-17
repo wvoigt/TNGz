@@ -24,7 +24,7 @@ function smarty_function_versioncheck($args)
     // get newest version number
     require_once('Snoopy.class.php');
     $snoopy = new Snoopy;
-    $snoopy->fetchtext("http://scribite.de/tng_version.txt");
+    $snoopy->fetchtext("http://code.zikula.org/tngz/browser/trunk/versions/tng_version.txt?format=txt");
 
     $newestversion = $snoopy->results;
     $newestversion = trim($newestversion);
@@ -33,7 +33,7 @@ function smarty_function_versioncheck($args)
 
     if ($currentversion < $newestversion) {
         // generate red image if new version is available
-        $versionimage = "modules/TNGz/pnimages/red_dot.gif";  
+        $versionimage = "modules/TNGz/pnimages/red_dot.gif";
     }
     echo("<img src='".$versionimage."' width='10' height='10' alt='status' /> ".$currentversion);
 
