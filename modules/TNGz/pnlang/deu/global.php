@@ -108,5 +108,17 @@ define('_MARRIAGE_AND',   'und');
 define('_MARRIED_ABR',     'm.');
 define('_DIVORCED_ABR',    'D');
 
+/*********** Surnames and Places ***********/
+define('_TNGZ_SURNAMES_INSTRUCTIONS', 'Select the number top Surnames to display, the type of display, and the ordering.  Ordering can be by most used (rank) or alphabetical.');
+define('_TNGZ_PLACES_INSTRUCTIONS',   'Select the number top Places to display, the type of display, and the ordering.  Ordering can be by most used (rank) or alphabetical.');
+define('_TNGZ_TEXT',                  'This is optional explanation text at the top of the block (can included HTML)');
+define('_TNGZ_TOP',                   'Number of top number to display');
+define('_TNGZ_SORTED',                'Show items');
+define('_TNGZ_COLS',                  'Number of columns (used only Table)');
+define('_TNGZ_TYPE',                  'Display as');
+define('_TNGZ_CLOUD',                 'Surname cloud');
+define('_TNGZ_TABLE',                 'Table');
+define('_TNGZ_LIST',                  'List');
+
 
 

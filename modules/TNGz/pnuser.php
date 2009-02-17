@@ -23,7 +23,7 @@
 function TNGz_user_main()
 {
 
-    $TNGpage = FormUtil::getPassedValue('show', 'index', 'GET');
+    $TNGpage = FormUtil::getPassedValue('show', 'index', 'GETPOST');
 
     switch ($TNGpage) {
         case 'gedcom':
