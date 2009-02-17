@@ -6,13 +6,13 @@
 <!--[/if]-->
 
 <!--[if $showdate ]-->
-    <h3><!--[$todaytime|pndate_format:"%d %b %Y"]--></h3>
+    <h4 class="thisday"><!--[$todaytime|pndate_format:"%d %b %Y"]--></h4>
 <!--[/if]-->
 
 <!--[if $showbirth ]-->
-    <h4><!--[pnml name="_BIRTH"|pnvarprephtmldisplay]--></h4>
+    <h4 class="thisday"><!--[pnml name="_BIRTH"|pnvarprephtmldisplay]--></h4>
     <!--[if $birth ]-->
-        <ul>
+        <ul class="thisday">
         <!--[foreach item=item from=$birth]-->
         <li><!--[$item]--></li>
         <!--[/foreach]-->
@@ -24,9 +24,9 @@
 <!--[/if]-->
 
 <!--[if $showmarriage ]-->
-    <h4><!--[pnml name="_MARRIAGE"|pnvarprephtmldisplay]--></h4>
+    <h4 class="thisday"><!--[pnml name="_MARRIAGE"|pnvarprephtmldisplay]--></h4>
     <!--[if $marriage ]-->
-        <ul>
+        <ul class="thisday">
         <!--[foreach item=item from=$marriage]-->
         <li><!--[$item]--></li>
         <!--[/foreach]-->
@@ -38,9 +38,9 @@
 <!--[/if]-->
 
 <!--[if $showdeath ]-->
-    <h4><!--[pnml name="_DEATH"|pnvarprephtmldisplay]--></h4>
+    <h4 class="thisday"><!--[pnml name="_DEATH"|pnvarprephtmldisplay]--></h4>
     <!--[if $death ]-->
-        <ul>
+        <ul class="thisday">
         <!--[foreach item=item from=$death]-->
         <li><!--[$item]--></li>
         <!--[/foreach]-->
@@ -52,9 +52,9 @@
 <!--[/if]-->
 
 <!--[if $showwiki ]-->
-     <h3><a href="http://www.wikipedia.org/wiki/<!--[$todaytime|pndate_format:"%B_%d"]-->" target="_blank"><!--[pnml name="_WIKITODAY"|pnvarprephtmldisplay]--></a></h3>
+     <h4 class="thisday"><a href="http://www.wikipedia.org/wiki/<!--[$todaytime|pndate_format:"%B_%d"]-->" target="_blank"><!--[pnml name="_WIKITODAY"|pnvarprephtmldisplay]--></a></h4>
 <!--[/if]-->
 
-<p><strong><!--[$mainmenu]--></strong></p>
+<h4 class="thisday"><!--[$mainmenu]--></h4>
 
 </div>

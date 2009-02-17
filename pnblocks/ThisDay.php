@@ -2,15 +2,17 @@
 /**
  * Zikula Application Framework
  *
- * @copyright  (c) Zikula Development Team
- * @link       http://www.zikula.org
- * @version    $Id$
- * @license    GNU/GPL - http://www.gnu.org/copyleft/gpl.html
- * @author     Wendel Voigt
+ * @copyright (c) 2001, Zikula Development Team
+ * @link http://www.zikula.org
+ * @license GNU/GPL - http://www.gnu.org/copyleft/gpl.html
+ *
+ * @package TNGz
+ * @url http://code.zikula.org/tngz
+ * @license http://www.gnu.org/copyleft/gpl.html
+ *
  * @original author Cas Nuy
- * @category   Zikula_Extension
- * @package    Content
- * @subpackage TNGz
+ * @author Wendel Voigt
+ * @version $Id$
  */
 
 function TNGz_ThisDayblock_info()
@@ -36,7 +38,7 @@ function TNGz_ThisDayblock_display($blockinfo)
 {
 
     if( !pnSecAuthAction( 0, 'TNGz:ThisDayblock:', "$blockinfo[title]::", ACCESS_READ ) )
-        return false;
+	    return false;
 
     if( !pnModAPILoad('TNGz','user',true) ) {
         return false;
@@ -115,7 +117,7 @@ function TNGz_ThisDayblock_display($blockinfo)
     $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
 
     // Check to be sure we can get to the TNG information
-    if (file_exists($TNG['configfile']) ) {
+    if (file_exists($TNG['configfile']) ){
         include($TNG['configfile']);
         $TNG_conn = &ADONewConnection('mysql');
         $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
@@ -134,7 +136,7 @@ function TNGz_ThisDayblock_display($blockinfo)
 
     // Check to see of this user has the permissions to see living conditionally
     $User_Can_See_Living = false;
-    if ( pnUserLoggedIn() ) {
+    if ( pnUserLoggedIn() ){
         // now check to make sure TNG says user can see the living
         $userid = pnUserGetVar('uname');
         $query = "SELECT allow_living FROM $users_table WHERE username = '$userid' ";
@@ -143,7 +145,7 @@ function TNGz_ThisDayblock_display($blockinfo)
             if ($TNG_living == "1") {
                 $User_Can_See_Living = true;
             }
-        }
+         }
         $result->Close();
     }
 
@@ -153,7 +155,7 @@ function TNGz_ThisDayblock_display($blockinfo)
     }
 
     //////////// BIRTH ///////////////////////
-    if ($vars['showbirth'] != 'N' && $have_info == 1) {
+    if ($vars['showbirth'] != 'N' && $have_info == 1){
         $thisday_showbirth = true;
         // determine if we show living information
         $showliving = false;  // default to no
@@ -165,7 +167,7 @@ function TNGz_ThisDayblock_display($blockinfo)
 
         $query = "SELECT personID,firstname,lastname,birthdatetr,deathdatetr,living,gedcom from $people_table";
         $query .= " where '$monthday'=substring(birthdatetr,6,5)";
-        if ( !$showliving ) {
+        if ( !$showliving ){
             $query .= " and living = '0' ";
         }
         if ($vars['sortby'] =="N") {
@@ -181,9 +183,8 @@ function TNGz_ThisDayblock_display($blockinfo)
             $thisday_error  = ""._PEOPLEDBFERROR." " . $TNG_conn->ErrorMsg();
         } else {
             $found = $result->RecordCount();
-            if ($found == 0) {
-
-            } else {
+            if ($found == 0){
+            } else{
                 for (; !$result->EOF; $result->MoveNext()) {
                     list($id,$first,$last,$start,$end,$stat,$gedcom) = $result->fields;
                     $title1 = $last ;
@@ -207,12 +208,12 @@ function TNGz_ThisDayblock_display($blockinfo)
                     }
                     $title1 .= "]" ;
                     $temp = pnModAPIFunc('TNGz','user','MakeRef',
-                            array('func'        => "getperson",
-                                    'personID'    => $id,
-                                    'tree'        => $gedcom,
-                                    'description' => $title1,
-                                    'target'      => $target,
-                                    'RefType'     => $TNGstyle
+                               array('func'        => "getperson",
+                                     'personID'    => $id,
+                                     'tree'        => $gedcom,
+                                     'description' => $title1,
+                                     'target'      => $target,
+                                     'RefType'     => $TNGstyle
                                     ));
                     $thisday_birthitems[] = $temp;
                 }
@@ -222,7 +223,7 @@ function TNGz_ThisDayblock_display($blockinfo)
         $result->Close();
     }
     //////////// MARRIAGE ///////////////////////
-    if ($vars['showmarriage'] != 'N' && $have_info == 1) {
+    if ($vars['showmarriage'] != 'N' && $have_info == 1){
         $thisday_showmarriage = true;
         $showliving = false;  // default to no
         if ($vars['showmarriage'] == 'Y') {
@@ -234,7 +235,7 @@ function TNGz_ThisDayblock_display($blockinfo)
         $query =  "SELECT familyID, marrdatetr, divdate, f.living as FLiving, h.lastname AS HLast, h.firstname AS HFirst, h.living as HLiving, w.lastname as WLast, w.firstname as WFirst, w.living as WLiving, f.gedcom as gedcom";
         $query .= " FROM $families_table AS f LEFT JOIN $people_table AS h ON f.husband=h.personID LEFT JOIN $people_table AS w ON f.wife=w.personID";
         $query .= " WHERE '$monthday'=substring(marrdatetr,6,5)";
-        if ( !$showliving ) {
+        if ( !$showliving ){
             $query .= " and f.living = '0' ";
         }
 
@@ -251,17 +252,16 @@ function TNGz_ThisDayblock_display($blockinfo)
             $thisday_error  = ""._PEOPLEDBFERROR." " . $TNG_conn->ErrorMsg();
         } else {
             $found = $result->RecordCount();
-            if ($found == 0) {
-
-            } else {
+            if ($found == 0){
+	        } else {
                 for (; !$result->EOF; $result->MoveNext()) {
                     list($id,$marrdatetr,$divdate,$FLiving,$HLast,$HFirst, $HLiving, $WLast, $WFirst, $WLiving, $gedcom) = $result->fields;
-                    $title1 = $HLast ;
+	    		    $title1 = $HLast ;
                     $title1 .= ", " ;
                     $title1 .= $HFirst ;
                     $title1 .= " " . _MARRIAGE_AND . " ";
-                    $title1 .= $WFirst ;
-                    if ($WLast != "") {
+	    		    $title1 .= $WFirst ;
+                    if ($WLast != ""){
                         $title1 .= " " . $WLast ;
                     }
                     $title1 .= " [" ;
@@ -272,26 +272,26 @@ function TNGz_ThisDayblock_display($blockinfo)
                         $title1 .= $TNGzyear;
                     }
                     $title1 .= "]" ;
-                    if ($divdate !="" ) {
+                    if ($divdate !="" ){
                         $title1 .= "(" . _DIVORCED . ")" ;
                     }
                     $temp = pnModAPIFunc('TNGz','user','MakeRef',
-                            array('func'        => "familygroup",
-                                    'familyID'    => $id,
-                                    'tree'        => $gedcom,
-                                    'description' => $title1,
-                                    'target'      => $target,
-                                    'RefType'     => $TNGstyle
+                               array('func'        => "familygroup",
+                                     'familyID'    => $id,
+                                     'tree'        => $gedcom,
+                                     'description' => $title1,
+                                     'target'      => $target,
+                                     'RefType'     => $TNGstyle
                                     ));
                     $thisday_marriageitems[] = $temp;
-                }
-            }
+	    	    }
+	        }
             $result->Close();
         }
     }
 
     //////////// DEATH ///////////////////////
-    if ($vars['showdeath'] != 'N' && $have_info == 1) {
+    if ($vars['showdeath'] != 'N' && $have_info == 1){
         $thisday_showdeath = true;
         $query = "SELECT personID,firstname,lastname,birthdatetr,deathdatetr,living,gedcom from $people_table ";
         $query .= " where '$monthday'=substring(deathdatetr,6,5)";
@@ -308,12 +308,11 @@ function TNGz_ThisDayblock_display($blockinfo)
             $thisday_error  = ""._PEOPLEDBFERROR." " . $TNG_conn->ErrorMsg();
         } else {
             $found = $result->RecordCount();
-            if ($found == 0) {
-
-            } else {
+            if ($found == 0){
+	        } else{
                 for (; !$result->EOF; $result->MoveNext()) {
                     list($id,$first,$last,$start,$end,$stat,$gedcom) = $result->fields;
-                    $title1 = $last ;
+	    		    $title1 = $last ;
                     $title1 .= ", " ;
                     $title1 .= $first ;
                     $title1 .= " [" ;
@@ -325,23 +324,23 @@ function TNGz_ThisDayblock_display($blockinfo)
                     }
                     $title1 .= "-" ;
                     $TNGzyear = substr($end,0,4);
-                    if ($TNGzyear == "0000" ) {
+                     if ($TNGzyear == "0000" ) {
                         $title1 .= " ? ";
                     } else {
                         $title1 .= $TNGzyear;
                     }
                     $title1 .= "]" ;
                     $temp = pnModAPIFunc('TNGz','user','MakeRef',
-                            array('func'        => "getperson",
-                                    'personID'    => $id,
-                                    'tree'        => $gedcom,
-                                    'description' => $title1,
-                                    'target'      => $target,
-                                    'RefType'     => $TNGstyle
+                               array('func'        => "getperson",
+                                     'personID'    => $id,
+                                     'tree'        => $gedcom,
+                                     'description' => $title1,
+                                     'target'      => $target,
+                                     'RefType'     => $TNGstyle
                                     ));
                     $thisday_deathitems[] = $temp;
-                }
-            }
+	    	    }
+	        }
         }
         $result->Close();
     }
@@ -354,27 +353,29 @@ function TNGz_ThisDayblock_display($blockinfo)
 
     //////////// TNG Main Menu Link //////////////
     $thisday_mainmenu = pnModAPIFunc('TNGz','user','MakeRef',
-                                                            array('func'        => "main",
+                                                              array('func'        => "main",
                                                                     'description' => ""._ACCESSTNG."",
                                                                     'target'      => $target,
                                                                     'RefType'     => $TNGstyle
                                                                     ));
 
-    if ($have_info == 1) {
+    if ($have_info == 1){
         $TNG_conn->Close();
     }
 
     // Can turn off caching by using the following
     if ( $vars['usecache'] == 0 ) {
-        $zcaching = false;
+    	$zcaching = false;
     } else {
-        $zcaching = true;
+    	$zcaching = true;
     }
 
     // Create output object
     // Note that for a block the corresponding module must be passed.
 
     $pnRender = pnRender::getInstance('TNGz', $zcaching);
+
+    PageUtil::addVar('stylesheet', ThemeUtil::getModuleStylesheet('TNGz'));
 
     $pnRender->assign('todaytime'    , $thisday_time);
     $pnRender->assign('showdate'     , $thisday_showdate);
@@ -489,9 +490,9 @@ function TNGz_ThisDayblock_update($blockinfo)
     // write back the new contents
     $blockinfo['content'] = pnBlockVarsToContent($vars);
 
-    // clear the block cache
-    //	$pnRender =& new pnRender('TNGz');
-    //	$pnRender->clear_cache('example_block_first.htm');
+	// clear the block cache
+//	$pnRender =& new pnRender('TNGz');
+//	$pnRender->clear_cache('example_block_first.htm');
 
     return $blockinfo;
 }

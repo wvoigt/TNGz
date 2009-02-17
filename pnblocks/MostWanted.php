@@ -279,6 +279,8 @@ function TNGz_MostWantedblock_display($blockinfo)
 
     $pnRender = pnRender::getInstance('TNGz', $zcaching);
 
+    PageUtil::addVar('stylesheet', ThemeUtil::getModuleStylesheet('TNGz'));
+
     $pnRender->assign('WantedText',         $vars['wantedintro'][$userlanguage]);
     $pnRender->assign('WantedPeopleList',   $Mostwantedpeoplelist);
     $pnRender->assign('WantedFamilyList',   $Mostwantedfamilylist);
@@ -361,7 +363,7 @@ function TNGz_MostWantedblock_modify($blockinfo)
                                             ) );
 
     $pnRender->assign('sortby'           , $vars['sortby']);
-    $pnRender->assign('wantedintro'      , $vars['wantedintro']);
+    $pnRender->assign('wantedintro'      , $vars['wantedintro']);    
     $pnRender->assign('wantedpeoplelist' , $vars['wantedpeoplelist']);
     $pnRender->assign('wantedfamilylist' , $vars['wantedfamilylist']);
     $pnRender->assign('wantedfamilyname' , $vars['wantedfamilyname']);
