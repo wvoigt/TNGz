@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en-gb">
+<head>
+<title><!--[$smarty.const._INSTALLER]--></title>
+<meta http-equiv="Content-Type" content="text/html; charset=<!--[ pnml name="_CHARSET" ]-->" />
+<meta name="author" content="Zikula Development Team" />
+<meta name="generator" content="Zikula Installer -- http://www.zikula.org" />
+<link rel="stylesheet" href="install/pnstyle/style.css" type="text/css" />
+<link rel="stylesheet" href="javascript/style.css" type="text/css" />
+<script type="text/javascript" src="install/pnjavascript/install.js"></script>
+
+</head>
+<body>
+<div id="header">
+  <div id="headertopleft"><img src="install/pnimages/top1.jpg" alt="" /></div>
+  <div id="headertopright"><img src="install/pnimages/top2.jpg" alt="" /></div>
+</div>
+<div id="content">
+  <h1><!--[$smarty.const._INSTALLER]--> - Genealogy Suite</h1>
+  <!--[insert name="getstatusmsg"]-->
+  <p style="text-align:center">
+    <!--[$smarty.const._INSTALLERPLEASEREFERTOGUIDE]-->
+  </p>
+  <!--[$maincontent]-->
+  <div class="qualitystatement"><!--[$smarty.const._INSTALLERQUALITY]--></div>
+</div>
+<div class="menu">
+  <h3><!--[$smarty.const._INSTALLERTASKS]--></h3>
+  <ol>
+    <li<!--[if $action eq lang]--> class="menu_selected"<!--[/if]-->><!--[$smarty.const._INSTALLERTASK1]--></li>
+    <li<!--[if $action eq licence]--> class="menu_selected"<!--[/if]-->><!--[$smarty.const._INSTALLERTASK2]--></li>
+    <li<!--[if $action eq requirements]--> class="menu_selected"<!--[/if]-->><!--[$smarty.const._INSTALLERTASK3]--></li>
+    <li<!--[if $action eq dbinformation]--> class="menu_selected"<!--[/if]-->><!--[$smarty.const._INSTALLERTASK4]--></li>
+    <li<!--[if $action eq installtype]--> class="menu_selected"<!--[/if]-->><!--[$smarty.const._INSTALLERTASK5]--></li>
+    <li<!--[if $action eq createadmin]--> class="menu_selected"<!--[/if]-->><!--[$smarty.const._INSTALLERTASK6]--></li>
+    <li<!--[if $action eq selectmodule]--> class="menu_selected"<!--[/if]-->><!--[$smarty.const._INSTALLERTASK7]--></li>
+    <li<!--[if $action eq selecttheme]--> class="menu_selected"<!--[/if]-->><!--[$smarty.const._INSTALLERTASK8]--></li>
+    <li<!--[if $action eq gotosite]--> class="menu_selected"<!--[/if]-->><!--[$smarty.const._INSTALLERTASK9]--></li>
+  </ol>
+  <h3><!--[$smarty.const._INSTALLERESOURCES]--></h3>
+  <ul>
+    <li><a href="docs/install.html" onclick="window.open('docs/install.html');return false;"><!--[$smarty.const._INSTALLERGUIDE]--></a></li>
+    <li><a href="http://community.zikula.org/module-Wiki.htm"><!--[$smarty.const._INSTALLERDOCS]--></a></li>
+    <li><a href="http://community.zikula.org/module-Forum.htm"><!--[$smarty.const._INSTALLERFORUMS]--></a></li>
+    <!--[* custom links for each action go here*]-->
+    <!--[if $action eq licence]-->
+    <li class="highlight"><a href="<!--[$smarty.const._INSTALLERGNUURL1]-->"><!--[$smarty.const._INSTALLERGNULINKTEXT1]--></a></li>
+    <li class="highlight"><a href="<!--[$smarty.const._INSTALLERGNUURL2]-->"><!--[$smarty.const._INSTALLERGNULINKTEXT2]--></a></li>
+    <!--[/if]-->
+    <!--[if $action eq requirements]-->
+    <li class="highlight"><a href="<!--[$smarty.const._INSTALLERWPPERMISSIONURL]-->"><!--[$smarty.const._INSTALLERWPPERMISSIONLINKTEXT]--></a></li>
+    <!--[/if]-->
+    <!--[if $action eq selecttheme]-->
+    <li class="highlight"><a href="<!--[$smarty.const._INSTALLERPNTHEMESURL]-->"><!--[$smarty.const._INSTALLERPNTHEMES]--></a></li>
+    <!--[/if]-->
+  </ul>
+</div>
+</body>
+</html>

@@ -1,0 +1,3 @@
+Modifications in this distribution
+ * /system/Users/pninit.php	for use with md5 hash instead of sha256 (TNG uses md5)
+
