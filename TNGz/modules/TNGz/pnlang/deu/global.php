@@ -75,7 +75,7 @@ define('_SELECTLIVINGN',  'Nein');
 define('_SELECTLIVINGD',  'Ja, aber keine lebenden Personen');
 define('_SELECTLIVINGL',  'Ja, aber zeige lebende Personen nur eingeloggten Benutzern');
 define('_SHOWPHOTO',      'Welcher Typ von Foto soll benutzt werden');
-define('_SELECTPHOTOT',   'Thumbnail de Fotos');
+define('_SELECTPHOTOT',   'Thumbnail der Fotos');
 define('_SELECTPHOTOP',   'Aktuelles Foto');
 define('_MAXHEIGHT',      'Maximale Höhe der Fotos');
 define('_MAXWIDTH',       'Maximale Breite der Fotos');

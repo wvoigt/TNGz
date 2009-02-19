@@ -31,7 +31,7 @@
  define("_TNGZFOUND"         , "TNG-Dateien gefunden");
  define("_TNGZFOUNDNOT"      , "TNG-Dateien NICHT gefunden");
 
- define("_TNGZROOTPATHGOOD"  , "TNG-Hauptverzeichnis is korrekt!");
+ define("_TNGZROOTPATHGOOD"  , "TNG-Hauptverzeichnis ist korrekt!");
  define("_TNGZROOTPATHBAD"   , "TNG-Hauptverzeichnis sollte lauten: ");
 
  define("_TNGZLIVING"        , "  - Erlaube erstelltem Benutzer lebende Personen anzusehen");
@@ -47,11 +47,11 @@
  define("_TNGZ_EMAIL_ENCODE" , "Ja");
  define("_TNGZ_EMAIL_ALL"    , "Ja, und mache die E-Mail-Adressen anklickbar");
 
- define("_TNGZVERSIONSAME"   , "TNGz is in sync with TNG version"); /* update */
+ define("_TNGZVERSIONSAME"   , "TNGz ist synchron mit TNG");
  define("_TNGVERSIONUNKNOWN" , "Unbekannt");
  define("_TNGZVERSIONUPDATE" , "Bitte ein Update durchführen. Es wurde eine neue TNG-Version gefunden. Geändert von ");
- define("_TNGZVERSIONNEW"    , "There is a new version available"); /* update */
- define("_TNGZVERSIONLATEST" , "This is the latest recommended version"); /* update */
+ define("_TNGZVERSIONNEW"    , "Es ist eine neue Version verfügbar");
+ define("_TNGZVERSIONLATEST" , "Dies ist die neueste empfohlene Version");
 
 
  define("_TNGZSETTINGS"      , "Einstellungen");
