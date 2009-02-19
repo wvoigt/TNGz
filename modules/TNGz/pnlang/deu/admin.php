@@ -47,9 +47,11 @@
  define("_TNGZ_EMAIL_ENCODE" , "Ja");
  define("_TNGZ_EMAIL_ALL"    , "Ja, und mache die E-Mail-Adressen anklickbar");
 
- define("_TNGZVERSIONSAME"   , "TNG-Version");
+ define("_TNGZVERSIONSAME"   , "TNGz is in sync with TNG version"); /* update */
  define("_TNGVERSIONUNKNOWN" , "Unbekannt");
  define("_TNGZVERSIONUPDATE" , "Bitte ein Update durchführen. Es wurde eine neue TNG-Version gefunden. Geändert von ");
+ define("_TNGZVERSIONNEW"    , "There is a new version available"); /* update */
+ define("_TNGZVERSIONLATEST" , "This is the latest recommended version"); /* update */
 
 
  define("_TNGZSETTINGS"      , "Einstellungen");

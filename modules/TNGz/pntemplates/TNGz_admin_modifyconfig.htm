@@ -8,19 +8,20 @@
     <fieldset>
 	<legend><!--[pnml name="_TNGZMODULESTATUS"]--></legend>
  	<div class="pn-adminformrow">
+        <!--[pnimg modname=TNGz src=$tngrootpathimage|pnvarprepfordisplay]-->&nbsp;<!--[$tngrootpathsay|pnvarprepfordisplay]-->
+	<br />
 	<!--[pnimg modname=TNGz src=$tngfoundimage|pnvarprepfordisplay]-->&nbsp;<!--[$tngfound|pnvarprepfordisplay]-->
 	<br />
-<!--[versioncheck version=$TNG_version]-->
-<br />
-
         <!--[pnimg modname=TNGz src=$TNG_versionimage|pnvarprepfordisplay]-->&nbsp;<!--[$TNG_versionsay|pnvarprepfordisplay]-->&nbsp;
 	<!--[if $TNG_versioncheck ne 1]-->
-	<!--[$TNG_versionlast|pnvarprepfordisplay]-->&nbsp;-->&nbsp;
+	<!--[$TNG_versionlast|pnvarprepfordisplay]-->&nbsp;-->&nbsp;<!--[$TNG_version|pnvarprepfordisplay]-->
 	<!--[/if]-->
-	<!--[$TNG_version|pnvarprepfordisplay]-->
-        <input type="hidden" name="tngversion" value="<!--[$TNG_version]-->" />
 	<br />
-        <!--[pnimg modname=TNGz src=$tngrootpathimage|pnvarprepfordisplay]-->&nbsp;<!--[$tngrootpathsay|pnvarprepfordisplay]-->
+        <!--[versioncheck program=TNGz]-->
+	<br />
+        <!--[versioncheck program=TNG version=$TNG_version]-->
+        <input type="hidden" name="tngversion" value="<!--[$TNG_version]-->" />
+
 	</div>
         <div class="pn-informationmsg"><!--[pnml name=_TNGZCONFIGTIP]--></div>
     </fieldset>
