@@ -187,9 +187,11 @@ define("_TNGZ_EMAIL_NO"     ,        "No (faster)");
 define("_TNGZ_EMAIL_ENCODE" ,        "Yes");
 define("_TNGZ_EMAIL_ALL"    ,        "Yes, and make plain email addresses clickable");
 
-define("_TNGZVERSIONSAME"   ,        "TNG Version");
+define("_TNGZVERSIONSAME"   ,        "TNGz is in sync with TNG Version");
 define("_TNGVERSIONUNKNOWN" ,        "Unknown");
-define("_TNGZVERSIONUPDATE" ,        "Please update. Found new TNG Version. Changed from");
+define("_TNGZVERSIONUPDATE" ,        "TNGz is not in sync with TNG version. Please update. Found new TNG Version. Changed from");
+define("_TNGZVERSIONNEW"    ,        "There is a new version available");
+define("_TNGZVERSIONLATEST" ,        "This is the latest recommended version");
 
 define("_TNGZSETTINGS"      ,        "Settings");
 define("_TNGZOTHERSETTINGS" ,        "Other Settings");
