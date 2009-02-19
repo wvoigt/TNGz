@@ -10,6 +10,7 @@ version 1.02
   * added surnames plugin
   * added places plugin
   * added placemap plugin
+  * added new version notification for TNG and TNGz in Administration
   * Fixed problem with showing PDF charts
   * Updated blocks to see TNGz style sheet, even if not the main module called
   * removed all deprecated Zikula functions
