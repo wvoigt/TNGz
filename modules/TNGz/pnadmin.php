@@ -60,12 +60,12 @@ function TNGz_admin_modifyconfig()
     // *****************************************************
     $TNG_config     = false;
     $TNG_found      = _TNGZFOUNDNOT;
-    $TNG_foundimage = 'red_dot.gif';
+    $TNG_foundimage = 'error.gif';
 
     $TNG_checkpath     = dirname($TNG['configfile']) . "/";
     $TNG_rootpath      = false;
     $TNG_rootpathsay   = _TNGZROOTPATHBAD . " ". $TNG_checkpath;
-    $TNG_rootpathimage = 'red_dot.gif';
+    $TNG_rootpathimage = 'error.gif';
 
 
     if (file_exists($TNG['configfile']) ) {
@@ -73,12 +73,12 @@ function TNGz_admin_modifyconfig()
         if ( $tngconfig ) {
             $TNG_config        = true;
             $TNG_found         = _TNGZFOUND;
-            $TNG_foundimage    = 'green_dot.gif';
+            $TNG_foundimage    = 'button_ok.gif';
         }
         if ( $rootpath ==  $TNG_checkpath ) {
             $TNG_rootpath      = true;
             $TNG_rootpathsay   = _TNGZROOTPATHGOOD;
-            $TNG_rootpathimage = 'green_dot.gif';
+            $TNG_rootpathimage = 'button_ok.gif';
         }
     }
 
@@ -89,7 +89,7 @@ function TNGz_admin_modifyconfig()
     $TNG_versioncheck = false;
     $TNG_version      = _TNGVERSIONUNKNOWN;
     $TNG_versionsay   = _TNGZVERSIONUPDATE;
-    $TNG_versionimage = 'red_dot.gif';
+    $TNG_versionimage = 'error.gif';
     $TNG_versionlast  =  pnModGetVar('TNGz', '_version');
 
     $TNGversionfile = dirname($TNG['configfile']) . "/version.php";
@@ -100,7 +100,7 @@ function TNGz_admin_modifyconfig()
         if ( ($TNG_version == $TNG_versionlast) && ($TNG_version != _TNGVERSIONUNKNOWN) ) {
                 $TNG_versioncheck = true;
                 $TNG_versionsay  = _TNGZVERSIONSAME;
-                $TNG_versionimage  = 'green_dot.gif';
+                $TNG_versionimage  = 'button_ok.gif';
         }
         }
     }
