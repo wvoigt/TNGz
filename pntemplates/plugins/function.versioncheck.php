@@ -20,7 +20,7 @@ function smarty_function_versioncheck($args)
     // check module version
     // some code based on work from Axel Guckelsberger - thanks for this inspiration
     $currentversion = $args['version'];
-    
+
     $valid_programs = array('TNGz', 'TNG');  // first in list is the default
     $program = (in_array($args['program'], $valid_programs))? $args['program'] : $valid_programs[0];
 
@@ -28,11 +28,11 @@ function smarty_function_versioncheck($args)
        $checksite = "http://code.zikula.org/tngz/browser/trunk/versions/tng_version.txt?format=txt";
        $downloadsite = "http://tng.lythgoes.net/downloads7/index.php";
     }
-    
+
     if ($program == "TNGz"){
        $checksite = "http://code.zikula.org/tngz/browser/trunk/versions/tngz_version.txt?format=txt";
        $downloadsite = "http://code.zikula.org/tngz/downloads";
-       
+
        // Get current Version of TNG
        $ModInfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
        $currentversion = trim($ModInfo['version']);
@@ -47,20 +47,20 @@ function smarty_function_versioncheck($args)
     $newestversion = $snoopy->results;
     $newestversion = trim($newestversion);
 
-    $versionimage = "modules/TNGz/pnimages/green_dot.gif";
+    $versionimage = "images/icons/extrasmall/button_ok.gif";
 
     if ($currentversion < $newestversion) {
         // generate red image if new version is available
-        $versionimage = "modules/TNGz/pnimages/upgrade.gif";
+        $versionimage = "images/icons/extrasmall/agt_update_recommended.gif";
     }
-    echo("<img src='".$versionimage."' width='10' height='10' alt='status' /> ".$program . " " . "Version" ." ". $currentversion . " ");
+    echo("<img src='".$versionimage."' alt='status' /> ".$program . " " . "Version" ." ". $currentversion . " ");
 
     if ($currentversion < $newestversion) {
         // generate link if new version is available
         echo ("<a id=\"versioncheck\" href=\"$downloadsite\" style=\"color:red;\"><strong>". _TNGZVERSIONNEW  . " (".$newestversion.")</strong></a>");
     } else {
         echo (_TNGZVERSIONLATEST);
-    } 
+    }
     return;
 }
 
