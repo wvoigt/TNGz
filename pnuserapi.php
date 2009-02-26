@@ -153,8 +153,8 @@ function TNGz_userapi_ShowPage($args)
         $the_globals = $_SERVER + $_ENV + $_GET +$_POST;
         if( $the_globals && is_array( $the_globals ) ) {
             foreach ( $the_globals as $key=>$value ) {
-                if ($key == 'cms' || $key == 'lang' || $key == 'mylanguage') die("sorry!");
-                    ${$key} = $value;
+                if ( in_array($key, array('cms','lang', 'language', 'mylanguage', 'session_language', 'rootpath')) ) die("sorry!");
+                ${$key} = $value;
             }
         }
         unset($the_globals);
