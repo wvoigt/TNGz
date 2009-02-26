@@ -59,6 +59,11 @@ function TNGz_searchapi_search($args)
         $have_info = 0;
         return LogUtil::registerError (_GETFAILED);
     }
+    
+    // Save a few TNG config variables for later use
+    $tngconfig['nonames']   = $nonames;
+    $tngconfig['nameorder'] = $nameorder;
+    
     // Check to see of this user has the permissions to see living conditionally
     $User_Can_See_Living = false;
     if (pnUserLoggedIn()) {
@@ -91,7 +96,7 @@ VALUES ";
                                           'firstname'),
                                     null);
 
-    $sql ="SELECT personID, lastname, lnprefix, firstname, suffix, birthdate, birthplace, deathdate, deathplace, living, gedcom
+    $sql ="SELECT personID, lastname, lnprefix, firstname, suffix, prefix, title, nameorder, birthdate, birthplace, deathdate, deathplace, living, gedcom
            FROM $people_table
            WHERE $where
            ORDER BY lastname, firstname ";
@@ -109,15 +114,42 @@ VALUES ";
     // Process the result set and insert into search result table
     for (; !$result->EOF; $result->MoveNext()) {
         $item = $result->GetRowAssoc(2);
-        if (SecurityUtil::checkPermission('TNGz', "::", ACCESS_READ)) {
+        if (    SecurityUtil::checkPermission('TNGz', "::", ACCESS_READ) 
+            && ($User_Can_See_Living || $item['living']==0  || $tngconfig['nonames']==0) ) {
+            
+            // The Extra Stuff for the resulting search link
             $extra = serialize(array('style'  => $TNGstyle,
                                      'id'     => $item['personID'],
                                      'gedcom' => $item['gedcom']
                                      )
                                );
 
-            $display_title = $item['lastname'] . ', ' . $item['firstname'];
+            // Display name as the title, with the proper form based upon the TNG settings
+            // Similar to getNameRev() in genlib.php
+	        $locnameorder = $item['nameorder'] ? $item['nameorder'] : ($tngconfig['nameorder'] ? $tngconfig['nameorder'] : 1);
+	        $lastname = trim( $item['lnprefix']." ".$item['lastname'] );
+	        $title = $item['title'] && ($item['title'] == $item['prefix']) ? $item['title'] : trim($item['title'] . " " . $item['prefix']);
+	        $firstname = trim( $title . " " .$item['firstname'] );
+	        if( $locnameorder == 1 ) {
+		        $namestr = $lastname;
+		        if($firstname) {
+			        if($lastname) {
+                        $namestr .= ", ";
+                    }
+			        $namestr .= $firstname;
+		        }
+		        if($item['suffix']) {
+                    $namestr .= " ".$item['suffix'];
+                }
+	        } else {
+		        $namestr = trim( "$lastname $firstname" );
+		        if( $item['suffix'] ) {
+                    $namestr .= ", ".$item['suffix'];
+                }
+	        }
+	        $display_title = $namestr;
 
+            // Display other information
             if ($User_Can_See_Living || $item['living']==0 ) {
                 $sep2 = '';
                 $display_text = "";
