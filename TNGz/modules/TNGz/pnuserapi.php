@@ -349,9 +349,7 @@ function TNGz_userapi_ShowPage($args)
     // Add TNG output to normal Zikula display
     $pnTNGmodinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
 
-    $pnRender =& new pnRender('TNGz');
-    $pnRender->caching = false;  // workaround until we figure out how to make caching work
-    
+    $pnRender = pnRender::getInstance('TNGz', false);
     $pnRender->assign('TNGoutput'    , $TNGoutput);
     $pnRender->assign('TNGtitle'     , $tng_title[1] );
     $pnRender->assign('TNGzVersion'  , $pnTNGmodinfo['version'] );
@@ -1111,7 +1109,7 @@ function TNGz_userapi_GetSurnames($args)
 {
     $top = $args['top'];
     $top  = (is_numeric($top) && $top > 0)? intval($top) : 50;  // Get valid value or set default
-       
+
     $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
 
     // Check to be sure we can get to the TNG information
@@ -1138,9 +1136,9 @@ function TNGz_userapi_GetSurnames($args)
     $SurnameCount = $result->RecordCount();
     $name         = $result->fields;       // Look at first record, since already sorted by Surname Count
     $SurnameMax   = $name['count'];        // First record should have the most
-    
+
     $SurnameRank  = array();
-    
+
     for ($rank=1; !$result->EOF && $rank<=$top; $result->MoveNext(), $rank++) {
         $name = $result->fields;
         $name['surname']   = $name['surname'];
@@ -1178,11 +1176,11 @@ function TNGz_userapi_GetSurnames($args)
         $surname[$key]  = $row['surnameuc'];
     }
     array_multisort($surname, SORT_ASC, $SurnameAlpha);
-    
+
     // Clean up
     $saved_fetch_mode= &$TNG_conn->SetFetchMode($saved_fetch_mode);
     $TNG_conn->Close();
-    
+
     return array( 'alpha' => $SurnameAlpha,
                   'rank'  => $SurnameRank,
                   'count' => $SurnameCount,
@@ -1200,10 +1198,10 @@ function TNGz_userapi_GetPlaces($args)
 {
     $top = $args['top'];
     $top  = (is_numeric($top) && $top > 0)? intval($top) : 50;  // Get valid value or set default
-    
+
     $validsorts = array('rank', 'alpha');  // first in list is the default
-    $sort = (in_array($args['sort'], $validsorts))? $args['sort'] : $validsorts[0];    
-       
+    $sort = (in_array($args['sort'], $validsorts))? $args['sort'] : $validsorts[0];
+
     $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
 
     // Check to be sure we can get to the TNG information
@@ -1244,15 +1242,15 @@ function TNGz_userapi_GetPlaces($args)
             $count++;
         }
     }
-    
+
     // Clean up
     $saved_fetch_mode= &$TNG_conn->SetFetchMode($saved_fetch_mode);
     $TNG_conn->Close();
-    
+
     if ($sort == 'alpha') {
         ksort($thePlaces);
     }
-    
+
     return $thePlaces;
 }
 
