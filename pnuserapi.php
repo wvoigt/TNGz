@@ -350,7 +350,8 @@ function TNGz_userapi_ShowPage($args)
     $pnTNGmodinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
 
     $pnRender =& new pnRender('TNGz');
-
+    $pnRender->caching = false;  // workaround until we figure out how to make caching work
+    
     $pnRender->assign('TNGoutput'    , $TNGoutput);
     $pnRender->assign('TNGtitle'     , $tng_title[1] );
     $pnRender->assign('TNGzVersion'  , $pnTNGmodinfo['version'] );
