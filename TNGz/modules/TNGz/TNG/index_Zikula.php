@@ -73,7 +73,7 @@ tng_header( $text[mnuheader], $flags );
   <li><a href="<?php echo getURL( "whatsnew"         , 0 )?>"><?php echo $text[mnuwhatsnew]     ?></a></li>
   <li><a href="<?php echo getURL( "changelanguage"   , 0 )?>"><?php echo $text[mnulanguage]     ?></a></li>
 <?php if( $allow_admin ) { ?>
-  <li><a href="index.php?module=pnTNG&func=admin"            ><?php echo $text[mnuadmin]        ?></a></li>
+  <li><a href="index.php?module=TNGz&func=admin"            ><?php echo $text[mnuadmin]        ?></a></li>
   <li><a href="<?php echo getURL( "showlog"          , 0 )?>"><?php echo $text[mnushowlog]      ?></a></li>
 <?php } ?>
   <li><a href="<?php echo getURL( "suggest"          , 0 )?>"><?php echo $text[contactus]      ?></a></li>
