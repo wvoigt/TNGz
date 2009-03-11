@@ -58,6 +58,16 @@ function TNGz_userapi_ShowPage($args)
         eval("global " . $global_variables .";");
     }
 
+    // Get information for the module
+    $TNGz_modinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
+    
+    // Set module display name
+    $TNGz_modname = "TNGz";
+    // set the module name to the display name if this is present
+    if (isset($TNGz_modinfo['displayname']) && !empty($TNGz_modinfo['displayname'])) {
+        $TNGz_modname = rawurlencode($TNGz_modinfo['displayname']);
+    } 
+    
     //////////////////////////////////////////////////////
     // Language Settings
     //////////////////////////////////////////////////////
@@ -121,8 +131,12 @@ function TNGz_userapi_ShowPage($args)
     $cms[TNGz]       = 1;
     $cms[support]    = "zikula";
     $cms[module]     = "TNGz";
-    $cms[url]        = _TNGZ_PREFIX;
+    
+    $cms[url]          = "index.php?module=$TNGz_modname&func=main&show";    
+    //$cms[url]        = _TNGZ_PREFIX;
     //$cms[url]        = pnModURL('TNGz','user','main')."&amp;show"; //Some part of TNG does not work with short URLs enabled
+    //$cms[url]        = rtrim(pnModURL('TNGz','user','main', array('show'=>'')),"=");
+    
     $cms[tngpath]    = $TNG['directory']. "/";
     //$cms[adminurl]   = "index.php?module=TNGz&func=admin";
     // using pnModURL
@@ -347,12 +361,10 @@ function TNGz_userapi_ShowPage($args)
     }
 
     // Add TNG output to normal Zikula display
-    $pnTNGmodinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
-
     $pnRender = pnRender::getInstance('TNGz', false);
     $pnRender->assign('TNGoutput'    , $TNGoutput);
     $pnRender->assign('TNGtitle'     , $tng_title[1] );
-    $pnRender->assign('TNGzVersion'  , $pnTNGmodinfo['version'] );
+    $pnRender->assign('TNGzVersion'  , $TNGz_modinfo['version'] );
 
     return $pnRender->fetch('TNGz_user_main.htm');
 
