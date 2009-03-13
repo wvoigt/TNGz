@@ -6,23 +6,23 @@ TNGz (C) 2008 Wendel Voigt
 
 === Introduction ===
 
-TNGz is a Zikula module that integrates The Next Generation of Genealogy Sitebuilding© ("TNG")
+TNGz is a Zikula module that integrates The Next Generation of Genealogy Sitebuildingï¿½ ("TNG")
 genealogy program into Zikula. TNG is a powerful way to manage and display your genealogy data
 on the Internet.
 
 Some of the features of TNGz include:
 
-    * Fully integrates TNG output into Zikula 
+    * Fully integrates TNG output into Zikula.
           o No IFRAMES for normal usage (But still required for TNG Administration)
     * If logged into Zikula, then users are automatically logged into TNG.
           o It can be configured to create TNG user IDs from Zikula user IDs upon first access.
           o TNG user information can be used to populate the TNG user informaiton (e.g. email IDs).
           o There is an option to keep the data in TNG in sync with the Zikula data.
-          o TNG user permissions are still administered under TNG. 
+          o TNG user permissions are still administered under TNG.
     * Unregistered Zikula users (aka "guests") can be given a specific TNG ID for display
       and permission purposes.
     * TNG can be located in any directory under the Zikula root directory.
-    * Optional email filter to obfuscate email addresses contained in TNG notes and sources. 
+    * Optional email filter to obfuscate email addresses contained in TNG notes and sources.
 
 Comes with Blocks that extract data from the TNG database:
 
@@ -49,11 +49,11 @@ Tested withWorks with :
     It must be installed in a directory somewhere under the base Zikula directory.
     You can chose the directory name under which you want place TNG.  (e.g., genealogy, TNG, TNG6 )
     You can access TNG directly by going to a URL similar to the following
-    
+
     http://www.yoursitename.com/the_TNG_directory_name_you_picked [change for your configuration]
-  
+
   b. Configure TNG such that logon is required.
-  
+
   c. Backup the the following files in your TNG directory since you will overwrite them later:
         meta.html
         customconfig.php
@@ -62,7 +62,7 @@ Tested withWorks with :
   a. Place the contents of TNGz in your Zikula modules directory.
 
   b. Copy the files in TNGz\TNG\ to the root of your TNG directory created in step 1.
-     This is the directory that contain's the TNG config.php file. 
+     This is the directory that contain's the TNG config.php file.
      This will overwrite the following existing TNG files:
         meta.html
         customconfig.php
@@ -72,42 +72,42 @@ Tested withWorks with :
         .htaccess
         index_Zikula.php
         index_TNGz.php
-	
+
      NOTE: You will need to have a file named index.php in your TNG directory.
            This can be a file you write, or you can rename the file index_Zikula.php to index.php.
-     
+
   c. Copy the files from TNGz\Zikula\*.php into your base Zikula directory
 
   d. During you first installation only, install TNGz\Zikula\genlog.tmp into your base Zikula directory
      and rename to genlog.txt.
-    
-     NOTE: Because of a quirk in the way TNG saves entries into it's access log file, the 
+
+     NOTE: Because of a quirk in the way TNG saves entries into it's access log file, the
            TNG access log will reside in the genlog.txt located in the Zikula directory, not the
 	   one in the TNG directory.  You do not need to do this step when making an update
 	   (You should already have a genlog.txt file.)
 
 3. Zikula
   a. In Zikula/Postnuke Administration, go to Modules, then Initialize and activate TNGz
-  
+
   b. In Zikula Administration, go to TNGz (which was just activated) and select your options.
      There are a number of important settings:
-     
+
        o You will need to give the directory name where TNG is located.
           - If you have made the proper TNG directory, you should see green status indicators.
-	  
+
        o If you want unlogged in Zikula users to access TNG, then you need to enable the feature
          and specify the TNG guest username.
-	 
+
        o You can enable if you want TNGz to create TNG users with the same id as the logged in
          Zikula user
-          - You can also specify if the new TNG user can view living, download GEDCOMS, 
+          - You can also specify if the new TNG user can view living, download GEDCOMS,
 	    or view LDS information
           - You can also specify if you want TNGz to check Zikula user information each time
             and update TNG user information
 	  - IMPORTANT: TNG uses MD5 to encrypt passwords.  For you to use the same password in Zikula and TNG,
             you must set your Zikula passwords to use MD5 in the Zikula.  To do this, go to Zikula Administation,
 	    Users, Users Manager Settings, and find 'Password hashing method'.  Set to MD5.
-	    
+
        o You can enable an email address filter that scans the TNG information and obfuscates
          plain text email address found in the TNG data (like in notes or sources.)
 	 Email address of the form name@something.com can be changed to name [at] something [dot] com
@@ -115,9 +115,9 @@ Tested withWorks with :
 	 (while still trying to hide the address from email harvestors)
 
   c. Link the module into a menu block use {TNGz}
-  
+
   d. To install blocks:
-  
+
        o In Zikula Administration, go to Blocks, then select New Block, and select TNGz/'block name'
        o Go to Blocks and edit the options for the block.
 
@@ -127,25 +127,25 @@ Tested withWorks with :
             /modules/tngz/pntemplates/sesitemap_user_tngz.htm
          to
 	    /modules/sesitemap/pntemplates/sesitemap_user_tngz.htm
-	    
+
        o If you have more than 50,000 records (people + families) in TNG,
          or if you only care about submitting your TNG data to the search engines,
          then just submit the following url to the search engines:
 	 http://www.yoursitename.com/index.php?module=TNGz&func=sitemap
-   
+
 === Tips and Notes ===
 
    * Upon first call from a non-logged in user, TNGz will create a user under the user name
-     specified in the pnTNG administration. 
+     specified in the TNGz administration.
      In TNG, make sure the TNG user created has the read/write access you want.
-    
+
    * The TNG Admin page must be accessed differently. Previously, links in your html pages to
      the Admin page looked like:
-     
+
         <a href="admin/index.php">Administration</a>
-	
+
      To work around this problem, you can call the admin page directly by using using the following:
-     
+
         <a href="index.php?module=TNGz&amp;func=admin">Administration</a>
 
      You can also access the TNG Administration page under the Zikula TNGz administration page.
@@ -155,9 +155,8 @@ Tested withWorks with :
      its use in Zikula. You just need to rename index_Zikula.php to index.php in your TNG installation
      directory.  If you already have a index.php, you can use index_Zikula.php as an example on how to
      add links.
-    
+
    * When customizing TNG, please do not use header.php or footer.php as file names for your
      header or footer files (as specified in the TNG administration setup.) There is a conflict
      with Zikula files with the same name.  If you need to use a header and footer files php files,
      please rename the files to something different (e.g., footerTNG.php)
-     
