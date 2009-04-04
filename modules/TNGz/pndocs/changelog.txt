@@ -1,24 +1,26 @@
 ======================================================================================
 CHANGE LOG
 TNGz /pndoc/changelog.txt
-TNGz (C) 2008 Wendel Voigt
+TNGz (C) 2009 Wendel Voigt
 ======================================================================================
 -------------
-version 1.02
-  * added Surnames block
+version 1.1
+  * added Surnames block, including Surname cloud, top surnames
   * added Places block
   * added surnames plugin
   * added places plugin
   * added placemap plugin
   * added new version notification for TNG and TNGz in Administration
-  * Fixed problem with showing PDF charts
+  * added sitemap generation options (either direct or with SEsitemap)
+  * added ability to switch TNG language to match Zikula language
+  * added ability to use the module display name for calling TNGz (i.e., can call something other than TNGz)
+  * fixed problem with showing PDF charts
+  * fixed problem when using pnRender caching
   * Updated blocks to see TNGz style sheet, even if not the main module called
   * removed all deprecated Zikula functions
   * Template bugfixes, Validation bugfixes
   * removed TNG js, loading directly into header with PageUtil to solve version conflicts
   * simplified pninit.php
-  * added sitemap generation options (either direct or with SEsitemap)
-  * added ability to switch TNG language to match Zikula language
 
 version 1.01
   * Converted pnTNG to TNGz (major rewrite and update)
