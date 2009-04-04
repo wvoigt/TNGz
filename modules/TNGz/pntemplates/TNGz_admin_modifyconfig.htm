@@ -1,0 +1,99 @@
+<!--[*  $Id$  *]-->
+<!--[include file="TNGz_admin_menu.htm"]-->
+<div class="pn-admincontainer">
+ <h2><!--[pnml name="_TNGZSETTINGS"]--></h2>
+ <form class="pn-adminform" action="<!--[pnmodurl modname="TNGz" type="admin" func="updateconfig"]-->" method="post" enctype="application/x-www-form-urlencoded">
+  <div>
+	<input type="hidden" name="authid" value="<!--[pnsecgenauthkey module="TNGz"]-->" />
+    <fieldset>
+	<legend><!--[pnml name="_TNGZMODULESTATUS"]--></legend>
+ 	<div class="pn-adminformrow"><img src="images/icons/extrasmall/<!--[$tngrootpathimage]-->" alt="" />&nbsp;<!--[$tngrootpathsay|pnvarprepfordisplay]-->
+	<br />
+    <img src="images/icons/extrasmall/<!--[$tngfoundimage]-->" alt="" />&nbsp;<!--[$tngfound|pnvarprepfordisplay]-->
+	<br />
+    <img src="images/icons/extrasmall/<!--[$TNG_versionimage]-->" alt=""  />&nbsp;<!--[$TNG_versionsay|pnvarprepfordisplay]-->&nbsp;
+	<!--[if $TNG_versioncheck ne 1]-->
+	<!--[$TNG_versionlast|pnvarprepfordisplay]-->&nbsp;-->&nbsp;<!--[$TNG_version|pnvarprepfordisplay]-->
+	<!--[/if]-->
+	<br />
+        <!--[versioncheck program=TNGz]-->
+	<br />
+        <!--[versioncheck program=TNG version=$TNG_version]-->
+        <input type="hidden" name="tngversion" value="<!--[$TNG_version]-->" />
+
+	</div>
+        <div class="pn-informationmsg"><!--[pnml name=_TNGZCONFIGTIP]--></div>
+    </fieldset>
+
+    <fieldset>
+	<legend><!--[pnml name="_TNGZMODULE"]--></legend>
+	<div class="pn-adminformrow">
+		<label for="tngz_tngmodule5"><!--[$zikula|pnvarprepfordisplay]--></label>
+		<input id="tngz_tngmodule" name="tngmodule" type="text" size="50" maxlength="250" value="<!--[$tngmodule|pnvarprepfordisplay]-->" />
+	</div>
+    </fieldset>
+
+    <fieldset>
+	<legend><!--[pnml name="_TNGZGUESTACCESS"]--></legend>
+	<div class="pn-adminformrow">
+		<label for="tngz_guest"><!--[pnml name="_TNGZGUEST"]--></label>
+			<input id="tngz_guest" name="tngguest" type="checkbox" value="1"<!--[if $tngguest eq 1]--> checked="checked"<!--[/if]--> />
+	</div>
+
+ 	<div class="pn-adminformrow">
+		<label for="tngz_guestname"><!--[pnml name="_TNGZGUESTNAME"]--></label>
+		<input id="tngz_guestname" name="tngguestname" type="text" size="10" maxlength="20" value="<!--[$tngguestname|pnvarprepfordisplay]-->" />
+	</div>
+        <div class="pn-warningmsg"><!--[pnml name=_TNGZGUESTTIP]--></div>
+    </fieldset>
+
+    <fieldset>
+	<legend><!--[pnml name="_TNGZSYNCUSERS"]--></legend>
+
+	<div class="pn-adminformrow">
+		<label for="tngz_users"><!--[pnml name="_TNGZUSERS"]--></label>
+			<input id="tngz_users" name="tngusers" type="checkbox" value="1"<!--[if $tngusers eq 1]--> checked="checked"<!--[/if]--> />
+	</div>
+        <div class="pn-informationmsg"><!--[pnml name=_TNGZUSERSTIP]--></div>
+
+	<div class="pn-adminformrow">
+		<label for="tngz_living"><!--[pnml name="_TNGZLIVING"]--></label>
+			<input id="tngz_living" name="tngliving" type="checkbox" value="1"<!--[if $tngliving eq 1]--> checked="checked"<!--[/if]--> />
+	</div>
+
+	<div class="pn-adminformrow">
+		<label for="tngz_gedcom"><!--[pnml name="_TNGZGEDCOM"]--></label>
+			<input id="tngz_gedcom" name="tnggedcom" type="checkbox" value="1"<!--[if $tnggedcom eq 1]--> checked="checked"<!--[/if]--> />
+	</div>
+
+	<div class="pn-adminformrow">
+		<label for="tngz_lds"><!--[pnml name="_TNGZLDS"]--></label>
+			<input id="tngz_lds" name="tnglds" type="checkbox" value="1"<!--[if $tnglds eq 1]--> checked="checked"<!--[/if]--> />
+	</div>
+
+    	<div class="pn-adminformrow">
+		<label for="tngz_sync"><!--[pnml name="_TNGZSYNC"]--></label>
+			<input id="tngz_sync" name="tngsync" type="checkbox" value="1"<!--[if $tngsync eq 1]--> checked="checked"<!--[/if]--> />
+	</div>
+
+   	<div class="pn-adminformrow">
+		<label for="tngz_sync2"><!--[pnml name="_TNGZSYNC2"]--></label>
+	</div>
+    </fieldset>
+
+    <fieldset>
+	<legend><!--[pnml name="_TNGZOTHERSETTINGS"]--></legend>
+	<div class="pn-adminformrow">
+		<label for="tngz_tngemail"><!--[pnml name="_TNGZ_EMAIL"]--></label>
+		<select id="tngz_tngemail" name="tngemail"><!--[html_options values=$tngemailvalues output=$tngemailoptions selected=$tngemail]--></select>
+	</div>
+    </fieldset>
+
+    <!--[pnmodcallhooks hookobject=module hookaction=modifyconfig module=Settings]-->
+    <div class="pn-adminformrow pn-adminformbuttons">
+       <!--[pnbutton src=button_ok.gif set=icons/small alt="_TNGZUPDATECONFIG" title="_TNGZUPDATECONFIG"]-->
+       <a href="<!--[pnmodurl modname=TNGz type=admin]-->"><!--[pnimg modname=core src=button_cancel.gif set=icons/small altml=true titleml=true alt="_CANCEL" title="_CANCEL"]--></a>
+    </div>
+  </div>
+ </form>
+</div>

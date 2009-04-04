@@ -1,0 +1,29 @@
+<!--[*  $Id$  *]-->
+<!--[include file="TNGz_admin_menu.htm"]-->
+<div class="pn-admincontainer">
+<h2><!--[pnml name="_TNGZDEBUGINFO"]--></h2>
+<div>    
+   <fieldset>
+	<legend><!--[pnml name="_TNGZCHANGELOG"]--></legend>
+             <!--[$changelog]-->
+    </fieldset>	
+   <fieldset>
+	<legend><!--[pnml name="_TNGZDEBUG"]--></legend>
+        <div class="pn-informationmsg"><!--[pnml name=_TNGZDEBUGMSG]--></div>
+	<table>
+	<thead>
+	    <tr><th>Variable</th><th>Value</th></tr>
+	</thead>
+	<tbody>	
+        <!--[foreach item=item from=$debuglist]-->
+	    <tr valign="top"><td><strong><!--[$item.key|pnvarprepfordisplay]--></strong></td>
+		<td><!--[$item.value|pnvarprepfordisplay]--></td>
+	    </tr>
+        <!--[/foreach]-->
+	</tbody>
+	</table>
+    </fieldset>		
+
+</div>
+
+</div>

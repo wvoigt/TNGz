@@ -1,0 +1,33 @@
+<!--[*  $Id$  *]-->
+<div id="tngz" style="position:relative; width:99%;">
+	<h2><!--[ pnml name="_TNGZ_PLACETITLE" ]--> </h2>
+
+	<div style="text-align:center;">
+		<!--[ pnml name="_TNGZ_TOPPLACES" ]--> (<!--[ pnml name="_TNGZ_TOTALPLACES" ]--> )
+	</div>
+
+	<!--[if $places ]-->
+	<div class="places-big">
+	<!--[places top=$top cols=4 sort=rank]-->
+	</div>
+	<!--[/if]-->
+	<div>
+		<form style="margin:0px" action="index.php" method="post">
+			<input type="hidden" name="module" value="TNGz" />
+			<input type="hidden" name="func"   value="main" />
+			<input type="hidden" name="show"   value="places100" />
+			<!--[ pnml name="_TNGZ_SHOWTOP" ]-->
+			<input type="text" name="topplace" value="100" size="3" maxlength="3" /><!--[ pnml name="_TNGZ_BYOCCURRENCE" ]-->
+			<input type="submit" value="<!--[ pnml name="_TNGZ_GO" ]-->" />
+		</form>
+	</div>
+
+	<div>
+		<a href="<!--[pnmodurl fqurl=true modname=TNGz show=places-all ]-->"><!--[ pnml name="_TNGZ_SHOWALLPLACES" ]--></a><!--[ pnml name="_TNGZ_SORTEDALPHA" ]-->
+	</div>
+	<div>
+		<a href="<!--[pnmodurl fqurl=true modname=TNGz show=places ]-->"><!--[ pnml name="_TNGZ_MAINPLACESPAGE" ]--></a>
+	</div>
+	<hr>
+	<!--[placemap height=300 width=600 region=0 size=medium]-->
+</div>

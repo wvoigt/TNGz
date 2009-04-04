@@ -1,0 +1,10 @@
+# File: $Id: .htaccess 23087 2007-11-16 21:37:05Z wvoigt $
+# ----------------------------------------------------------------------
+# Purpose of file: Generally any web access to files stored under
+#                  the modules/ directory is blocked.
+#                  This file opens it up for the TNG program directory
+# ----------------------------------------------------------------------
+Options +FollowSymLinks -Indexes 
+
+order allow,deny
+allow from all

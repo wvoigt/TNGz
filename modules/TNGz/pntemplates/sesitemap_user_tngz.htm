@@ -1,0 +1,35 @@
+<!--[* $Id$ *]-->
+<!--[nocache]--><!--[php]-->header("Content-type: text/xml");<!--[/php]--><!--[/nocache]-->
+<?xml version='1.0' encoding='UTF-8'?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+<!--[pnmodavailable modname=TNGz assign=tngz]-->
+<!--[if $tngz]-->
+    <!--[* PEOPLE *]-->
+    <!--[pnmodapifunc modname=TNGz func=getRecords kind=people assign=tngz]-->
+    <!--[if $tngz]-->
+        <!--[foreach from=$tngz item=i]-->
+            <url>
+                <loc><!--[pnmodurl fqurl=true modname=TNGz func=main show=getperson personID=$i.id tree=$i.tree]--></loc>
+		<lastmod><!--[$i.changedate|date_format:"%Y-%m-%d"]--></lastmod>
+                <changefreq>monthly</changefreq>
+	    </url>
+	<!--[/foreach]-->
+    <!--[/if]-->
+
+    <!--[* FAMILIES *]-->
+    <!--[pnmodapifunc modname=TNGz func=getRecords kind=family assign=tngz]-->
+    <!--[if $tngz]-->
+        <!--[foreach from=$tngz item=i]-->
+            <url>
+                <loc><!--[pnmodurl fqurl=true modname=TNGz func=main show=familygroup familyID=$i.id tree=$i.tree]--></loc>
+		<lastmod><!--[$i.changedate|date_format:"%Y-%m-%d"]--></lastmod>
+                <changefreq>monthly</changefreq>
+	    </url>
+	<!--[/foreach]-->
+    <!--[/if]-->
+    
+<!--[/if]-->
+</urlset> 
