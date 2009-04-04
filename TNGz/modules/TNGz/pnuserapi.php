@@ -132,10 +132,14 @@ function TNGz_userapi_ShowPage($args)
     $cms[support]    = "zikula";
     $cms[module]     = "TNGz";
     
-    $cms[url]          = "index.php?module=$TNGz_modname&func=main&show";    
+                          // TODO: Need to figure out the best way to do this
+    $cms[url]          = "index.php?module=$TNGz_modname&func=main&show";
+    //$cms[url]        = "index.php?module=$TNGz_modname&show";    
+    //$cms[url]        = rtrim(pnModURL('TNGz','user','main', array('show'=>'')),"=");
+                         // these are not as good
     //$cms[url]        = _TNGZ_PREFIX;
     //$cms[url]        = pnModURL('TNGz','user','main')."&amp;show"; //Some part of TNG does not work with short URLs enabled
-    //$cms[url]        = rtrim(pnModURL('TNGz','user','main', array('show'=>'')),"=");
+
     
     $cms[tngpath]    = $TNG['directory']. "/";
     //$cms[adminurl]   = "index.php?module=TNGz&func=admin";
