@@ -203,3 +203,7 @@ define("_TNGZDEBUG"         ,        "Debug Information");
 define("_TNGZDEBUGMSG"      ,        "Information used to debug problems. This might be useful if you need to report a problem.");
 define("_TNGZCHANGELOG"     ,        "Change Log");
 define("_TNGZREADME"        ,        "Detail Readme file");
+
+define("_TNGZ_HOMEPAGE"     ,        "Use TNGz's homepage instead of TNG's index page");
+
+

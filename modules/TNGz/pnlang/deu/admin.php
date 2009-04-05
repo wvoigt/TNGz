@@ -64,3 +64,5 @@
  define("_TNGZDEBUGMSG"      , "Informationen zum Lösen von Problemen. Könnte bei der Meldung von Fehlern hilfreich sein.");
  define("_TNGZCHANGELOG"     , "Changelog");
  define("_TNGZREADME"        , "Detaillierte Readme-Datei");
+
+ define("_TNGZ_HOMEPAGE"     , "Use TNGz's homepage instead of TNG's index page"); // NEEDS TRANSLATION
