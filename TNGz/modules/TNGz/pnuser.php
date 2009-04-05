@@ -25,6 +25,13 @@ function TNGz_user_main()
 
     $TNGpage = FormUtil::getPassedValue('show', 'index', 'GETPOST');
 
+    // Check to see if should use TNGz rendered home page
+    if ( ($TNGpage == 'index' && pnModGetVar('TNGz', '_homepage', 0) ) || $TNGpage == 'homepage' ) {
+        // OK, so need to use the TNGz version of the index/homepage
+        $pnRender =& new pnRender('TNGz');
+        return $pnRender->fetch('TNGz_user_homepage.htm');
+    }
+
     switch ($TNGpage) {
         case 'gedcom':
         case 'addbookmark':
@@ -44,10 +51,9 @@ function TNGz_user_main()
                 $TNGrenderpage = false;
                 break;
         default:
-
-        // Everything else can be wrapped as usual
-        $TNGrenderpage = true;
-        break;
+                // Everything else can be wrapped as usual
+                $TNGrenderpage = true;
+                break;
     }
     return pnModAPIFunc('TNGz','user','ShowPage', array('showpage' => $TNGpage, 'render' => $TNGrenderpage ));
 }
@@ -79,12 +85,12 @@ function TNGz_user_admin()
     //////////////////////////////////////////////////////
     // Now go and display it
     //////////////////////////////////////////////////////
-    $pnTNGmodinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
+    $TNGzModInfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
 
     $pnRender =& new pnRender('TNGz');
 
     $pnRender->assign('TNGzURL'      , $url);
-    $pnRender->assign('TNGzVersion'  , $pnTNGmodinfo['version'] );
+    $pnRender->assign('TNGzVersion'  , $TNGzModInfo['version'] );
 
     return $pnRender->fetch('TNGz_user_admin.htm');
 
@@ -168,11 +174,11 @@ function TNGz_user_view()
 
     if ($item == "places" ) {
 
-        $thePlaces =  pnModAPIFunc('TNGz','user','GetPlaces', array('top'=> $top));
-        $pnTNGmodinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
+        $thePlaces   = pnModAPIFunc('TNGz','user','GetPlaces', array('top'=> $top));
+        $TNGzModInfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
 
         $pnRender =& new pnRender('TNGz');
-        $pnRender->assign('TNGzVersion'  , $pnTNGmodinfo['version'] );
+        $pnRender->assign('TNGzVersion'  , $TNGzModInfo['version'] );
         $pnRender->assign('top'          , $top);
         $pnRender->assign('places'       , $thePlaces);
         return $pnRender->fetch('TNGz_user_view_places.htm');
@@ -181,10 +187,10 @@ function TNGz_user_view()
     if ($item == "surnames" ) {
 
         $Surnames =  pnModAPIFunc('TNGz','user','GetSurnames', array('top'=> $top));
-        $pnTNGmodinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
+        $TNGzModInfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
 
         $pnRender =& new pnRender('TNGz');
-        $pnRender->assign('TNGzVersion'  , $pnTNGmodinfo['version'] );
+        $pnRender->assign('TNGzVersion'  , $TNGzModInfo['version'] );
         $pnRender->assign('top'          , $top);
         $pnRender->assign('SurnameCount' , $Surnames['count']);
         $pnRender->assign('SurnameRank'  , $Surnames['rank']);

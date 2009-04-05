@@ -176,6 +176,9 @@ function TNGz_admin_modifyconfig()
     // For created users, Sync TNG info with Zikula info?
     $pnRender->assign('tngsync', pnModGetVar('TNGz', '_sync'));
 
+    // For TNGz homepage for TNG index
+    $pnRender->assign('tngzhomepage', pnModGetVar('TNGz', '_homepage'));
+    
     // TNG location
     $pnRender->assign('tngmodule'    , pnModGetVar('TNGz', '_loc'));
     $pnRender->assign('zikula'       , dirname(dirname(dirname(realpath(__FILE__))))."/" );
@@ -197,16 +200,17 @@ function TNGz_admin_updateconfig()
     // from other places such as the environment is not allowed, as that makes
     // assumptions that will not hold in future versions of Zikula
     // Get parameters from whatever input we need.
-    $_loc      = FormUtil::getPassedValue('tngmodule', null, 'REQUEST');
-    $_guest    = FormUtil::getPassedValue('tngguest', null, 'REQUEST');
-    $_users    = FormUtil::getPassedValue('tngusers', null, 'REQUEST');
-    $_living   = FormUtil::getPassedValue('tngliving', null, 'REQUEST');
-    $_email    = FormUtil::getPassedValue('tngemail', null, 'REQUEST');
-    $_gedcom   = FormUtil::getPassedValue('tnggedcom', null, 'REQUEST');
-    $_lds      = FormUtil::getPassedValue('tnglds', null, 'REQUEST');
-    $_sync     = FormUtil::getPassedValue('tngsync', null, 'REQUEST');
+    $_loc      = FormUtil::getPassedValue('tngmodule',    null, 'REQUEST');
+    $_guest    = FormUtil::getPassedValue('tngguest',     null, 'REQUEST');
+    $_users    = FormUtil::getPassedValue('tngusers',     null, 'REQUEST');
+    $_living   = FormUtil::getPassedValue('tngliving',    null, 'REQUEST');
+    $_email    = FormUtil::getPassedValue('tngemail',     null, 'REQUEST');
+    $_gedcom   = FormUtil::getPassedValue('tnggedcom',    null, 'REQUEST');
+    $_lds      = FormUtil::getPassedValue('tnglds',       null, 'REQUEST');
+    $_sync     = FormUtil::getPassedValue('tngsync',      null, 'REQUEST');
     $_gname    = FormUtil::getPassedValue('tngguestname', null, 'REQUEST');
-    $_version  = FormUtil::getPassedValue('tngversion', null, 'REQUEST');
+    $_version  = FormUtil::getPassedValue('tngversion',   null, 'REQUEST');
+    $_homepage = FormUtil::getPassedValue('tngzhomepage', null, 'REQUEST');
 
     /*
     $_config   = pnVarCleanFromInput('_config');
@@ -256,6 +260,9 @@ function TNGz_admin_updateconfig()
 
     if (empty($_version) || ($_version=="") ){ $_version = _TNGVERSIONUNKNOWN;}
         pnModSetVar('TNGz', '_version'  , $_version);
+        
+    if (empty($_homepage)) { $_homepage = 0; }
+        pnModSetVar('TNGz', '_homepage'     , $_homepage);
 
 
 /*
