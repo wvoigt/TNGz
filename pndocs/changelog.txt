@@ -3,7 +3,13 @@ CHANGE LOG
 TNGz /pndoc/changelog.txt
 TNGz (C) 2009 Wendel Voigt
 ======================================================================================
--------------
+
+version 1.1.1
+  * added option to use TNGz's templated 'homepage' instead of TNG's index page. 
+    This allows the construction of a home page based upon the TNGz plugins.  
+    Template name is TNGz_user_homepage.html
+  *
+
 version 1.1
   * added Surnames block, including Surname cloud, top surnames
   * added Places block

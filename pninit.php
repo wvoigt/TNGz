@@ -29,6 +29,7 @@ function TNGz_init()
     pnModSetVar(TNGz, '_lds'     ,   0);
     pnModSetVar(TNGz, '_sync'    ,   1);
     pnModSetVar(TNGz, '_style'   ,   0);
+    pnModSetVar(TNGz, '_homepage',   0);
 
     return true;
 }
@@ -42,7 +43,8 @@ function TNGz_upgrade($oldversion)
 
     switch($oldversion) {
         case 0.00:
-        case 1.00:
+        case 1.01:
+        case 1.1:
         case 2.00:
         default:
               $successful = true;
