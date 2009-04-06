@@ -120,5 +120,11 @@ define('_TNGZ_CLOUD',                 'Nachnamen-Wolke');
 define('_TNGZ_TABLE',                 'Tabelle');
 define('_TNGZ_LIST',                  'Liste');
 
+/*********** NameSearch ***********/
+define('_TNGZ_NAMESEARCH_SEARCH',        'Search');          // Needs Translation
+define('_TNGZ_NAMESEARCH_LASTNAME',      'Last Name');       // Needs Translation
+define('_TNGZ_NAMESEARCH_FIRSTNAME',     'First Name');      // Needs Translation
+define('_TNGZ_NAMESEARCH_ADVANCED',      'Advanced Search'); // Needs Translation
+
 
 
