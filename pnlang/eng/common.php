@@ -146,6 +146,12 @@ define('_TNGZ_CLOUD',                 'Surname cloud');
 define('_TNGZ_TABLE',                 'Table');
 define('_TNGZ_LIST',                  'List');
 
+/*********** NameSearch ***********/
+define('_TNGZ_NAMESEARCH_SEARCH',        'Search');
+define('_TNGZ_NAMESEARCH_LASTNAME',      'Last Name');
+define('_TNGZ_NAMESEARCH_FIRSTNAME',     'First Name');
+define('_TNGZ_NAMESEARCH_ADVANCED',      'Advanced Search');
+
 /*********** Search ***********/
 define('_TNGZ_SEARCH_LIVING',        'The following individual is flagged as living - Details withheld.');
 define('_TNGZ_SEARCH',               'Genealogy People Search');
