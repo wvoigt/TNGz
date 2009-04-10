@@ -17,10 +17,11 @@
 /**
  * TNGz surnames
  * Gets the top surnames
- * @param $args['top']  number of surnames to give
- * @param $args['type'] type of output - cloud, list, table
- * @param $args['sort'] order of listing - alpha, rank
- * @param $args['cols'] number of columns (table only)
+ * @param $params['top']  number of surnames to give
+ * @param $params['type'] type of output - cloud, list, table
+ * @param $params['sort'] order of listing - alpha, rank
+ * @param $params['cols'] number of columns (table only)
+ * @param $params['links']  no or yes to add links to surname pages
  * @return string containing HTML formated surnames
  */
 function smarty_function_surnames($params, &$smarty)
@@ -37,6 +38,9 @@ function smarty_function_surnames($params, &$smarty)
 
     $cols = $params['cols'];
     $cols  = (is_numeric($cols) && $cols > 0)? intval($cols) : 2;  // Get valid value or set default
+
+    $validlinks = array('no', 'yes');  // first in list is the default
+    $links = (in_array($params['links'], $validlinks))? $params['links'] : $validlinks[0];
 
     // Get the Surnames
     $Surnames =  pnModAPIFunc('TNGz','user','GetSurnames', array('top'=> $top));
@@ -126,5 +130,21 @@ function smarty_function_surnames($params, &$smarty)
         }
         $output .= "</table>";
     }
+    if ($links == 'yes'){
+        $output .= "<form style=\"margin:0px\" action=\"index.php\" method=\"post\">";
+        $output .= "<input type=\"hidden\" name=\"module\" value=\"TNGz\" />";
+        $output .= "<input type=\"hidden\" name=\"show\" value=\"surnames100\" />";
+        $output .= _TNGZ_FORM_SHOWTOP;
+        $output .= " <input type=\"text\" name=\"topnum\" value=\"100\" size=\"3\" maxlength=\"3\" /> ";
+        $output .= _TNGZ_FORM_ORDERBYOCC;
+        //$output .= "<input type=\"hidden\" name=\"tree\" value=\"\" />";
+        $output .= " <input type=\"submit\" value=\"". _TNGZ_FORM_GO ."\" />";
+        $output .= "</form>";
+        $output .= "<br />";
+        $output .= "<a href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'surnames-all')) . "\">" . _TNGZ_SURNAMES_LINK_SURNAMES_ALL  . "</a>";
+        $output .= "<br />";
+        $output .= "<a href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'surnames'    )) . "\">" . _TNGZ_SURNAMES_LINK_SURNAMES . "</a>";
+    }
     return $output;
 }
+
