@@ -17,10 +17,11 @@
 /**
  * TNGz places
  * Display the top places in various formats
- * @param $args['top']  number of places to show
- * @param $args['type'] type of output - list or table
- * @param $args['sort'] order of listing - alpha, rank
- * @param $args['cols'] number of columns (table only)
+ * @param $params['top']  number of places to show
+ * @param $params['type'] type of output - list or table
+ * @param $params['sort'] order of listing - alpha, rank
+ * @param $params['cols'] number of columns (table only)
+ * @param $params['links']  no or yes to add links to place pages
  * @return string containing HTML formated places
  */
 function smarty_function_places($params, &$smarty)
@@ -38,6 +39,9 @@ function smarty_function_places($params, &$smarty)
     $cols = $params['cols'];
     $cols  = (is_numeric($cols) && $cols > 0)? intval($cols) : 2;  // Get valid value or set default
 
+    $validlinks = array('no', 'yes');  // first in list is the default
+    $links = (in_array($params['links'], $validlinks))? $params['links'] : $validlinks[0];
+    
     // Get the Places
     $Places =  pnModAPIFunc('TNGz','user','GetPlaces', array('top'=> $top, 'sort' => $sort));
 
@@ -105,6 +109,21 @@ function smarty_function_places($params, &$smarty)
             $output .= "</tr>";
         }
         $output .= "</table>";
+    }
+    if ($links == 'yes'){
+        $output .= "<form style=\"margin:0px\" action=\"index.php\" method=\"post\">";
+        $output .= "<input type=\"hidden\" name=\"module\" value=\"TNGz\" />";
+        $output .= "<input type=\"hidden\" name=\"show\" value=\"places100\" />";
+        $output .= _TNGZ_FORM_SHOWTOP;
+        $output .= " <input type=\"text\" name=\"topnum\" value=\"100\" size=\"3\" maxlength=\"3\" /> ";
+        $output .= _TNGZ_FORM_ORDERBYOCC;
+        //$output .= "<input type=\"hidden\" name=\"tree\" value=\"\" />";
+        $output .= " <input type=\"submit\" value=\"". _TNGZ_FORM_GO ."\" />";
+        $output .= "</form>";
+        $output .= "<br />";
+        $output .= "<a href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'places-all')) . "\">" . _TNGZ_PLACES_LINK_PLACES_ALL  . "</a>";
+        $output .= "<br />";
+        $output .= "<a href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'places'    )) . "\">" . _TNGZ_PLACES_LINK_PLACES . "</a>";
     }
     return $output;
 }
