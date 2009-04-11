@@ -41,6 +41,7 @@ function TNGz_user_main()
         case 'tnghelp':
         case 'tentedit':
         case 'pedxml':
+        case 'pedjson':
         case 'showmediaxml':
         case 'smallimage':
         case 'pdfform':
