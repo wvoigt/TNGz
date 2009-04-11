@@ -71,44 +71,7 @@ function TNGz_userapi_ShowPage($args)
     //////////////////////////////////////////////////////
     // Language Settings
     //////////////////////////////////////////////////////
-    $languages = array(
-    // Zikula => TNG
-        'deu' => 'German',
-        'fra' => 'French',
-        'pol' => 'Polish',
-        'ita' => 'Italian',
-        'nld' => 'Dutch',
-        'esp' => 'Spanish',
-        'afr' => 'Afrikaans',
-        'hrv' => 'Croatian',
-//      'xxx' => 'Czech',
-        'dan' => 'Danish',
-        'fin' => 'Finnish',
-//      'xxx' => 'Greek',
-        'isl' => 'Icelandic',
-        'nob' => 'Norwegian',
-        'nno' => 'Norwegian',
-        'rom' => 'Romanian',
-        'rus' => 'Russian',
-//      'xxx' => 'Serbian',
-        'swe' => 'Swedish',
-        'por' => 'Portuguese',
-//      'xxx' => 'PortugueseBR,
-//      'xxx' => 'French-UTF8',
-//      'xxx' => 'German-UTF8',
-        'eng' => 'English'
-    );
-
-    $newlanguage = false; // default to use language setting from TNG
-    $zikulalang = SessionUtil::getVar('lang');  // get language used in Zikula
-    if ( isset($languages[$zikulalang]) ) { // is it defined?
-        // If the Zikula language has been installed in TNG, then use it
-        // NOTE: May want to add a Zikula Administration setting to turn this on/off
-        // QUESTION: Is there a TNG setting that must be enabled for this to work?
-        if (file_exists($TNG['directory']. "/" . $languages[$zikulalang] . "/text.php") ) {
-            $newlanguage = $languages[$zikulalang];
-        }
-    }
+    $newlanguage = pnModAPIFunc('TNGz','user','GetTNGlanguage');
 
     //////////////////////////////////////////////////////
     // Get the TNG configuration information
@@ -372,6 +335,110 @@ function TNGz_userapi_ShowPage($args)
 
     return $pnRender->fetch('TNGz_user_main.htm');
 
+}
+
+ /**
+ * Get the language to be used for TNG
+ * @return false on error or the name of the TNG language
+ */
+function TNGz_userapi_GetTNGlanguage($args)
+{
+    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
+    //////////////////////////////////////////////////////
+    // Language Settings
+    //////////////////////////////////////////////////////
+    $languages = array(
+    // Zikula => TNG
+        'deu' => 'German',
+        'fra' => 'French',
+        'pol' => 'Polish',
+        'ita' => 'Italian',
+        'nld' => 'Dutch',
+        'esp' => 'Spanish',
+        'afr' => 'Afrikaans',
+        'hrv' => 'Croatian',
+//      'xxx' => 'Czech',
+        'dan' => 'Danish',
+        'fin' => 'Finnish',
+//      'xxx' => 'Greek',
+        'isl' => 'Icelandic',
+        'nob' => 'Norwegian',
+        'nno' => 'Norwegian',
+        'rom' => 'Romanian',
+        'rus' => 'Russian',
+//      'xxx' => 'Serbian',
+        'swe' => 'Swedish',
+        'por' => 'Portuguese',
+//      'xxx' => 'PortugueseBR,
+//      'xxx' => 'French-UTF8',
+//      'xxx' => 'German-UTF8',
+        'eng' => 'English'
+    );
+
+    $newlanguage = false; // default to use language setting from TNG
+    $zikulalang = SessionUtil::getVar('lang');  // get language used in Zikula
+    if ( isset($languages[$zikulalang]) ) { // is it defined?
+        // If the Zikula language has been installed in TNG, then use it
+        // NOTE: May want to add a Zikula Administration setting to turn this on/off
+        // QUESTION: Is there a TNG setting that must be enabled for this to work?
+        if (file_exists($TNG['directory']. "/" . $languages[$zikulalang] . "/text.php") ) {
+            $newlanguage = $languages[$zikulalang];
+        }
+    }
+    return $newlanguage;
+}
+
+ /**
+ * Get the text strings defined by TNG
+ * @param  str args['textpart'] The type of text to retrieve from TNG
+ * @return false on error or an array with the TNG text elements
+ */
+function TNGz_userapi_GetTNGtext($args)
+{
+    static $TNGz_text         = array(); // holds the text values
+    static $TNGz_text_fetched = array(); // keeps track of the texttypes visited
+    static $languagepath;    
+    
+   // Get parameter
+    $valid     = array( 'common', 'sources', 'language', 'gedcom', 'getperson', 'relate', 'familygroup','pedigree',
+                        'search', 'reports', 'showlog', 'headstones', 'showphoto', 'surnames','places', 'whatsnew',
+                        'timeline', 'trees', 'login', 'stats', 'notes', 'help', 'install');  // first in list is default
+    $texttype  = (in_array($args['textpart'], $valid)) ? $args['textpart'] : $valid[0];
+       
+            // path to the language files
+        
+    if (isset($TNGz_text_fetched[$texttype])){
+        return $TNGz_text; // already have it, so just give it 
+    }
+
+    global $text;
+    $text    = array();
+    
+    if (!isset($languagepath)){  // This should only have to run once
+        $TNG        = pnModAPIFunc('TNGz','user','GetTNGpaths');
+        $mylanguage = pnModAPIFunc('TNGz','user','GetTNGlanguage');
+        $languagepath = $TNG['directory']. "/" . $mylanguage . "/";
+        
+        // get language files that do not depend upon texttype
+        global $dates, $admtext;
+        $dates   = array();
+        $admtext = array();
+        include_once($languagepath . "alltext.php");
+        include_once($languagepath . "cust_text.php");
+        $TNGz_text = array_merge($dates, $admtext, $text);
+    }
+      
+    $rootpath = ""; // kludge for text.php 
+    global $textpart;
+    $textpart  = ($texttype == 'common') ? '' : $texttype;
+    include($languagepath . "text.php");
+    
+    $TNGz_text = array_merge($text, $TNGz_text); // now add to the list we already have
+    
+    $TNGz_text_fetched[$texttype] = true;        // flag that we have this texttype
+    $TNGz_text_fetched['common']  = true;        // flag common too since always get these with others
+    
+    return $TNGz_text;
 }
 
  /**
