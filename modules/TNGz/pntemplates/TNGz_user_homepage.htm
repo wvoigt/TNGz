@@ -1,23 +1,26 @@
 <!--[*  $Id$  *]-->
 <!--[*<h2>Genealogy</h2>*]-->
 
+<!--[pnmodapifunc modname=TNGz type=user func=GetTNGtext assign=text ]-->
+<!--[ pnpagesetvar name="title" value=$text.homepage]-->
+
 <div>
     <center>
     <font face="Arial,Helvetica,sans-serif" size="4">
-    <a href="<!--[pnmodurl modname=TNGz show=pedigree personID=I1 tree=voigt generations=4 ]-->">My Ancestors</a>&nbsp;|&nbsp;
-    <a href="<!--[pnmodurl modname=TNGz show=extrastree personID=I1 tree=voigt ]-->">Ancestors Photos and Historiess</a>
+    <a href="<!--[pnmodurl modname=TNGz show=pedigree personID=I1 tree=voigt generations=4 ]-->"><!--[$text.ancestors ]--></a>&nbsp;|&nbsp;
+    <a href="<!--[pnmodurl modname=TNGz show=extrastree personID=I1 tree=voigt ]-->"><!--[$text.ancestors ]-->&nbsp;<!--[$text.mnuphotos ]--> &amp <!--[$text.mnuhistories ]--></a>
     <br />
-    <a href="<!--[pnmodurl modname=TNGz show=whatsnew      ]-->">What's New </a> &nbsp;|&nbsp;
-    <a href="<!--[pnmodurl modname=TNGz show=browsephotos  ]-->">Photos     </a> &nbsp;|&nbsp;
-    <a href="<!--[pnmodurl modname=TNGz show=browsesources ]-->">Sources    </a> &nbsp;|&nbsp;
-    <a href="<!--[pnmodurl modname=TNGz show=reports       ]-->">Reports    </a> &nbsp;|&nbsp;
-    <a href="<!--[pnmodurl modname=TNGz show=browsetrees   ]-->">Statistics </a> &nbsp;|&nbsp;
-    <a href="<!--[pnmodurl modname=TNGz show=suggest       ]-->">Suggestions</a>
+    <a href="<!--[pnmodurl modname=TNGz show=whatsnew      ]-->"><!--[$text.mnuwhatsnew   ]--></a> &nbsp;|&nbsp;
+    <a href="<!--[pnmodurl modname=TNGz show=browsephotos  ]-->"><!--[$text.mnuphotos     ]--></a> &nbsp;|&nbsp;
+    <a href="<!--[pnmodurl modname=TNGz show=browsesources ]-->"><!--[$text.mnusources    ]--></a> &nbsp;|&nbsp;
+    <a href="<!--[pnmodurl modname=TNGz show=reports       ]-->"><!--[$text.mnureports    ]--></a> &nbsp;|&nbsp;
+    <a href="<!--[pnmodurl modname=TNGz show=browsetrees   ]-->"><!--[$text.mnustatistics ]--></a> &nbsp;|&nbsp;
+    <a href="<!--[pnmodurl modname=TNGz show=suggest       ]-->"><!--[$text.suggest       ]--></a>
     <br />
 
     <!--[pnsecauthaction_block component='TNGz::' instance='::' level=ACCESS_ADMIN]-->
-    <a href="<!--[pnmodurl modname=TNGz show=showlog            ]-->">Show Logs  </a> &nbsp;|&nbsp;
-    <a href="<!--[pnmodurl modname=TNGz type=admin func=TNGadmin]-->">Administration</a>
+    <a href="<!--[pnmodurl modname=TNGz show=showlog            ]-->"><!--[$text.mnushowlog ]--></a> &nbsp;|&nbsp;
+    <a href="<!--[pnmodurl modname=TNGz type=admin func=TNGadmin]-->"><!--[$text.mnuadmin   ]--></a>
     <br />
     <!--[/pnsecauthaction_block]-->
 
@@ -37,7 +40,11 @@
     </tr>
     <tr>
         <td align="left"   valign="top" ><div><!--[surnames type=list top=25 sort=rank links=yes]--></div></td>
-	<td align="center" valign="top" ><div><!--[namesearch]--><!--[showphoto showliving=Y phototype=P photolist="249" max_height=200 max_width=200]--></div></td>
+	<td align="center" valign="top" ><div><center>
+					      <strong><!--[$text.mnustatistics ]--></strong>
+	                                      <!--[statistics]-->
+					      </center>
+					</div></td>
 	<td align="left"   valign="top" ><div><!--[places type=list top=25 sort=rank links=yes]--></div></td>
     </tr>
 </table>
