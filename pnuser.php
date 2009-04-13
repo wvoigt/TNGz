@@ -23,6 +23,10 @@
 function TNGz_user_main()
 {
 
+    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_READ)) {
+        return LogUtil::registerError(_MODULENOAUTH);
+    }
+
     $TNGpage = FormUtil::getPassedValue('show', 'index', 'GETPOST');
 
     // Check to see if should use TNGz rendered home page
