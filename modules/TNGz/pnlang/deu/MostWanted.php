@@ -15,4 +15,4 @@
  * @version $Id$
  */
 
-include_once('modules/TNGz/pnlang/deu/global.php');
+require_once dirname(realpath(__FILE__)).'/global.php';

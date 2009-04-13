@@ -119,19 +119,19 @@ define('_TNGZ_TYPE',                  'Zeige als');
 define('_TNGZ_CLOUD',                 'Nachnamen-Wolke');
 define('_TNGZ_TABLE',                 'Tabelle');
 define('_TNGZ_LIST',                  'Liste');
-define('_TNGZ_FORM_SHOWTOP',           'Show top');               // Needs Translation
-define('_TNGZ_FORM_ORDERBYOCC',        'ordered by occurrence');  // Needs Translation
-define('_TNGZ_FORM_GO',                'Go');                     // Needs Translation
-define('_TNGZ_SURNAMES_LINK_SURNAMES_ALL', 'Show all surnames alphabetically'); // Needs Translation
-define('_TNGZ_SURNAMES_LINK_SURNAMES', 'Main surname page');      // Needs Translation
-define('_TNGZ_PLACES_LINK_PLACES_ALL', 'Show all places alphabetically'); // Needs Translation
-define('_TNGZ_PLACES_LINK_PLACES',     'Main places page');       // Needs Translation
+define('_TNGZ_FORM_SHOWTOP',           'Zeige Top');
+define('_TNGZ_FORM_ORDERBYOCC',        'sortiert nach Vorkommen');
+define('_TNGZ_FORM_GO',                'Start');
+define('_TNGZ_SURNAMES_LINK_SURNAMES_ALL', 'Zeige Nachnamen alphabetisch');
+define('_TNGZ_SURNAMES_LINK_SURNAMES', 'Hauptseite der Nachnamen');
+define('_TNGZ_PLACES_LINK_PLACES_ALL', 'Zeige Orte alphabetisch');
+define('_TNGZ_PLACES_LINK_PLACES',     'Hauptseite der Orte');
 
 /*********** NameSearch ***********/
-define('_TNGZ_NAMESEARCH_SEARCH',        'Search');          // Needs Translation
-define('_TNGZ_NAMESEARCH_LASTNAME',      'Last Name');       // Needs Translation
-define('_TNGZ_NAMESEARCH_FIRSTNAME',     'First Name');      // Needs Translation
-define('_TNGZ_NAMESEARCH_ADVANCED',      'Advanced Search'); // Needs Translation
+define('_TNGZ_NAMESEARCH_SEARCH',        'Suche');
+define('_TNGZ_NAMESEARCH_LASTNAME',      'Nachname');
+define('_TNGZ_NAMESEARCH_FIRSTNAME',     'Vorname');
+define('_TNGZ_NAMESEARCH_ADVANCED',      'Erweiterte Suche');
 
 
 
