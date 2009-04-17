@@ -48,6 +48,7 @@ function TNGz_user_main()
         case 'pedjson':
         case 'showmediaxml':
         case 'smallimage':
+        case 'timelinexml':
         case 'pdfform':
         case 'rpt_descend':
         case 'rpt_ind':
@@ -212,10 +213,23 @@ function TNGz_user_worldmap()
         return pnVarPrepHTMLDisplay(_MODULENOAUTH);
     }
 
-    $size    = FormUtil::getPassedValue('size'  , false, 'GET');
+    $size       = FormUtil::getPassedValue('size'  , false, 'GET');
+    $sizetypes  = array('tiny', 'small', 'medium', 'large', 'huge', 'giant');  // first in list is default
+    $size       = (in_array($size, $sizetypes)) ? $size : $sizetypes[0];
+
     $region  = FormUtil::getPassedValue('region', 0,     'GET');
     $region = (in_array($region, array(0,1,2,3,4,5,6)))? $region : 0;
 
+    // See if already in the cache
+    $cachefile    = sprintf("worldmap-%s-%s.png",$size,$region);
+    $cacheresults = pnModAPIFunc('TNGz','user','Cache',     array( 'item'=> $cachefile ));
+    if ($cacheresults) {
+        header ("Content-type: image/png");
+        echo $cacheresults;
+        return true;
+    }
+
+    // Not in cache or out of date, so go create it
     $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
 
     // Check to be sure we can get to the TNG information
@@ -323,10 +337,19 @@ function TNGz_user_worldmap()
     imagecopyresized($im_return, $im, $dest_x, $dest_y, $part_x, $part_y, $dest_w, $dest_h, $part_w, $part_h);
     imagedestroy($im);
 
-    // Return the map image. Uing a PNG format since it gives better final image quality
-    header ("Content-type: image/png");
-    imagepng($im_return);
+    // Save the map image using a PNG format since it gives better final image quality
+    ob_start();
+    $image = imagepng($im_return);
+    $saved_image = ob_get_contents();
+    ob_end_clean();
     imagedestroy($im_return);
+    
+    // Now Display it
+    header ("Content-type: image/png");
+    echo $saved_image;
+    
+    // now update the cache
+    pnModAPIFunc('TNGz','user','CacheUpdate', array( 'item'=> $cachefile, 'data' => $saved_image) );
     return true;
 }
 

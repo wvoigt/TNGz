@@ -39,8 +39,19 @@ function smarty_function_surnames($params, &$smarty)
     $cols = $params['cols'];
     $cols  = (is_numeric($cols) && $cols > 0)? intval($cols) : 2;  // Get valid value or set default
 
-    $validlinks = array('no', 'yes');  // first in list is the default
+    $validlinks = array('yes', 'no');  // first in list is the default
     $links = (in_array($params['links'], $validlinks))? $params['links'] : $validlinks[0];
+    $hidelinks = ($links == "yes") ? false : true;
+    
+    $validmenus = array('no', 'yes');  // first in list is the default
+    $menu = (in_array($params['menu'], $validmenus))? $params['menu'] : $validmenus[0];
+
+    // See if already in the cache
+    $cachefile    = sprintf("surnames-%s-%s-%s-%s-%s-%s.html",$type,$sort,$top,$cols,$links,$menu);
+    $cacheresults = pnModAPIFunc('TNGz','user','Cache', array( 'item'=> $cachefile ));
+    if ($cacheresults) {
+        return $cacheresults;
+    }
 
     // Get the Surnames
     $Surnames =  pnModAPIFunc('TNGz','user','GetSurnames', array('top'=> $top));
@@ -55,9 +66,10 @@ function smarty_function_surnames($params, &$smarty)
         $output = "<div class='surnames-cloud'>";
         foreach($names as $name){
             $output .= "<span class='surnames-cloud size" . $name['class'] . "'>";
-            $output .= "<a class='surnames-cloud size" . $name['class'] . "' ";
-            $output .= "href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'search', 'mylastname' => $name['surnameuc'], 'mybool' => 'AND')) . "\"";
-            $output .= ">" . $name['surname'] . "</a>";
+            $output .= ($hidelinks) ? "" : "<a class='surnames-cloud size" . $name['class'] . "' ";
+            $output .= ($hidelinks) ? "" : "href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'search', 'mylastname' => $name['surnameuc'], 'mybool' => 'AND')) . "\">";
+            $output .= $name['surname'];
+            $output .= ($hidelinks) ? "" : "</a>";
             $output .= "</span> ";
         }
         $output .= "</div>";
@@ -67,9 +79,10 @@ function smarty_function_surnames($params, &$smarty)
         $output = "<$list class=\"surnames-list\">";
         foreach($names as $name){
             $output .= "<li>";
-            $output .= "<a ";
-            $output .= "href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'search', 'mylastname' => $name['surnameuc'], 'mybool' => 'AND')) . "\"";
-            $output .= ">" . $name['surname']  . "</a>" . " (". $name['count']. ")";
+            $output .= ($hidelinks) ? "" : "<a href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'search', 'mylastname' => $name['surnameuc'], 'mybool' => 'AND')) . "\">";
+            $output .= $name['surname'];
+            $output .= ($hidelinks) ? "" : "</a>";
+            $output .= " (". $name['count']. ")";
             $output .= "</li>";
         }
         $output .= "</$list>";
@@ -120,9 +133,10 @@ function smarty_function_surnames($params, &$smarty)
                      if ($sort == 'rank'){
                          $output .= $name['rank'] . ". ";
                      }
-                     $output .= "<a ";
-                     $output .= "href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'search', 'mylastname' => $name['surnameuc'], 'mybool' => 'AND')) . "\"";
-                     $output .= ">" . $name['surname'] . "</a>" . " (". $name['count']. ")" ;
+                     $output .= ($hidelinks) ? "" : "<a href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'search', 'mylastname' => $name['surnameuc'], 'mybool' => 'AND')) . "\">";
+                     $output .= $name['surname'];
+                     $output .= ($hidelinks) ? "" : "</a>";
+                     $output .= " (". $name['count']. ")" ;
                  }
                  $output .= "</td>";
             }
@@ -130,7 +144,7 @@ function smarty_function_surnames($params, &$smarty)
         }
         $output .= "</table>";
     }
-    if ($links == 'yes'){
+    if ($menu == 'yes'){
         $output .= "<form style=\"margin:0px\" action=\"index.php\" method=\"post\">";
         $output .= "<input type=\"hidden\" name=\"module\" value=\"TNGz\" />";
         $output .= "<input type=\"hidden\" name=\"show\" value=\"surnames100\" />";
@@ -145,6 +159,9 @@ function smarty_function_surnames($params, &$smarty)
         $output .= "<br />";
         $output .= "<a href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'surnames'    )) . "\">" . _TNGZ_SURNAMES_LINK_SURNAMES . "</a>";
     }
+    
+    // now update the cache
+    pnModAPIFunc('TNGz','user','CacheUpdate', array( 'item'=> $cachefile, 'data' => $output) );
     return $output;
 }
 

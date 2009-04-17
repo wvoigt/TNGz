@@ -60,6 +60,7 @@ function TNGz_upgrade($oldversion)
  */
 function TNGz_delete()
 {
+    pnModAPIFunc('TNGz','user','CacheDelete'); // remove any remaining temp files
     pnModDelVar(TNGz);
 
     return true;
