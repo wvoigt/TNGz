@@ -39,9 +39,20 @@ function smarty_function_places($params, &$smarty)
     $cols = $params['cols'];
     $cols  = (is_numeric($cols) && $cols > 0)? intval($cols) : 2;  // Get valid value or set default
 
-    $validlinks = array('no', 'yes');  // first in list is the default
+    $validlinks = array('yes', 'no');  // first in list is the default
     $links = (in_array($params['links'], $validlinks))? $params['links'] : $validlinks[0];
+    $hidelinks = ($links == "yes") ? false : true;
     
+    $validmenus = array('no', 'yes');  // first in list is the default
+    $menu = (in_array($params['menu'], $validmenus))? $params['menu'] : $validmenus[0];
+
+    // See if already in the cache
+    $cachefile    = sprintf("places-%s-%s-%s-%s-%s-%s.html",$type,$sort,$top,$cols,$links,$menu);
+    $cacheresults = pnModAPIFunc('TNGz','user','Cache', array( 'item'=> $cachefile ));
+    if ($cacheresults) {
+        return $cacheresults;
+    }
+
     // Get the Places
     $Places =  pnModAPIFunc('TNGz','user','GetPlaces', array('top'=> $top, 'sort' => $sort));
 
@@ -50,7 +61,11 @@ function smarty_function_places($params, &$smarty)
         $output = "<$list class=\"place-list\">";
         foreach($Places as $place){
             $output .= "<li>";
-            $output .= $place['name'] . " " . $place['link'];
+            if ($hidelinks) {
+                $output .= $place['place'];
+            } else {
+                $output .= $place['name'] . " " . $place['link'];
+            }
             $output .= "</li>";
         }
         $output .= "</$list>";
@@ -102,7 +117,11 @@ function smarty_function_places($params, &$smarty)
                      if ($sort == 'rank'){
                          $output .= $place['rank'] . ". ";
                      }
-                     $output .= $place['name'] . " " . $place['link'];
+                     if ($hidelinks) {
+                         $output .= $place['place'];
+                     } else {
+                         $output .= $place['name'] . " " . $place['link'];
+                     }
                  }
                  $output .= "</td>";
             }
@@ -110,7 +129,7 @@ function smarty_function_places($params, &$smarty)
         }
         $output .= "</table>";
     }
-    if ($links == 'yes'){
+    if ($menu == 'yes'){
         $output .= "<form style=\"margin:0px\" action=\"index.php\" method=\"post\">";
         $output .= "<input type=\"hidden\" name=\"module\" value=\"TNGz\" />";
         $output .= "<input type=\"hidden\" name=\"show\" value=\"places100\" />";
@@ -125,5 +144,8 @@ function smarty_function_places($params, &$smarty)
         $output .= "<br />";
         $output .= "<a href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'places'    )) . "\">" . _TNGZ_PLACES_LINK_PLACES . "</a>";
     }
+
+    // now update the cache
+    pnModAPIFunc('TNGz','user','CacheUpdate', array( 'item'=> $cachefile, 'data' => $output) );    
     return $output;
 }
