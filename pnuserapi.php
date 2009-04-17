@@ -388,6 +388,7 @@ function TNGz_userapi_GetTNGlanguage($args)
     return $newlanguage;
 }
 
+
  /**
  * Get the text strings defined by TNG
  * @param  str args['textpart'] The type of text to retrieve from TNG
@@ -424,6 +425,7 @@ function TNGz_userapi_GetTNGtext($args)
         $dates   = array();
         $admtext = array();
         include_once($languagepath . "alltext.php");
+        include_once($languagepath . "admintext.php");
         include_once($languagepath . "cust_text.php");
         $TNGz_text = array_merge($dates, $admtext, $text);
     }
@@ -439,6 +441,154 @@ function TNGz_userapi_GetTNGtext($args)
     $TNGz_text_fetched['common']  = true;        // flag common too since always get these with others
     
     return $TNGz_text;
+}
+
+ /**
+ * Initialize cache if needed
+ * @return str location of the cache if it exists, false otherwise
+ */
+function TNGz_userapi_CacheInit($args)
+{
+    $cache = DataUtil::formatForOS(pnConfigGetVar('temp')) . "/" . DataUtil::formatForOS(pnModGetName());
+    if (is_dir($cache)) {
+        return $cache;  
+    } else {
+        Loader::loadClass('FileUtil');
+        if (FileUtil::mkdirs($cache)) {
+          if (FileUtil::writeFile($cache . "/index.html", " ") ) {
+              return $cache;
+          }
+        }
+    }
+    return false;
+}
+
+ /**
+ * Delete cache
+ * @return str true if deleted (or does not exist), false otherwise
+ */
+function TNGz_userapi_CacheDelete($args)
+{
+    $TNGz_cache = pnModAPIFunc('TNGz','user','CacheInit');
+    if (!$TNGz_cache) {
+        return true; // It didn't exist = deleted = successfull
+    }
+    if (!is_dir($cache)) {
+        return true; // It didn't exist = deleted = successfull
+    } else {
+        Loader::loadClass('FileUtil');
+        return FileUtil::deldir($cache);
+    }
+}
+
+
+ /**
+ * Get information from the TNGz cache if it exists and is still valid
+ * @param  str args['item'] The cache entry name (filename)
+ * @return str cached item if exists and still valid, otherwise false
+ */
+function TNGz_userapi_Cache($args)
+{
+    $item = DataUtil::formatForOS($args['item']);
+       
+    Loader::loadClass('FileUtil');
+
+    static $TNGz_cache, $TNG_updated, $TNG_tables, $TNG_DB;
+    
+    if (!isset($TNGz_cache)) {
+        //do this only once
+	    $TNGz_cache = pnModAPIFunc('TNGz','user','CacheInit');
+    }
+    if (!$TNGz_cache) {
+        return false;
+    }
+    
+    if (!isset($TNG_DB['host'])) { // do this only once
+        $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
+        if (!file_exists($TNG['configfile']) ) {
+            return false;
+        }
+        include $TNG['configfile'];
+        $TNG_DB['host']     = $database_host;
+        $TNG_DB['username'] = $database_username;
+        $TNG_DB['password'] = $database_password;
+        $TNG_DB['name']     = $database_name;
+         
+        $TNG_tables['people']   = $people_table;
+        $TNG_tables['family']   = $families_table;
+        $TNG_tables['children'] = $children_table;
+        $TNG_tables['places']   = $places_table;
+        $TNG_tables['events']   = $events_table;
+
+        /*
+          $albums_table, $album2entities_table, $albumlinks_table, $media_table, $medialinks_table,
+          $mediatypes_table, $address_table, $languages_table, $cemeteries_table, $states_table,
+          $countries_table, $sources_table, $repositories_table, $citations_table
+        */
+    }
+    $time_zero = '0000-00-00 00:00:00';
+    if (!isset($TNG_updated)) { // do this only once
+        // Find the last update time stamp on various TNG tables
+        $TNG_updated = $time_zero;
+        $TNG_conn = &ADONewConnection('mysql');
+        $TNG_conn->NConnect($TNG_DB['host'] , $TNG_DB['username'], $TNG_DB['password'], $TNG_DB['name'] );
+        $TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
+        
+        foreach($TNG_tables as $table){
+            // now get the update time for the table
+            $query = "SHOW TABLE STATUS LIKE '$table'";
+            if (!$result = &$TNG_conn->Execute($query) ) {
+                return false;
+            }
+            for (; !$result->EOF; $result->MoveNext()) {
+                $table_updated  = $result->fields['Update_time'];
+                $TNG_updated =  ($table_updated > $TNG_updated) ? $table_updated : $TNG_updated;
+            }
+        }
+        $TNG_conn->Close();
+    }
+    
+    if ( $TNG_updated == $time_zero ) {
+        return false;  // Update_time must not be supported, so don't let it be cached
+    }
+
+    // OK so far, so return the file contents if it exists
+    $file = $TNGz_cache . "/" . $item;
+    if (file_exists($file)) {
+        $filedate = date ("Y-m-d H:i:s", filemtime($file));
+        if ($filedate > $TNG_updated) {
+            return FileUtil::readFile($file);  // Cache newer than TNG data
+        } else {
+            // TNG data is newer, so clear out the cache
+            pnModAPIFunc('TNGz','user','CacheDelete');
+            return false;
+        }
+    }
+    return false;
+}
+
+ /**
+ * Update the TNGz cache with the item
+ * @param  str args['item'] The cache entry name (filename)
+ * @param  str args['data'] The information to store in the cache
+ * @return writeFile code
+ */
+function TNGz_userapi_CacheUpdate($args)
+{
+    if (!isset($args['data'])){
+        $args['data'] = "";
+    }
+
+    static $TNGz_cache;
+    if (!isset($TNGz_cache)) { //do this only once
+	    $TNGz_cache = pnModAPIFunc('TNGz','user','CacheInit');
+    }
+    if (!$TNGz_cache) {
+        return false;
+    }
+    
+    Loader::loadClass('FileUtil');
+    return FileUtil::writeFile($TNGz_cache . "/" . DataUtil::formatForOS($args['item']), $args['data']);
 }
 
  /**
@@ -1321,7 +1471,7 @@ function TNGz_userapi_GetPlaces($args)
 
             $searchlink = ($specificcount) ? " <a href=\"". pnModURL('TNGz', 'user', 'main', array('show'=>'placesearch', 'psearch'=>$place2)). "\"><img src=\"". $cms['tngpath']. "tng_search_small.gif\" border=\"0\" alt=\"\" width=\"9\" height=\"9\" /></a>" : "";
             $name = ($place['placecount'] > 1 || !$specificcount) ? "<a href=\"". pnModURL('TNGz', 'user', 'main', array('show'=>'places-oneletter', 'offset'=>'1', 'psearch'=>$place2))."\">" . str_replace(array("<",">"), array("&lt;","&gt;"), $place['myplace']) . "</a> (".$place['placecount'].")" : $place['myplace'];
-            $thePlaces[$name] = array('rank'=> $count, 'name'=>$name, 'count'=> $place['placecount'], 'link'=>$searchlink);
+            $thePlaces[$name] = array('rank'=> $count, 'name'=>$name, 'count'=> $place['placecount'], 'link'=>$searchlink, 'place'=>$place['myplace']);
             $count++;
         }
     }
