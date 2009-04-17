@@ -40,11 +40,26 @@ function TNGz_searchapi_options($args)
 function TNGz_searchapi_search($args)
 {
     pnModDBInfoLoad('Search');
+       
     $pntable = pnDBGetTables();
     $searchTable   =  $pntable['search_result'];
     $searchColumn  =  $pntable['search_result_column'];
 
     $sessionId = session_id();
+
+    if( !pnModAPILoad('TNGz','user',true) ) {
+        return false;
+    }
+
+    // Get information for the module
+    $TNGz_modinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
+    
+    // Set module display name
+    $TNGz_modname = "TNGz";
+    // set the module name to the display name if this is present
+    if (isset($TNGz_modinfo['displayname']) && !empty($TNGz_modinfo['displayname'])) {
+        $TNGz_modname = rawurlencode($TNGz_modinfo['displayname']);
+    } 
 
     $TNGstyle = pnModGetVar('TNGz', '_style');
 
@@ -185,7 +200,7 @@ VALUES ";
                        . '\'' . DataUtil::formatForStore($display_title) . '\', '
                        . '\'' . DataUtil::formatForStore($display_text) . '\', '
                        . '\'' . DataUtil::formatForStore($extra) . '\', '
-                       . '\'' . 'TNGz'. '\', '
+                       . '\'' . $TNGz_modname . '\', '
                        . '\'' . DataUtil::formatForStore($sessionId) . '\')';
             $insertResult = DBUtil::executeSQL($sql);
             if (!$insertResult) {
