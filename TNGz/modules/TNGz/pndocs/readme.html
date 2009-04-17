@@ -39,7 +39,7 @@ Comes with Blocks that extract data from the TNG database:
     * 'Places' displays the top places.  Display can be in a list or table.
 
 Tested withWorks with :
-    * Zikula 1.0
+    * Zikula 1.0.3
 
 
 === Installation ===
@@ -47,7 +47,7 @@ Tested withWorks with :
 1. TNG
   a. Install TNG stand alone and verify it is working correctly.
     It must be installed in a directory somewhere under the base Zikula directory.
-    You can chose the directory name under which you want place TNG.  (e.g., genealogy, TNG, TNG6 )
+    You can chose the directory name under which you want place TNG.  (e.g., genealogy, TNG, TNG7 )
     You can access TNG directly by going to a URL similar to the following
 
     http://www.yoursitename.com/the_TNG_directory_name_you_picked [change for your configuration]
@@ -55,8 +55,9 @@ Tested withWorks with :
   b. Configure TNG such that logon is required.
 
   c. Backup the the following files in your TNG directory since you will overwrite them later:
-        meta.html
+        begin.php
         customconfig.php
+	end.php
 
 2. TNGz
   a. Place the contents of TNGz in your Zikula modules directory.
@@ -64,17 +65,18 @@ Tested withWorks with :
   b. Copy the files in TNGz\TNG\ to the root of your TNG directory created in step 1.
      This is the directory that contain's the TNG config.php file.
      This will overwrite the following existing TNG files:
-        meta.html
+        begin.php
         customconfig.php
+	end.php
 
      and will add the following files:
 
         .htaccess
-        index_Zikula.php
+        index_Sample.php
         index_TNGz.php
 
      NOTE: You will need to have a file named index.php in your TNG directory.
-           This can be a file you write, or you can rename the file index_Zikula.php to index.php.
+           This can be a file you write, or you can rename the file index_Sample.php to index.php.
 
   c. Copy the files from TNGz\Zikula\*.php into your base Zikula directory
 
@@ -87,7 +89,7 @@ Tested withWorks with :
 	   (You should already have a genlog.txt file.)
 
 3. Zikula
-  a. In Zikula/Postnuke Administration, go to Modules, then Initialize and activate TNGz
+  a. In Zikula Administration, go to Modules, then Initialize and activate TNGz
 
   b. In Zikula Administration, go to TNGz (which was just activated) and select your options.
      There are a number of important settings:
@@ -107,6 +109,8 @@ Tested withWorks with :
 	  - IMPORTANT: TNG uses MD5 to encrypt passwords.  For you to use the same password in Zikula and TNG,
             you must set your Zikula passwords to use MD5 in the Zikula.  To do this, go to Zikula Administation,
 	    Users, Users Manager Settings, and find 'Password hashing method'.  Set to MD5.
+	    If you do not do this, the users will have random passwords in the TNG user tables. This should be OK,
+	    but you want to be careful to already have your TNG admin ID created before you start up TNG in Zikula.
 
        o You can enable an email address filter that scans the TNG information and obfuscates
          plain text email address found in the TNG data (like in notes or sources.)
@@ -150,10 +154,10 @@ Tested withWorks with :
 
      You can also access the TNG Administration page under the Zikula TNGz administration page.
 
-   * If you are just starting out and are using TNG's default index.php, you can use index_Zikula.php
+   * If you are just starting out and are using TNG's default index.php, you can use index_Sample.php
      instead. This file has the same basic features but has been modified to take into account
-     its use in Zikula. You just need to rename index_Zikula.php to index.php in your TNG installation
-     directory.  If you already have a index.php, you can use index_Zikula.php as an example on how to
+     its use in Zikula. You just need to rename index_Sample.php to index.php in your TNG installation
+     directory.  If you already have a index.php, you can use index_Sample.php as an example on how to
      add links.
 
    * When customizing TNG, please do not use header.php or footer.php as file names for your
