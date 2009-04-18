@@ -469,8 +469,8 @@ function TNGz_userapi_CacheInit($args)
  */
 function TNGz_userapi_CacheDelete($args)
 {
-    $TNGz_cache = pnModAPIFunc('TNGz','user','CacheInit');
-    if (!$TNGz_cache) {
+    $cache = pnModAPIFunc('TNGz','user','CacheInit');
+    if (!$cache) {
         return true; // It didn't exist = deleted = successfull
     }
     if (!is_dir($cache)) {
