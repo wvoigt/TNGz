@@ -61,18 +61,14 @@ function TNGz_searchapi_search($args)
         $TNGz_modname = rawurlencode($TNGz_modinfo['displayname']);
     } 
 
-    $TNGstyle = pnModGetVar('TNGz', '_style');
-
     $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');  // GetTNGpaths returns an associative array of values. Fixed #1
     // Check to be sure we can get to the TNG information
     if (file_exists($TNG['configfile']) ) {
         include($TNG['configfile']);
         $TNG_conn = &ADONewConnection('mysql');
         $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
-        $have_info = 1;
     } else {
-        $have_info = 0;
-        return LogUtil::registerError (_GETFAILED);
+        return LogUtil::registerError (_GETFAILED . " (#1)");
     }
     
     // Save a few TNG config variables for later use
@@ -123,7 +119,7 @@ VALUES ";
 
     if (!$result) {
         LogUtil::log('TNGz query : '.$sql, 'STRICT');
-        return LogUtil::registerError (_GETFAILED);
+        return LogUtil::registerError (_GETFAILED. " (#2)");
     }
 
     // Process the result set and insert into search result table
@@ -133,8 +129,7 @@ VALUES ";
             && ($User_Can_See_Living || $item['living']==0  || $tngconfig['nonames']==0) ) {
             
             // The Extra Stuff for the resulting search link
-            $extra = serialize(array('style'  => $TNGstyle,
-                                     'id'     => $item['personID'],
+            $extra = serialize(array('id'     => $item['personID'],
                                      'gedcom' => $item['gedcom']
                                      )
                                );
@@ -204,11 +199,12 @@ VALUES ";
                        . '\'' . DataUtil::formatForStore($sessionId) . '\')';
             $insertResult = DBUtil::executeSQL($sql);
             if (!$insertResult) {
-                return LogUtil::registerError (_GETFAILED);
+                return LogUtil::registerError (_GETFAILED . " (#3)");
             }
         }
     }
     $result->Close();
+    $TNG_conn->Close();
 
     return true;
 }
@@ -227,7 +223,6 @@ function TNGz_searchapi_search_check(&$args)
                                    array('func'      => "getperson",
                                         'personID'   => $extra['id'],
                                         'tree'       => $extra['gedcom'],
-                                        'RefType'    => $extra['style'],
                                         'url'        => true
                                     ));
     return true;
