@@ -77,7 +77,7 @@ function smarty_function_placemap($params, &$smarty)
     $cachefile    = sprintf("placemap_%s_%s_%s_%s_%s_%s_%s.html",$lang,$width,$height,$cluster,$zoom,$lat,$lng);
     $cacheresults = pnModAPIFunc('TNGz','user','Cache', array( 'item'=> $cachefile ));
     if ($cacheresults) {
-        //return $cacheresults;
+        return $cacheresults;
     }
 
     // Constants
