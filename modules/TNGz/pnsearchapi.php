@@ -107,7 +107,7 @@ VALUES ";
                                           'firstname'),
                                     null);
 
-    $sql ="SELECT personID, lastname, lnprefix, firstname, suffix, prefix, title, nameorder, birthdate, birthplace, deathdate, deathplace, living, gedcom
+    $sql ="SELECT personID, lastname, lnprefix, firstname, suffix, title, nameorder, birthdate, birthplace, deathdate, deathplace, living, gedcom
            FROM $people_table
            WHERE $where
            ORDER BY lastname, firstname ";
@@ -138,7 +138,7 @@ VALUES ";
             // Similar to getNameRev() in genlib.php
 	        $locnameorder = $item['nameorder'] ? $item['nameorder'] : ($tngconfig['nameorder'] ? $tngconfig['nameorder'] : 1);
 	        $lastname = trim( $item['lnprefix']." ".$item['lastname'] );
-	        $title = $item['title'] && ($item['title'] == $item['prefix']) ? $item['title'] : trim($item['title'] . " " . $item['prefix']);
+	        $title = trim($item['title']);
 	        $firstname = trim( $title . " " .$item['firstname'] );
 	        if( $locnameorder == 1 ) {
 		        $namestr = $lastname;
