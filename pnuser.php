@@ -29,11 +29,12 @@ function TNGz_user_main()
 
     $TNGpage = FormUtil::getPassedValue('show', 'index', 'GETPOST');
 
-    // Check to see if should use TNGz rendered home page
-    if ( ($TNGpage == 'index' && pnModGetVar('TNGz', '_homepage', 0) ) || $TNGpage == 'homepage' ) {
-        // OK, so need to use the TNGz version of the index/homepage
-        $pnRender =& new pnRender('TNGz');
-        return $pnRender->fetch('TNGz_user_homepage.htm');
+    $pnRender =& new pnRender('TNGz');
+    
+    // Create a possible template name from the input, if it exists, then do than instead of TNG
+    $TNGzpage = 'TNGz_show_' . (($TNGpage == 'index' && pnModGetVar('TNGz', '_homepage', 0) ) ? 'home' : $TNGpage ) . '.htm';
+    if ( $pnRender->template_exists( $TNGzpage ) ) {
+        return $pnRender->fetch( $TNGzpage );
     }
 
     switch ($TNGpage) {
