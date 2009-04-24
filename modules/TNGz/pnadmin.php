@@ -164,7 +164,7 @@ function TNGz_admin_modifyconfig()
     $email_options = array( _TNGZ_EMAIL_NO, _TNGZ_EMAIL_ENCODE, _TNGZ_EMAIL_ALL );
     $email_values = array( "N", "E", "A" );
     $pnRender->assign('tngemailoptions', $email_options );
-    $pnRender->assign('tngemailvalues', $email_values );
+    $pnRender->assign('tngemailvalues',  $email_values );
     $pnRender->assign('tngemail', pnModGetVar('TNGz', '_email'));
 
     // Can a created user download GEDCOMs?
@@ -178,7 +178,42 @@ function TNGz_admin_modifyconfig()
 
     // For TNGz homepage for TNG index
     $pnRender->assign('tngzhomepage', pnModGetVar('TNGz', '_homepage'));
-    
+
+    // For TNGz caching options
+    $cache_db_options = array( _ONOFF_OFF, _ONOFF_ON );
+    $cache_db_values  = array(    "0"    ,   "1"     );
+    $pnRender->assign('tngzcachedb',        pnModGetVar('TNGz', '_cachedb'));
+    $pnRender->assign('tngzcachedboptions', $cache_db_options);
+    $pnRender->assign('tngzcachedbvalues',  $cache_db_values );
+
+    $minute = 60; // 60 seconds
+    $hour   = 60 * $minute;
+    $day    = 24 * $hour;
+    $cache_sec_options[] = _ONOFF_OFF          ; $cache_sec_values[] =  0;
+    $cache_sec_options[] = '30 ' . _MINUTES    ; $cache_sec_values[] = 30 * $minute;
+    $cache_sec_options[] = ' 1 ' . _TNGZ_HOUR  ; $cache_sec_values[] =  1 * $hour;
+    $cache_sec_options[] = ' 2 ' . _TNGZ_HOURS ; $cache_sec_values[] =  2 * $hour;
+    $cache_sec_options[] = ' 4 ' . _TNGZ_HOURS ; $cache_sec_values[] =  4 * $hour;
+    $cache_sec_options[] = '12 ' . _TNGZ_HOURS ; $cache_sec_values[] = 12 * $hour;
+    $cache_sec_options[] = ' 1 ' . _DAY        ; $cache_sec_values[] =  1 * $day;
+    $cache_sec_options[] = ' 2 ' . _DAYS       ; $cache_sec_values[] =  2 * $day;
+    $cache_sec_options[] = ' 3 ' . _DAYS       ; $cache_sec_values[] =  3 * $day;
+    $cache_sec_options[] = ' 4 ' . _DAYS       ; $cache_sec_values[] =  4 * $day;
+    $cache_sec_options[] = ' 5 ' . _DAYS       ; $cache_sec_values[] =  5 * $day;
+    $cache_sec_options[] = ' 6 ' . _DAYS       ; $cache_sec_values[] =  6 * $day;
+    $cache_sec_options[] = ' 7 ' . _DAYS       ; $cache_sec_values[] =  7 * $day;
+
+    $pnRender->assign('tngzcachesec', pnModGetVar('TNGz', '_cachesec'));
+    $pnRender->assign('tngzcachesecoptions', $cache_sec_options );
+    $pnRender->assign('tngzcachesecvalues',  $cache_sec_values  );    
+
+    if (pnModGetVar('TNGz', '_cachedb') != 0 && pnModGetVar('TNGz', '_cachesec') !=0 ) {
+        pnModAPIFunc('TNGz','user','CacheInit');  // If needed, initialize the cache
+    }
+
+    $cache_exists = (pnModAPIFunc('TNGz','user','CacheExists'))? "1" : "0";
+    $pnRender->assign('tngzcacheexists',  $cache_exists  );
+
     // TNG location
     $pnRender->assign('tngmodule'    , pnModGetVar('TNGz', '_loc'));
     $pnRender->assign('zikula'       , dirname(dirname(dirname(realpath(__FILE__))))."/" );
@@ -200,17 +235,19 @@ function TNGz_admin_updateconfig()
     // from other places such as the environment is not allowed, as that makes
     // assumptions that will not hold in future versions of Zikula
     // Get parameters from whatever input we need.
-    $_loc      = FormUtil::getPassedValue('tngmodule',    null, 'REQUEST');
-    $_guest    = FormUtil::getPassedValue('tngguest',     null, 'REQUEST');
-    $_users    = FormUtil::getPassedValue('tngusers',     null, 'REQUEST');
-    $_living   = FormUtil::getPassedValue('tngliving',    null, 'REQUEST');
-    $_email    = FormUtil::getPassedValue('tngemail',     null, 'REQUEST');
-    $_gedcom   = FormUtil::getPassedValue('tnggedcom',    null, 'REQUEST');
-    $_lds      = FormUtil::getPassedValue('tnglds',       null, 'REQUEST');
-    $_sync     = FormUtil::getPassedValue('tngsync',      null, 'REQUEST');
-    $_gname    = FormUtil::getPassedValue('tngguestname', null, 'REQUEST');
-    $_version  = FormUtil::getPassedValue('tngversion',   null, 'REQUEST');
-    $_homepage = FormUtil::getPassedValue('tngzhomepage', null, 'REQUEST');
+    $_loc         = FormUtil::getPassedValue('tngmodule',    null, 'REQUEST');
+    $_guest       = FormUtil::getPassedValue('tngguest',     null, 'REQUEST');
+    $_users       = FormUtil::getPassedValue('tngusers',     null, 'REQUEST');
+    $_living      = FormUtil::getPassedValue('tngliving',    null, 'REQUEST');
+    $_email       = FormUtil::getPassedValue('tngemail',     null, 'REQUEST');
+    $_gedcom      = FormUtil::getPassedValue('tnggedcom',    null, 'REQUEST');
+    $_lds         = FormUtil::getPassedValue('tnglds',       null, 'REQUEST');
+    $_sync        = FormUtil::getPassedValue('tngsync',      null, 'REQUEST');
+    $_gname       = FormUtil::getPassedValue('tngguestname', null, 'REQUEST');
+    $_version     = FormUtil::getPassedValue('tngversion',   null, 'REQUEST');
+    $_homepage    = FormUtil::getPassedValue('tngzhomepage', null, 'REQUEST');
+    $_cachedb     = FormUtil::getPassedValue('tngzcachedb',  null, 'REQUEST');
+    $_cachesec    = FormUtil::getPassedValue('tngzcachesec', null, 'REQUEST');
 
     /*
     $_config   = pnVarCleanFromInput('_config');
@@ -263,7 +300,12 @@ function TNGz_admin_updateconfig()
         
     if (empty($_homepage)) { $_homepage = 0; }
         pnModSetVar('TNGz', '_homepage'     , $_homepage);
-
+        
+    if (empty($_cachedb)) { $_cachedb = 0; }
+        pnModSetVar('TNGz', '_cachedb'     , $_cachedb);
+        
+    if (empty($_cachesec)) { $_cachesec = 0; }
+        pnModSetVar('TNGz', '_cachesec'     , $_cachesec);
 
 /*
     pnModSetVar('TNGz', '_config'   , $_config);
@@ -399,3 +441,22 @@ function TNGz_admin_Info()
 
 }
 
+function TNGz_admin_cachedelete()
+{
+    if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_EDIT)) {
+        return LogUtil::registerError(_MODULENOAUTH);
+    }
+
+    $success = pnModAPIFunc('TNGz','user','CacheDelete');
+    
+    // the module configuration has been updated successfuly
+    $msg = ($success) ? _TNGZ_CACHE_DELETED : _TNGZ_CACHE_ERROR;
+    pnSessionSetVar('statusmsg', $msg);
+
+    // This function generated no output, and so now it is complete we redirect
+    // the user to an appropriate page for them to carry on their work
+    pnRedirect(pnModURL('TNGz', 'admin', 'main'));
+    
+    // Return
+    return true;
+}

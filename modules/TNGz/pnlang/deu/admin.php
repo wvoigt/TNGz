@@ -66,3 +66,16 @@
  define("_TNGZREADME"        , "Detaillierte Readme-Datei");
 
  define("_TNGZ_HOMEPAGE"     , "Benutze Hauptseite von TNGz anstatt der TNG-Index-Seite");
+ 
+ define("_TNGZ_CACHE"        , "Cache");
+ define("_TNGZ_CACHE_INFO"   , "Using the cache can speed up the time it takes to generate blocks and plugins. Instead of making multiple requests to the TNG database, data that has already been calculated and stored in the cache can be retrieved more quickly.");
+ define("_TNGZ_CACHEDB"      , "TNG database change resets the cache");
+ define("_TNGZ_CACHEDB_INFO" , "Checking the database update time does not work on all systems.  If you are having trouble with the cache, then turn this off.");
+ define("_TNGZ_CACHESEC"     , "Interval to refresh cache");
+ define("_TNGZ_CACHE_DISABLE", "The cache will expire and reload when either condition occurs. Both settings must be 'off' to disable caching.");
+ define("_TNGZ_CACHE_DELETE" , "Clear the cache");
+ define("_TNGZ_CACHE_DELETED", "Cache cleared");
+ define("_TNGZ_CACHE_ERROR"  , "Error clearing cache");
+ define("_TNGZ_CACHE_NONE"   , "No Cache");
+ define("_TNGZ_HOUR"         , "Hour");
+ define("_TNGZ_HOURS"        , "Hours");

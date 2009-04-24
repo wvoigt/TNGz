@@ -30,6 +30,8 @@ function TNGz_init()
     pnModSetVar(TNGz, '_sync'    ,   1);
     pnModSetVar(TNGz, '_style'   ,   0);
     pnModSetVar(TNGz, '_homepage',   0);
+    pnModSetVar(TNGz, '_cachedb' ,   0);
+    pnModSetVar(TNGz, '_cachesec',   0);
 
     return true;
 }
