@@ -464,6 +464,20 @@ function TNGz_userapi_CacheInit($args)
 }
 
  /**
+ * Does the cache exist
+ * @return bool true if it does, false if not
+ */
+function TNGz_userapi_CacheExists($args)
+{
+    $cache = DataUtil::formatForOS(pnConfigGetVar('temp')) . "/" . DataUtil::formatForOS(pnModGetName());
+    if (is_dir($cache)) {
+        return true;  
+    }
+    return false;
+}
+
+
+ /**
  * Delete cache
  * @return str true if deleted (or does not exist), false otherwise
  */
@@ -489,54 +503,60 @@ function TNGz_userapi_CacheDelete($args)
  */
 function TNGz_userapi_Cache($args)
 {
-    $item = DataUtil::formatForOS($args['item']);
-       
-    Loader::loadClass('FileUtil');
+    static $TNGz_cache, $TNG_updated, $TNGz_useDBtime, $TNGz_sec2expire;
 
-    static $TNGz_cache, $TNG_updated, $TNG_tables, $TNG_DB;
-    
-    if (!isset($TNGz_cache)) {
-        //do this only once
-	    $TNGz_cache = pnModAPIFunc('TNGz','user','CacheInit');
+    // Get the Cache settings
+    if (!isset($TNGz_useDBtime)) { // do this only once
+        $TNGz_useDBtime  = pnModGetVar('TNGz', '_cachedb',  0 );
+        $TNGz_sec2expire = pnModGetVar('TNGz', '_cachesec', 0 );
+    }
+    if ( $TNGz_useDBtime == 0 && $TNGz_sec2expire == 0 ) {
+        return false;  // disabled cache
+    }
+
+    // Make sure Cache exists
+    if (!isset($TNGz_cache)) { //do this only once
+        $TNGz_cache = pnModAPIFunc('TNGz','user','CacheInit');
     }
     if (!$TNGz_cache) {
-        return false;
+        return false;  // can't use cache for some reason
     }
-    
-    if (!isset($TNG_DB['host'])) { // do this only once
+
+    $time_zero = '0000-00-00 00:00:00';
+
+    // If needed, get latest TNG database update time
+    if (!isset($TNG_updated) &&  $TNGz_useDBtime !=0) { // do this only once
+
+        $TNG_updated = $time_zero; // Initialize, also a flag if stays at $time_zero
+
+        // Get the TNG information
         $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
         if (!file_exists($TNG['configfile']) ) {
             return false;
         }
         include $TNG['configfile'];
-        $TNG_DB['host']     = $database_host;
-        $TNG_DB['username'] = $database_username;
-        $TNG_DB['password'] = $database_password;
-        $TNG_DB['name']     = $database_name;
-         
+
+        // Set the tables we want to check
         $TNG_tables['people']   = $people_table;
         $TNG_tables['family']   = $families_table;
         $TNG_tables['children'] = $children_table;
         $TNG_tables['places']   = $places_table;
         $TNG_tables['events']   = $events_table;
-
-        /*
+        /* Others that could be checked include:
           $albums_table, $album2entities_table, $albumlinks_table, $media_table, $medialinks_table,
           $mediatypes_table, $address_table, $languages_table, $cemeteries_table, $states_table,
           $countries_table, $sources_table, $repositories_table, $citations_table
         */
-    }
-    $time_zero = '0000-00-00 00:00:00';
-    if (!isset($TNG_updated)) { // do this only once
-        // Find the last update time stamp on various TNG tables
-        $TNG_updated = $time_zero;
+
+        // Now actually go find the last update time stamp on various TNG tables
         $TNG_conn = &ADONewConnection('mysql');
-        $TNG_conn->NConnect($TNG_DB['host'] , $TNG_DB['username'], $TNG_DB['password'], $TNG_DB['name'] );
+        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name );
         $TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
         
         foreach($TNG_tables as $table){
             // now get the update time for the table
             $query = "SHOW TABLE STATUS LIKE '$table'";
+            
             if (!$result = &$TNG_conn->Execute($query) ) {
                 return false;
             }
@@ -544,22 +564,32 @@ function TNGz_userapi_Cache($args)
                 $table_updated  = $result->fields['Update_time'];
                 $TNG_updated =  ($table_updated > $TNG_updated) ? $table_updated : $TNG_updated;
             }
+            $result->Close();
         }
         $TNG_conn->Close();
     }
-    
-    if ( $TNG_updated == $time_zero ) {
-        return false;  // Update_time must not be supported, so don't let it be cached
+
+    // Can't cache if settings and values don't make sense
+    if ( $TNG_updated == $time_zero && $TNGz_useDBtime !=0 && $TNGz_sec2expire == 0) {
+        // Can't tell database update time, and elapsed time is off, so don't let it be cached
+        return false;
     }
 
-    // OK so far, so return the file contents if it exists
+    // set the cache expire time as a timestamp.  Note one of these two must be !=0 or would not be here
+    $time2expire  = ($TNGz_sec2expire == 0 ) ? 0 : time() - $TNGz_sec2expire; // off or elapsed time?
+    $TNGdbTime    = ($TNGz_useDBtime  == 0 ) ? 0 : strtotime($TNG_updated);   // off or DB updated time?
+    $cache_expire = max( $TNGdbTime, $time2expire ); // pick the latest one 
+
+    // OK so far, so return the file contents if it exists and cache not expired
+    $item = DataUtil::formatForOS($args['item']);
     $file = $TNGz_cache . "/" . $item;
     if (file_exists($file)) {
-        $filedate = date ("Y-m-d H:i:s", filemtime($file));
-        if ($filedate > $TNG_updated) {
-            return FileUtil::readFile($file);  // Cache newer than TNG data
+        $filetime = filemtime($file);
+        if ($filetime > $cache_expire) {
+            Loader::loadClass('FileUtil');
+            return FileUtil::readFile($file);  // OK to return cached data
         } else {
-            // TNG data is newer, so clear out the cache
+            // TNG data is newer or cache has expired, so clear out the cache and start over
             pnModAPIFunc('TNGz','user','CacheDelete');
             return false;
         }
@@ -581,14 +611,25 @@ function TNGz_userapi_CacheUpdate($args)
 
     static $TNGz_cache;
     if (!isset($TNGz_cache)) { //do this only once
-	    $TNGz_cache = pnModAPIFunc('TNGz','user','CacheInit');
+        $TNGz_cache = pnModAPIFunc('TNGz','user','CacheInit');
     }
     if (!$TNGz_cache) {
         return false;
     }
-    
+
+    $item       = DataUtil::formatForOS($args['item']);
+    $path_parts = pathinfo($item);
+    $ext        = $path_parts['extension'];
+    if ( $ext == 'htm' || $ext == 'html' ) {
+        $timestamp = date('Y-m-d H:i:s', time() );
+        $header    = "\n<!-- Cache Start $timestamp $item  -->\n";
+        $footer    = "\n<!-- Cache End   $timestamp $item  -->\n";
+    } else {
+        $header = "";
+        $footer = "";
+    }
     Loader::loadClass('FileUtil');
-    return FileUtil::writeFile($TNGz_cache . "/" . DataUtil::formatForOS($args['item']), $args['data']);
+    return FileUtil::writeFile($TNGz_cache . "/" . $item , $header . $args['data'] . $footer);
 }
 
  /**
