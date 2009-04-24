@@ -81,6 +81,36 @@
        </div>
     </fieldset>
 
+
+    <fieldset>
+        <legend><!--[pnml name="_TNGZ_CACHE"]--></legend>
+        <div class="pn-informationmsg"><!--[pnml name=_TNGZ_CACHE_INFO]--></div>
+
+        <div class="pn-adminformrow">
+            <label for="tngz_tngzcachedb"><!--[pnml name="_TNGZ_CACHEDB"]--></label>
+            <select id="tngz_tngzcachedb" name="tngzcachedb"><!--[html_options values=$tngzcachedbvalues output=$tngzcachedboptions selected=$tngzcachedb]--></select>
+        </div>
+        <div class="pn-informationmsg"><!--[pnml name=_TNGZ_CACHEDB_INFO]--></div>
+	
+        <div class="pn-adminformrow">
+            <label for="tngz_tngzcachesec"><!--[pnml name="_TNGZ_CACHESEC"]--></label>
+            <select id="tngz_tngzcachesec" name="tngzcachesec"><!--[html_options values=$tngzcachesecvalues output=$tngzcachesecoptions selected=$tngzcachesec]--></select>
+        </div>
+        <div class="pn-warningmsg"><!--[pnml name=_TNGZ_CACHE_DISABLE]--></div>
+	
+        <div class="pn-adminformrow">
+	<!--[if $tngzcacheexists eq 1]-->
+	    <img src="images/icons/extrasmall/folder_green.gif" alt="" /><a href="<!--[pnmodurl modname="TNGz" type="admin" func="cachedelete" ]-->"><!--[pnml name="_TNGZ_CACHE_DELETE"]--></a>
+	<!--[else]-->
+	    <img src="images/icons/extrasmall/folder_grey.gif" alt="" /><!--[pnml name="_TNGZ_CACHE_NONE"]-->
+	<!--[/if]-->
+	
+        </div>
+	
+    </fieldset>
+
+
+    
     <fieldset>
         <legend><!--[pnml name="_TNGZOTHERSETTINGS"]--></legend>
         <div class="pn-adminformrow">
