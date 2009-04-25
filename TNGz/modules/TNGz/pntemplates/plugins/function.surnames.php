@@ -46,8 +46,10 @@ function smarty_function_surnames($params, &$smarty)
     $validmenus = array('no', 'yes');  // first in list is the default
     $menu = (in_array($params['menu'], $validmenus))? $params['menu'] : $validmenus[0];
 
+    $lang = pnUserGetLang(); // get language used in Zikula
+    
     // See if already in the cache
-    $cachefile    = sprintf("surnames-%s-%s-%s-%s-%s-%s.html",$type,$sort,$top,$cols,$links,$menu);
+    $cachefile    = sprintf("surnames_%s_%s_%s_%s_%s_%s_%s.html",$lang,$type,$sort,$top,$cols,$links,$menu);
     $cacheresults = pnModAPIFunc('TNGz','user','Cache', array( 'item'=> $cachefile ));
     if ($cacheresults) {
         return $cacheresults;
