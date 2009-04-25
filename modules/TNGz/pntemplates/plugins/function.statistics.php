@@ -48,8 +48,10 @@ function smarty_function_statistics($params, &$smarty)
     //$places   = (in_array($params['places'],   $valid_yes))? true : false ;
     //$geocode  = (in_array($params['geocode'],  $valid_yes))? true : false ;
 
+    $lang = pnUserGetLang(); // get language used in Zikula
+
     // See if already in the cache
-    $cachefile    = sprintf("statistics-%s-%s-%s-%s-%s-%s-%s.html",$people,$family,$surnames,$sex,$living,$places,$geocode);
+    $cachefile    = sprintf("statistics_%s_%s_%s_%s_%s_%s_%s_%s.html",$lang,$people,$family,$surnames,$sex,$living,$places,$geocode);
     $cacheresults = pnModAPIFunc('TNGz','user','Cache', array( 'item'=> $cachefile ));
     if ($cacheresults) {
         return $cacheresults;

@@ -222,7 +222,7 @@ function TNGz_user_worldmap()
     $region = (in_array($region, array(0,1,2,3,4,5,6)))? $region : 0;
 
     // See if already in the cache
-    $cachefile    = sprintf("worldmap-%s-%s.png",$size,$region);
+    $cachefile    = sprintf("worldmap_%s_%s.png",$size,$region);
     $cacheresults = pnModAPIFunc('TNGz','user','Cache',     array( 'item'=> $cachefile ));
     if ($cacheresults) {
         header ("Content-type: image/png");

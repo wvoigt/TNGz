@@ -15,3 +15,4 @@
  */
 
 define("_TNGZ_PREFIX"       , "index.php?module=TNGz&func=main&show");
+require_once dirname(realpath(__FILE__)).'/global.php';
