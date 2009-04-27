@@ -353,7 +353,7 @@ function TNGz_ThisDayblock_display($blockinfo)
 
     //////////// TNG Main Menu Link //////////////
     $thisday_mainmenu = pnModAPIFunc('TNGz','user','MakeRef',
-                                                              array('func'        => "main",
+                                                              array('func'        => "",
                                                                     'description' => ""._ACCESSTNG."",
                                                                     'target'      => $target,
                                                                     'RefType'     => $TNGstyle
