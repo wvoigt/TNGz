@@ -32,6 +32,7 @@ function TNGz_init()
     pnModSetVar(TNGz, '_homepage',   0);
     pnModSetVar(TNGz, '_cachedb' ,   0);
     pnModSetVar(TNGz, '_cachesec',   0);
+    pnModSetVar(TNGz, '_personID',   '');
 
     return true;
 }

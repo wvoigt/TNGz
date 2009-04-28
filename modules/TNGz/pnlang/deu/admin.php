@@ -67,6 +67,11 @@
 
  define("_TNGZ_HOMEPAGE"     , "Benutze Hauptseite von TNGz anstatt der TNG-Index-Seite");
  
+ define("_TNGZ_ID_TITLE"     , "Identify Primary Person");
+ define("_TNGZ_ID_TREE"      , "Tree that includes person");
+ define("_TNGZ_ID"           , "TNG ID of person (must be in the Tree)");
+ define("_TNGZ_ID_INFO"      , "These settings are optional.  If used, they allow for more personalized links in templates. For example, the example default 'home' page will add a link to display this person's ancestors.  If you do not want to use, then just leave this field blank.");
+ 
  define("_TNGZ_CACHE"        , "Cache");
  define("_TNGZ_CACHE_INFO"   , "Using the cache can speed up the time it takes to generate blocks and plugins. Instead of making multiple requests to the TNG database, data that has already been calculated and stored in the cache can be retrieved more quickly.");
  define("_TNGZ_CACHEDB"      , "TNG database change resets the cache");
