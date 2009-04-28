@@ -104,7 +104,7 @@ function TNGz_admin_modifyconfig()
         }
         }
     }
-
+    
     // Get TNGz module information
     $ModName = pnModGetName();
     $ModInfo = pnModGetInfo(pnModGetIDFromName($ModName));
@@ -214,6 +214,44 @@ function TNGz_admin_modifyconfig()
     $cache_exists = (pnModAPIFunc('TNGz','user','CacheExists'))? "1" : "0";
     $pnRender->assign('tngzcacheexists',  $cache_exists  );
 
+    // Primary Person ID
+    // Note: To uniquely identify a person, need personID and gedcom/tree name
+    $personID    = pnModGetVar('TNGz', '_personID',   '' );
+    $person_tree = pnModGetVar('TNGz', '_persontree', '0');
+    $treeoptions[] = _ONOFF_OFF;
+    $treevalues[]  = "0";
+        
+    // Get the possible trees 
+    if ($TNG_config){
+        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/net.js');
+        PageUtil::AddVar('javascript', 'javascript/ajax/prototype.js');
+        PageUtil::AddVar('javascript', 'javascript/ajax/scriptaculous.js');
+        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/net.js');
+        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/litbox.js');
+
+        $TNG_conn = &ADONewConnection('mysql');
+        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
+        $TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
+        $query = "SELECT gedcom, treename FROM $trees_table ORDER BY treename";
+        if ($result = &$TNG_conn->Execute($query) ) {
+            if ($result->RecordCount() > 0) {
+                for (; !$result->EOF; $result->MoveNext()) {
+                    $row = $result->fields;
+                    $treeoptions[] = $row['treename'];
+                    $treevalues[]  = $row['gedcom'];
+                }
+            }
+            $result->Close();
+        }       
+    }
+    $person = pnModAPIFunc('TNGz','user','getperson', array('id'=> $personID, 'tree'=> $person_tree));
+    $personmsg = (!$person) ? "" : $personID . " = " . $person['fullname'];
+    $pnRender->assign('tngzid',            $personID    );
+    $pnRender->assign('tngzidtree',        $person_tree );
+    $pnRender->assign('tngzidtreeoptions', $treeoptions );
+    $pnRender->assign('tngzidtreevalues',  $treevalues  );
+    $pnRender->assign('tngzidname',        $personmsg   );
+
     // TNG location
     $pnRender->assign('tngmodule'    , pnModGetVar('TNGz', '_loc'));
     $pnRender->assign('zikula'       , dirname(dirname(dirname(realpath(__FILE__))))."/" );
@@ -248,6 +286,8 @@ function TNGz_admin_updateconfig()
     $_homepage    = FormUtil::getPassedValue('tngzhomepage', null, 'REQUEST');
     $_cachedb     = FormUtil::getPassedValue('tngzcachedb',  null, 'REQUEST');
     $_cachesec    = FormUtil::getPassedValue('tngzcachesec', null, 'REQUEST');
+    $_personid    = FormUtil::getPassedValue('tngzid',       null, 'REQUEST');
+    $_personidtree= FormUtil::getPassedValue('tngzidtree',   null, 'REQUEST');
 
     /*
     $_config   = pnVarCleanFromInput('_config');
@@ -306,6 +346,14 @@ function TNGz_admin_updateconfig()
         
     if (empty($_cachesec)) { $_cachesec = 0; }
         pnModSetVar('TNGz', '_cachesec'     , $_cachesec);
+        
+    if (empty($_personid)) { $_personid = ""; }
+    $_personid = trim($_personid);
+    if (!preg_match("/^[a-zA-Z]+[0-9]+$/",$_personid) ) {$_personid="";}
+    pnModSetVar('TNGz', '_personID'     , $_personid);
+
+    if (empty($_personidtree)) { $_personidtree = "0"; }
+        pnModSetVar('TNGz', '_persontree'     , $_personidtree);
 
 /*
     pnModSetVar('TNGz', '_config'   , $_config);
