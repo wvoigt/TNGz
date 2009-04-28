@@ -52,6 +52,7 @@ function TNGz_user_main()
         case 'timelinexml':
         case 'pdfform':
         case 'rpt_descend':
+        case 'rpt_fam':
         case 'rpt_ind':
         case 'rpt_pedigree':
                 // for these, just give the output, with no extra stuff wrapped around it
