@@ -242,6 +242,10 @@ function TNGz_userapi_ShowPage($args)
         return LogUtil::registerError(_MODULENOAUTH);
     }
 
+    // Check Render arguments
+    $TNGrenderpage = (isset($args['render']))   ? $args['render']   : true;  // Default value
+    $TNGrenderpage = (FormUtil::getPassedValue('tngprint', false, 'GET'))? false : $TNGrenderpage; //Don't wrap print pages
+
     //////////////////////////////////////////////////////
     // Get information on the location of TNG
     //////////////////////////////////////////////////////
@@ -312,7 +316,12 @@ function TNGz_userapi_ShowPage($args)
     // Fix up file paths to look in the right place
     $homepage = ($dot = strrchr($homepage, '.')) ? substr($homepage, 0, -strlen($dot)): $homepage;// strip .php or .html
     $rootpath        = $TNG['SitePath'] . "/";                     // Overwrite setting from TNG configuration
-    $custommeta      = dirname(realpath(__FILE__)) . "/meta.php";  // Overwrite setting from TNG configuration
+    
+    if ($TNGrenderpage) {
+        $custommeta = dirname(realpath(__FILE__)) . "/meta.php";  // Overwrite setting from TNG configuration
+    } else {
+        $custommeta      = $cms[tngpath] . $custommeta ;
+    }
 
     $gendexfile      = $cms[tngpath] . $gendexfile ;
     $mediapath       = $cms[tngpath] . $mediapath ;
@@ -350,8 +359,6 @@ function TNGz_userapi_ShowPage($args)
     if ( !strpos( $TNGshowpage, ".php") ) {
         $TNGshowpage .= ".php";
     }
-    $TNGrenderpage = (isset($args['render']))   ? $args['render']   : true;  // Default value
-    $TNGrenderpage = (FormUtil::getPassedValue('tngprint', false, 'GET'))? false : $TNGrenderpage; //Don't wrap print pages
 
     //////////////////////////////////////////////////////
     // Get User Login information
@@ -484,39 +491,45 @@ function TNGz_userapi_ShowPage($args)
 
     // Clean up TNG HTML to remove HTML validation errors
     // First set up the changes
-    if (!$TNGshowpage == "tngrss.php") {
+    if ($TNGshowpage != "tngrss.php") {
         // Remove TNG <title> tag.  Each page should only have one and Zikula provides.
-        $patterns[0]     = "/<title>(.*)<\/title>/i";
-        $replacements[0] = "<!-- $0 -->\n";
+        $patterns[]     = "/<title>(.*)<\/title>/i";
+        $replacements[] = "<!-- $0 -->\n";
     }
     // Remove the <meta> tags.  TNG's not in the right place and do not add much new informaiton
-    $patterns[1]     = "/<meta (.*)>/i";
-    $replacements[1] = "<!-- $0 -->\n";
+    $patterns[]     = "/<meta (.*)>/i";
+    $replacements[] = "<!-- $0 -->\n";
+    
     // Remove the TNG's DOCTYPE (Each page should only have one, and Zikula provides)
-    $patterns[2]     = "@<!DOCTYPE[^\"]+\"([^\"]+)\"[^\"]+\"([^\"]+)/([^/]+)\.dtd\">@i";
-    $replacements[2] = "<!-- $0 -->\n";
+    $patterns[]     = "@<!DOCTYPE[^\"]+\"([^\"]+)\"[^\"]+\"([^\"]+)/([^/]+)\.dtd\">@i";
+    $replacements[] = "<!-- $0 -->\n";
+    
     // Remove TNG javascripts and load files into head (also using Zikula versions).
-    $patterns[3]     = "/<script(.*)prototype.js(.*)<\/script>/i";
-    $replacements[3] = "<!-- $0 -->\n";
-    $patterns[4]     = "/<script(.*)scriptaculous.js(.*)<\/script>/i";
-    $replacements[4] = "<!-- $0 -->\n";
-    $patterns[5]     = "/<script(.*)net.js(.*)<\/script>/i";
-    $replacements[5] = "<!-- $0 -->\n";
-    $patterns[6]     = "/<script(.*)litbox.js(.*)<\/script>/i";
-    $replacements[6] = "<!-- $0 -->\n";
-
-    PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/net.js');
-    PageUtil::AddVar('javascript', 'javascript/ajax/prototype.js');
-    PageUtil::AddVar('javascript', 'javascript/ajax/scriptaculous.js');
-    PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/litbox.js');
-    // Question: What happens if Zikula and TNG use different versions of these libraries
-    //           Could this cause odd behavior in TNG?
+    $patterns[]     = "/<script(.*)prototype.js(.*)<\/script>/i";
+    $replacements[] = "<!-- $0 -->\n";
+    
+    $patterns[]     = "/<script(.*)scriptaculous.js(.*)<\/script>/i";
+    $replacements[] = "<!-- $0 -->\n";
+    
+    $patterns[]     = "/<script(.*)net.js(.*)<\/script>/i";
+    $replacements[] = "<!-- $0 -->\n";
+    
+    $patterns[]     = "/<script(.*)litbox.js(.*)<\/script>/i";
+    $replacements[] = "<!-- $0 -->\n";
 
     // Now go do the clean up
-    ksort($patterns);      // The sorts are recommended to make sure the pattern/replacement are aligned
-    ksort($replacements);
-    $TNGoutput = preg_replace($patterns, $replacements, $TNGoutput);
-
+    if($TNGrenderpage) {
+        ksort($patterns);      // The sorts are recommended to make sure the pattern/replacement are aligned
+        ksort($replacements);
+        $TNGoutput = preg_replace($patterns, $replacements, $TNGoutput);
+        
+        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/net.js');
+        PageUtil::AddVar('javascript', 'javascript/ajax/prototype.js');
+        PageUtil::AddVar('javascript', 'javascript/ajax/scriptaculous.js');
+        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/litbox.js');
+        // Question: What happens if Zikula and TNG use different versions of these libraries
+        //           Could this cause odd behavior in TNG?
+    }
     //////////////////////////////////////////////////////
     // Now get ready to display
     //////////////////////////////////////////////////////
