@@ -308,7 +308,7 @@ function TNGz_userapi_ShowPage($args)
     $cms[tngpath]    = $TNG['directory']. "/";
     //$cms[adminurl]   = "index.php?module=TNGz&func=admin";
     // using pnModURL
-    $cms[adminurl]        = pnModURL('TNGz','admin','TNGadmin');
+    $cms[adminurl]        = DataUtil::formatForDisplay(pnModURL('TNGz','admin','TNGadmin'));
     $cms[noend]      = true; // Tell TNG to not include end.php file
     $cms[cloaklogin] = "Yes";
     $cms[credits]    = "<!-- TNGz --><br />";
@@ -517,8 +517,26 @@ function TNGz_userapi_ShowPage($args)
     $patterns[]     = "/<script(.*)litbox.js(.*)<\/script>/i";
     $replacements[] = "<!-- $0 -->\n";
 
+    $patterns[]     = "|\<style (.*)\<\/style\>|i";
+    $replacements[] = "<!-- $0 -->\n";
+
+    $patterns[]     = "|\<link (.*)\/\>|i";
+    $replacements[] = "<!-- $0 -->\n";
+
     // Now go do the clean up
     if($TNGrenderpage) {
+        // Take care of embedded <style>
+        preg_match_all("|\<style (.*)\<\/style\>|i", $TNGoutput, $matches, PREG_SET_ORDER);
+        foreach($matches as $match){
+            PageUtil::AddVar('rawtext', $match[0]);
+        }
+        
+        // Take care of embedded <link>
+        preg_match_all("|\<link (.*)\/\>|i", $TNGoutput, $matches, PREG_SET_ORDER);
+        foreach($matches as $match){
+            PageUtil::AddVar('rawtext', $match[0]);
+        }
+    
         ksort($patterns);      // The sorts are recommended to make sure the pattern/replacement are aligned
         ksort($replacements);
         $TNGoutput = preg_replace($patterns, $replacements, $TNGoutput);
@@ -529,6 +547,7 @@ function TNGz_userapi_ShowPage($args)
         PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/litbox.js');
         // Question: What happens if Zikula and TNG use different versions of these libraries
         //           Could this cause odd behavior in TNG?
+
     }
     //////////////////////////////////////////////////////
     // Now get ready to display
@@ -1384,7 +1403,7 @@ function TNGz_userapi_MakeRef($args)
         $args = array();  // just pass the rest of the parameters
     }
 
-    $ref = pnModURL('TNGz', 'user', $func, $args);
+    $ref = DataUtil::formatForDisplay(pnModURL('TNGz', 'user', $func, $args));
 
     if ($url) {
         return $ref;
@@ -1722,8 +1741,8 @@ function TNGz_userapi_GetPlaces($args)
             $countrow = $result2->fields;
             $specificcount = $countrow['placecount'];
 
-            $searchlink = ($specificcount) ? " <a href=\"". pnModURL('TNGz', 'user', 'main', array('show'=>'placesearch', 'psearch'=>$place2)). "\"><img src=\"". $cms['tngpath']. "tng_search_small.gif\" border=\"0\" alt=\"\" width=\"9\" height=\"9\" /></a>" : "";
-            $name = ($place['placecount'] > 1 || !$specificcount) ? "<a href=\"". pnModURL('TNGz', 'user', 'main', array('show'=>'places-oneletter', 'offset'=>'1', 'psearch'=>$place2))."\">" . str_replace(array("<",">"), array("&lt;","&gt;"), $place['myplace']) . "</a> (".$place['placecount'].")" : $place['myplace'];
+            $searchlink = ($specificcount) ? " <a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array('show'=>'placesearch', 'psearch'=>$place2))). "\"><img src=\"". $cms['tngpath']. "tng_search_small.gif\" border=\"0\" alt=\"\" width=\"9\" height=\"9\" /></a>" : "";
+            $name = ($place['placecount'] > 1 || !$specificcount) ? "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array('show'=>'places-oneletter', 'offset'=>'1', 'psearch'=>$place2)))."\">" . DataUtil::formatForDisplay($place['myplace']) . "</a> (".$place['placecount'].")" : $place['myplace'];
             $thePlaces[$name] = array('rank'=> $count, 'name'=>$name, 'count'=> $place['placecount'], 'link'=>$searchlink, 'place'=>$place['myplace']);
             $count++;
         }

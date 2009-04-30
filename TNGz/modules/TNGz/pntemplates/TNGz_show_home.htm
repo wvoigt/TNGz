@@ -12,10 +12,10 @@
 
 <div>
     <center>
-    <font face="Arial,Helvetica,sans-serif" size="5">
+    <font face="Arial,Helvetica,sans-serif" size="4">
     <!--[if $person ]-->
     <a href="<!--[pnmodurl modname=TNGz show=pedigree personID=$person.id tree=$person.tree generations=4 ]-->"><!--[$person.fullname ]--> - <!--[$text.ancestors ]--></a>&nbsp;|&nbsp;
-    <a href="<!--[pnmodurl modname=TNGz show=extrastree personID=$person.id tree=$person.tree ]-->"><!--[$person.fullname ]--> - <!--[$text.ancestors ]-->&nbsp;<!--[$text.mnuphotos ]--> &amp <!--[$text.mnuhistories ]--></a>
+    <a href="<!--[pnmodurl modname=TNGz show=extrastree personID=$person.id tree=$person.tree ]-->"><!--[$person.fullname ]--> - <!--[$text.ancestors ]-->&nbsp;<!--[$text.mnuphotos ]--> &amp; <!--[$text.mnuhistories ]--></a>
     <br />
     <!--[/if]-->
     <a href="<!--[pnmodurl modname=TNGz show=whatsnew      ]-->"><!--[$text.mnuwhatsnew   ]--></a> &nbsp;|&nbsp;
@@ -35,7 +35,7 @@
     </font>
     </center>  
 </div>
-<hr>
+<hr />
 <table>
     <tr>
         <th width="30%"></th>
@@ -43,19 +43,19 @@
         <th width="30%"></th>
     </tr>
     <tr>
-        <td align="center" valign="center" ><!--[showphoto showliving='L' phototype='T' photolist='' max_height='150' max_width='150']--></td>
+        <td align="center" valign="middle" ><!--[showphoto showliving='L' phototype='T' photolist='' max_height='150' max_width='150']--></td>
 	<td align="center" valign="top" ><div class="surname-big"><!--[surnames type='cloud' top='25' links='yes']--></div></td>
-	<td align="center" valign="center" ><a href="<!--[pnmodurl modname=TNGz show=placemap ]-->"><img src="<!--[pnmodurl modname=TNGz type=user func=worldmap size='tiny']-->"></a></td>
+	<td align="center" valign="middle" ><a href="<!--[pnmodurl modname=TNGz show=placemap ]-->"><img src="<!--[pnmodurl modname=TNGz type=user func=worldmap size='tiny']-->" alt="Map" /></a></td>
     </tr>
     <tr>
         <td align="left"   valign="top" ><div><!--[surnames type='list' top='25' sort='rank' links='yes' menu='yes']--></div></td>
 	<td align="center" valign="top" ><div><center>
-	                                      <hr>
+	                                      <hr />
 	                                       <!--[namesearch]-->
-	                                      <hr>
+	                                      <hr />
 					      <strong><!--[$text.mnustatistics ]--></strong>
 	                                      <!--[statistics]-->
-					      <hr>
+					      <hr />
 					      </center>
 					</div></td>
 	<td align="left"   valign="top" ><div><!--[places type='list' top='25' sort='rank' links='yes' menu='yes']--></div></td>

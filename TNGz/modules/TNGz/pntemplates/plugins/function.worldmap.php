@@ -40,7 +40,7 @@ function smarty_function_worldmap($params, &$smarty)
 
     $output  = "<img class=\"placemap\" ";
     $output .= "height=\"$height\" width=\"$width\" ";
-    $output .= "src=\"" . pnModURL('TNGz', 'user', 'worldmap', array('size'=>$size, 'region'=>$region), null, null, true ) . "\" ";
+    $output .= "src=\"" . DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'worldmap', array('size'=>$size, 'region'=>$region), null, null, true )) . "\" ";
     $output .= ">";
     
     return $output;

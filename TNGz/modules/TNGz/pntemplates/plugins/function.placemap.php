@@ -84,25 +84,26 @@ function smarty_function_placemap($params, &$smarty)
     $id_sidebar           = "side_bar";
     $id_sidebar_li_prefix = "placeID_";
     $id_placelevel_prefix = "placelevelID_";
-    $placesearch_url      = pnModURL('TNGz','user','main', array('show'=>'placesearch')) . "&";
+    $placesearch_url      = DataUtil::formatForDisplay(pnModURL('TNGz','user','main', array('show'=>'placesearch')) . "&");
     $cmspath              = $TNG['directory'].'/';
        
-    $output .= "<table border=1>\n";
+    $output .= "<table border=\"1\">\n";
     $output .= "<tr>\n";
     $output .= "<td>\n";
     $output .= "<!-- =========== output map  ============================= -->\n";
-    $output .= "<div id=\"map\" style=\"width:".$width."px; height:".$height."px; \"></div>\n";
+    $output .= "<div id=\"map\" style=\"width:'".$width."'px; height:'".$height."px';\"></div>\n";
     $output .= "</td>\n";
-    $output .= "<td width = 225 valign=\"top\" style=\"text-decoration: underline; color: #4444ff;\">\n";
+    $output .= "<td width=\"225\" valign=\"top\" style=\"text-decoration: underline; color: #4444ff;\">\n";
     $output .= "<!-- =========== side_bar with scroll bar ================= -->\n";
-    $output .= "<div id=\"".$id_sidebar."\"  style=\"overflow:auto; height:".$height."px;\"></div>\n";
+    $output .= "<div id=\"".$id_sidebar."\"  style=\"overflow:auto; height:'".$height."px';\"></div>\n";
     $output .= "<!-- ===================================================== -->\n";
     $output .= "</td>\n";
     $output .= "</tr>\n";
     $output .= "<tr>\n";
     $output .= "<!-- =========== legend across the bottom================= -->\n";
-    $output .= "<td COLSPAN=\"2\">\n";
-    $output .= "<table cellpadding=\"10%\"><tr><form name=\"legend\" action=\"\">\n";
+    $output .= "<td colspan=\"2\">\n";
+    $output .= "<form name=\"legend\" action=\"\">\n";
+    $output .= "<table cellpadding=\"10%\"><tr>\n";
     $output .= "<td align=\"center\">\n";
     $output .=  "<input type=\"checkbox\" name=\"LegendPlaceLevelList\" id=\"".$id_placelevel_prefix."cluster"."\" onclick=\"toggleClustering()\" ";
     $output .=  ($usecluster === "true") ? " checked=\"checked\"" : "";
@@ -116,10 +117,12 @@ function smarty_function_placemap($params, &$smarty)
         $output .=  "<img src=\"$cmspath" . "googlemaps/" . ${"pinplacelevel" .$i} . ".png\" alt=\"\" height=\"34\" width=\"20\" /><br /><input type=\"checkbox\" name=\"LegendPlaceLevelList\" id=\"".$id_placelevel_prefix.$i."\" onclick=\"showhide('".$i."')\" checked=\"checked\" />" . "<br />".$text["level$i"]."\n";
         $output .=  "</td>\n";                
     }
-    $output .= "</form></tr></table>\n";
+    $output .= "</tr></table>\n";
+    $output .= "</form>\n";
     $output .= "</td>\n";
     $output .= "</tr>\n";
     $output .= "</table>\n";
+
     
     $output .= "\n";
     $output .= "<script type=\"text/javascript\">\n";
