@@ -69,7 +69,7 @@ function smarty_function_surnames($params, &$smarty)
         foreach($names as $name){
             $output .= "<span class='surnames-cloud size" . $name['class'] . "'>";
             $output .= ($hidelinks) ? "" : "<a class='surnames-cloud size" . $name['class'] . "' ";
-            $output .= ($hidelinks) ? "" : "href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'search', 'mylastname' => $name['surnameuc'], 'mybool' => 'AND')) . "\">";
+            $output .= ($hidelinks) ? "" : "href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'search', 'mylastname' => $name['surnameuc'], 'mybool' => 'AND'))) . "\">";
             $output .= $name['surname'];
             $output .= ($hidelinks) ? "" : "</a>";
             $output .= "</span> ";
@@ -81,7 +81,7 @@ function smarty_function_surnames($params, &$smarty)
         $output = "<$list class=\"surnames-list\">";
         foreach($names as $name){
             $output .= "<li>";
-            $output .= ($hidelinks) ? "" : "<a href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'search', 'mylastname' => $name['surnameuc'], 'mybool' => 'AND')) . "\">";
+            $output .= ($hidelinks) ? "" : "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'search', 'mylastname' => $name['surnameuc'], 'mybool' => 'AND'))) . "\">";
             $output .= $name['surname'];
             $output .= ($hidelinks) ? "" : "</a>";
             $output .= " (". $name['count']. ")";
@@ -135,7 +135,7 @@ function smarty_function_surnames($params, &$smarty)
                      if ($sort == 'rank'){
                          $output .= $name['rank'] . ". ";
                      }
-                     $output .= ($hidelinks) ? "" : "<a href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'search', 'mylastname' => $name['surnameuc'], 'mybool' => 'AND')) . "\">";
+                     $output .= ($hidelinks) ? "" : "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'search', 'mylastname' => $name['surnameuc'], 'mybool' => 'AND'))) . "\">";
                      $output .= $name['surname'];
                      $output .= ($hidelinks) ? "" : "</a>";
                      $output .= " (". $name['count']. ")" ;
@@ -157,9 +157,9 @@ function smarty_function_surnames($params, &$smarty)
         $output .= " <input type=\"submit\" value=\"". _TNGZ_FORM_GO ."\" />";
         $output .= "</form>";
         $output .= "<br />";
-        $output .= "<a href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'surnames-all')) . "\">" . _TNGZ_SURNAMES_LINK_SURNAMES_ALL  . "</a>";
+        $output .= "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'surnames-all'))) . "\">" . _TNGZ_SURNAMES_LINK_SURNAMES_ALL  . "</a>";
         $output .= "<br />";
-        $output .= "<a href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'surnames'    )) . "\">" . _TNGZ_SURNAMES_LINK_SURNAMES . "</a>";
+        $output .= "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'surnames'    ))) . "\">" . _TNGZ_SURNAMES_LINK_SURNAMES . "</a>";
     }
     
     // now update the cache

@@ -142,9 +142,9 @@ function smarty_function_places($params, &$smarty)
         $output .= " <input type=\"submit\" value=\"". _TNGZ_FORM_GO ."\" />";
         $output .= "</form>";
         $output .= "<br />";
-        $output .= "<a href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'places-all')) . "\">" . _TNGZ_PLACES_LINK_PLACES_ALL  . "</a>";
+        $output .= "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'places-all'))) . "\">" . _TNGZ_PLACES_LINK_PLACES_ALL  . "</a>";
         $output .= "<br />";
-        $output .= "<a href=\"". pnModURL('TNGz', 'user', 'main', array( 'show' => 'places'    )) . "\">" . _TNGZ_PLACES_LINK_PLACES . "</a>";
+        $output .= "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'places'    ))) . "\">" . _TNGZ_PLACES_LINK_PLACES . "</a>";
     }
 
     // now update the cache
