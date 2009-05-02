@@ -297,7 +297,7 @@ function TNGz_userapi_ShowPage($args)
     
                           // TODO: Need to figure out the best way to do this
     $cms[url]          = "index.php?module=$TNGz_modname&func=main&show";
-    //$cms[url]          = "index.php?module=$TNGz_modname&amp;func=main&amp;show";
+    //$cms[url]        = "index.php?module=$TNGz_modname&amp;func=main&amp;show";
     //$cms[url]        = "index.php?module=$TNGz_modname&show";    
     //$cms[url]        = rtrim(pnModURL('TNGz','user','main', array('show'=>'')),"=");
                          // these are not as good
@@ -308,7 +308,7 @@ function TNGz_userapi_ShowPage($args)
     $cms[tngpath]    = $TNG['directory']. "/";
     //$cms[adminurl]   = "index.php?module=TNGz&func=admin";
     // using pnModURL
-    $cms[adminurl]        = DataUtil::formatForDisplay(pnModURL('TNGz','admin','TNGadmin'));
+    $cms[adminurl]      = DataUtil::formatForDisplay(pnModURL('TNGz','admin','TNGadmin'));
     $cms[noend]      = true; // Tell TNG to not include end.php file
     $cms[cloaklogin] = "Yes";
     $cms[credits]    = "<!-- TNGz --><br />";
@@ -517,7 +517,7 @@ function TNGz_userapi_ShowPage($args)
     $patterns[]     = "/<script(.*)litbox.js(.*)<\/script>/i";
     $replacements[] = "<!-- $0 -->\n";
 
-    $patterns[]     = "|\<style (.*)\<\/style\>|i";
+    $patterns[]     = "|\<style (.*)\<\/style\>|is";
     $replacements[] = "<!-- $0 -->\n";
 
     $patterns[]     = "|\<link (.*)\/\>|i";
@@ -526,7 +526,7 @@ function TNGz_userapi_ShowPage($args)
     // Now go do the clean up
     if($TNGrenderpage) {
         // Take care of embedded <style>
-        preg_match_all("|\<style (.*)\<\/style\>|i", $TNGoutput, $matches, PREG_SET_ORDER);
+        preg_match_all("|\<style (.*)\<\/style\>|is", $TNGoutput, $matches, PREG_SET_ORDER);
         foreach($matches as $match){
             PageUtil::AddVar('rawtext', $match[0]);
         }
