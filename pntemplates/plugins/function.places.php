@@ -60,7 +60,7 @@ function smarty_function_places($params, &$smarty)
 
     if ($type == 'list'){
         $list = ($sort == 'alpha') ? "ul" : "ol";
-        $output = "<$list class=\"place-list\">";
+        $output = "<$list class=\"places-list\">";
         foreach($Places as $place){
             $output .= "<li>";
             if ($hidelinks) {
@@ -132,6 +132,7 @@ function smarty_function_places($params, &$smarty)
         $output .= "</table>";
     }
     if ($menu == 'yes'){
+        $output .= "<div class=\"places-menu\">";
         $output .= "<form style=\"margin:0px\" action=\"index.php\" method=\"post\">";
         $output .= "<input type=\"hidden\" name=\"module\" value=\"TNGz\" />";
         $output .= "<input type=\"hidden\" name=\"show\" value=\"places100\" />";
@@ -145,6 +146,7 @@ function smarty_function_places($params, &$smarty)
         $output .= "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'places-all'))) . "\">" . _TNGZ_PLACES_LINK_PLACES_ALL  . "</a>";
         $output .= "<br />";
         $output .= "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'places'    ))) . "\">" . _TNGZ_PLACES_LINK_PLACES . "</a>";
+        $output .= "</div>";
     }
 
     // now update the cache
