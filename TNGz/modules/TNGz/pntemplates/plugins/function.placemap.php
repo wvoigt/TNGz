@@ -91,11 +91,11 @@ function smarty_function_placemap($params, &$smarty)
     $output .= "<tr>\n";
     $output .= "<td>\n";
     $output .= "<!-- =========== output map  ============================= -->\n";
-    $output .= "<div id=\"map\" style=\"width:'".$width."'px; height:'".$height."px';\"></div>\n";
+    $output .= "<div id=\"map\" style=\"width:".$width."px; height:".$height."px;\"></div>\n";
     $output .= "</td>\n";
-    $output .= "<td width=\"225\" valign=\"top\" style=\"text-decoration: underline; color: #4444ff;\">\n";
+    $output .= "<td width=\"225\" valign=\"top\" class=\"placemap-scrollbarbox\" >\n";
     $output .= "<!-- =========== side_bar with scroll bar ================= -->\n";
-    $output .= "<div id=\"".$id_sidebar."\"  style=\"overflow:auto; height:'".$height."px';\"></div>\n";
+    $output .= "<div id=\"".$id_sidebar."\"  class=\"placemap-scrollbar\" style=\"overflow:auto; height:".$height."px;\"></div>\n";
     $output .= "<!-- ===================================================== -->\n";
     $output .= "</td>\n";
     $output .= "</tr>\n";
