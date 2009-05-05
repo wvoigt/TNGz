@@ -296,9 +296,9 @@ function TNGz_userapi_ShowPage($args)
     $cms[module]     = "TNGz";
     
                           // TODO: Need to figure out the best way to do this
-    $cms[url]          = "index.php?module=$TNGz_modname&func=main&show";
+    //$cms[url]          = "index.php?module=$TNGz_modname&func=main&show";
     //$cms[url]        = "index.php?module=$TNGz_modname&amp;func=main&amp;show";
-    //$cms[url]        = "index.php?module=$TNGz_modname&show";    
+    $cms[url]        = "index.php?module=$TNGz_modname&show";    
     //$cms[url]        = rtrim(pnModURL('TNGz','user','main', array('show'=>'')),"=");
                          // these are not as good
     //$cms[url]        = _TNGZ_PREFIX;
@@ -484,71 +484,91 @@ function TNGz_userapi_ShowPage($args)
         //$TNGoutput = preg_replace_callback( "/(\s+href\s*=\s*[\"\'])(.*)([\"\'])/iU", "TNGz_userapi_ShortURLencode", $TNGoutput);
     }
 
-    // Get Title information to add to Zikula title
-    if (preg_match("/<meta name=\"Keywords\" content=\"(.+)\"/", $TNGoutput, $tng_title) ) {
-        $GLOBALS['info']['title'] = $tng_title[1];
-    }
 
-    // Clean up TNG HTML to remove HTML validation errors
-    // First set up the changes
-    if ($TNGshowpage != "tngrss.php") {
-        // Remove TNG <title> tag.  Each page should only have one and Zikula provides.
-        $patterns[]     = "/<title>(.*)<\/title>/i";
-        $replacements[] = "<!-- $0 -->\n";
-    }
-    // Remove the <meta> tags.  TNG's not in the right place and do not add much new informaiton
-    $patterns[]     = "/<meta (.*)>/i";
-    $replacements[] = "<!-- $0 -->\n";
-    
-    // Remove the TNG's DOCTYPE (Each page should only have one, and Zikula provides)
-    $patterns[]     = "@<!DOCTYPE[^\"]+\"([^\"]+)\"[^\"]+\"([^\"]+)/([^/]+)\.dtd\">@i";
-    $replacements[] = "<!-- $0 -->\n";
-    
-    // Remove TNG javascripts and load files into head (also using Zikula versions).
-    $patterns[]     = "/<script(.*)prototype.js(.*)<\/script>/i";
-    $replacements[] = "<!-- $0 -->\n";
-    
-    $patterns[]     = "/<script(.*)scriptaculous.js(.*)<\/script>/i";
-    $replacements[] = "<!-- $0 -->\n";
-    
-    $patterns[]     = "/<script(.*)net.js(.*)<\/script>/i";
-    $replacements[] = "<!-- $0 -->\n";
-    
-    $patterns[]     = "/<script(.*)litbox.js(.*)<\/script>/i";
-    $replacements[] = "<!-- $0 -->\n";
 
-    $patterns[]     = "|\<style (.*)\<\/style\>|is";
-    $replacements[] = "<!-- $0 -->\n";
-
-    $patterns[]     = "|\<link (.*)\/\>|i";
-    $replacements[] = "<!-- $0 -->\n";
-
-    // Now go do the clean up
     if($TNGrenderpage) {
-        // Take care of embedded <style>
-        preg_match_all("|\<style (.*)\<\/style\>|is", $TNGoutput, $matches, PREG_SET_ORDER);
-        foreach($matches as $match){
-            PageUtil::AddVar('rawtext', $match[0]);
+        // Clean up TNG HTML, remove HTML validation errors, etc.
+
+        // Remove TNG <title> tag.  Each page should only have one and Zikula provides.
+        $patterns[]     = "/<title>(.*)<\/title>/iU";
+        $replacements[] = "<!-- $0 -->\n";
+        // Now Get Title information to add to Zikula title
+        if (preg_match("/<meta name=\"Keywords\" content=\"(.+)\"/", $TNGoutput, $tng_title) ) {
+            $GLOBALS['info']['title'] = $tng_title[1];
         }
-        
-        // Take care of embedded <link>
-        preg_match_all("|\<link (.*)\/\>|i", $TNGoutput, $matches, PREG_SET_ORDER);
-        foreach($matches as $match){
-            PageUtil::AddVar('rawtext', $match[0]);
-        }
+
+        // Remove the <meta> tags.  TNG's not in the right place and do not add much new informaiton
+        $patterns[]     = "/<meta (.*)>/iU";
+        $replacements[] = "<!-- $0 -->\n";
     
-        ksort($patterns);      // The sorts are recommended to make sure the pattern/replacement are aligned
-        ksort($replacements);
-        $TNGoutput = preg_replace($patterns, $replacements, $TNGoutput);
-        
-        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/net.js');
+        // Remove the TNG's DOCTYPE (Each page should only have one, and Zikula provides)
+        $patterns[]     = "|<!DOCTYPE[^\"]+\"([^\"]+)\"[^\"]+\"([^\"]+)/([^/]+)\.dtd\">|i";
+        $replacements[] = "<!-- $0 -->\n";
+    
+        // Remove TNG javascripts and load files into head (also using Zikula versions).
+        $patterns[]     = "/<script(.*)prototype.js(.*)<\/script>/iU";
+        $replacements[] = "<!-- $0 -->\n";
         PageUtil::AddVar('javascript', 'javascript/ajax/prototype.js');
+
+        $patterns[]     = "/<script(.*)scriptaculous.js(.*)<\/script>/iU";
+        $replacements[] = "<!-- $0 -->\n";
         PageUtil::AddVar('javascript', 'javascript/ajax/scriptaculous.js');
+
+        $patterns[]     = "/<script(.*)net.js(.*)<\/script>/iU";
+        $replacements[] = "<!-- $0 -->\n";
+        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/net.js');
+
+        $patterns[]     = "/<script(.*)litbox.js(.*)<\/script>/iU";
+        $replacements[] = "<!-- $0 -->\n";    
         PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/litbox.js');
+
         // Question: What happens if Zikula and TNG use different versions of these libraries
         //           Could this cause odd behavior in TNG?
 
+        // Take care of embedded <style>, move up into Zikula head
+        $patterns[]     = "|\<style (.*)\<\/style\>|isU";
+        $replacements[] = "<!-- $0 -->\n";
+        preg_match_all("|\<style (.*)\<\/style\>|isU", $TNGoutput, $matches, PREG_SET_ORDER);
+        foreach($matches as $match){
+            PageUtil::AddVar('rawtext', $match[0]);
+        }
+        
+        // Take care of embedded <link>, move up into Zikula head
+        $patterns[]     = "|\<link (.*)\/\>|iU";
+        $replacements[] = "<!-- $0 -->\n";
+        preg_match_all("|\<link (.*)\/\>|iU", $TNGoutput, $matches, PREG_SET_ORDER);
+        foreach($matches as $match){
+            PageUtil::AddVar('rawtext', $match[0]);
+        }
+
+        // Fix up href and onclick for HTML validation
+        $TNGoutput = preg_replace_callback(
+               '/(href\=\"(.*)\")|(onclick\=\"(.*)\")|(onchange\=\"(.*)\")/iU',
+                create_function(
+                    '$matches',
+                    'return str_replace("&","&amp;", str_replace("&amp;", "&", $matches[0]) );'
+                ),
+                $TNGoutput);
+
+        // Add CDATA for scripts, but only do if not already there.  Also don't do if just giving src file name
+        $TNGoutput = preg_replace_callback(
+                     "|(\<script[ ]+.*\>)(.*)(\<\/script\>)|isU",
+                     create_function(
+                        '$matches',
+                        'if (strpos($matches[2],"<![CDATA[")===false && strpos($matches[1],"src=")===false){
+                            return $matches[1]."\n/*<![CDATA[*/\n".$matches[2]."\n/*]]>*/\n".$matches[3];
+                         } else {
+                            return $matches[0];
+                         }'
+                    ),
+                    $TNGoutput);
+
+        // Now finish the clean up
+        ksort($patterns);      // The sorts are recommended to make sure the pattern/replacement are aligned
+        ksort($replacements);
+        $TNGoutput = preg_replace($patterns, $replacements, $TNGoutput);
     }
+
     //////////////////////////////////////////////////////
     // Now get ready to display
     //////////////////////////////////////////////////////
