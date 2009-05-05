@@ -94,7 +94,7 @@ function myMapRefresh() {
     }
 
     // Update the sidebar information
-    document.getElementById( placemap.id_sidebar ).innerHTML = "<ul>"+NewSideBar+"</ul>";
+    document.getElementById( placemap.id_sidebar ).innerHTML = '<ul class="placemap-scrollbar-list" >'+NewSideBar+'</ul>';
 
     // Refresh Markers
     placemap.cluster.removeMarkers();

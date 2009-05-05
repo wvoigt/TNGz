@@ -73,8 +73,8 @@ function smarty_function_statistics($params, &$smarty)
     
     $output  = "<table cellpadding=\"3\" cellspacing=\"1\" border=\"0\" >";
 	$output .= "<tr>";
-	$output .= "<td class=\"fieldnameback\"><span class=\"fieldname\">&nbsp;<strong>" . $text[description] . "</strong>&nbsp;</span></td>";
-	$output .= "<td class=\"fieldnameback\"><span class=\"fieldname\">&nbsp;<strong>" . $text[quantity] .    "</strong>&nbsp;</span></td>";
+	$output .= "<td class=\"statistics-cell\"><span class=\"statistics-plugin-header\">" . $text[description] . "</span></td>";
+	$output .= "<td class=\"statistics-cell\"><span class=\"statistics-plugin-header\">" . $text[quantity] .    "</span></td>";
 	$output .= "</tr>";
 
     if ($people) {
@@ -85,8 +85,8 @@ function smarty_function_statistics($params, &$smarty)
         $row = $result->fields;
         $totalpeople = $row[pcount];
         $result->Close();
-        $output .=  "<tr><td valign=\"top\" class=\"databack\"><span class=\"normal\">$text[totindividuals]</span></td>\n";
-        $output .=  "<td valign=\"top\" class=\"databack\"><span class=\"normal\">$totalpeople &nbsp;</span></td></tr>\n";
+        $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[totindividuals]</span></td>\n";
+        $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$totalpeople &nbsp;</span></td></tr>\n";
 
     }
     
@@ -98,8 +98,8 @@ function smarty_function_statistics($params, &$smarty)
         $row = $result->fields;
         $totalfamilies = $row[fcount];
         $result->Close();
-        $output .=  "<tr><td valign=\"top\" class=\"databack\"><span class=\"normal\">$text[totfamilies]</span></td>\n";
-        $output .=  "<td valign=\"top\" class=\"databack\"><span class=\"normal\">$totalfamilies &nbsp;</span></td></tr>\n";
+        $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[totfamilies]</span></td>\n";
+        $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$totalfamilies &nbsp;</span></td></tr>\n";
     }
 
     if ($living & $people) {
@@ -111,8 +111,8 @@ function smarty_function_statistics($params, &$smarty)
         $numliving = $row[pcount];
         $result->Close();
         $percentliving  = $totalpeople ? round(100 * $numliving / $totalpeople, 2) : 0;
-        $output .=  "<tr><td valign=\"top\" class=\"databack\"><span class=\"normal\">$text[totliving]</span></td>\n";
-        $output .=  "<td valign=\"top\" class=\"databack\"><span class=\"normal\">$numliving ($percentliving%) &nbsp;</span></td></tr>\n";
+        $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[totliving]</span></td>\n";
+        $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$numliving ($percentliving%) &nbsp;</span></td></tr>\n";
 
     }
     
@@ -125,8 +125,8 @@ function smarty_function_statistics($params, &$smarty)
         }
         $uniquesurnames = $result->RecordCount();
         $result->Close();
-        $output .=  "<tr><td valign=\"top\" class=\"databack\"><span class=\"normal\">$text[totuniquesn]</span></td>\n";
-        $output .=  "<td valign=\"top\" class=\"databack\"><span class=\"normal\">$uniquesurnames&nbsp;</span></td></tr>\n";      
+        $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[totuniquesn]</span></td>\n";
+        $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$uniquesurnames&nbsp;</span></td></tr>\n";      
     }
 
     if ($sex && $people) {
@@ -158,14 +158,14 @@ function smarty_function_statistics($params, &$smarty)
         $percentfemales    = $totalpeople ? round(100 * $females / $totalpeople, 2) : 0;
         $percentunknownsex = $totalpeople ? round(100 * $unknownsex / $totalpeople, 2) : 0;
 
-        $output .=  "<tr><td valign=\"top\" class=\"databack\"><span class=\"normal\">$text[totmales]</span></td>\n";
-        $output .=  "<td valign=\"top\" class=\"databack\"><span class=\"normal\">$males ($percentmales%) &nbsp;</span></td></tr>\n";
+        $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[totmales]</span></td>\n";
+        $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$males ($percentmales%) &nbsp;</span></td></tr>\n";
 
-        $output .=  "<tr><td valign=\"top\" class=\"databack\"><span class=\"normal\">$text[totfemales]</span></td>\n";
-        $output .=  "<td valign=\"top\" class=\"databack\"><span class=\"normal\">$females ($percentfemales%) &nbsp;</span></td></tr>\n";
+        $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[totfemales]</span></td>\n";
+        $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$females ($percentfemales%) &nbsp;</span></td></tr>\n";
 
-        $output .=  "<tr><td valign=\"top\" class=\"databack\"><span class=\"normal\">$text[totunknown]</span></td>\n";
-        $output .=  "<td valign=\"top\" class=\"databack\"><span class=\"normal\">$unknownsex ($percentunknownsex%) &nbsp;</span></td></tr>\n";
+        $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[totunknown]</span></td>\n";
+        $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$unknownsex ($percentunknownsex%) &nbsp;</span></td></tr>\n";
 
     }
     
@@ -239,18 +239,18 @@ function smarty_function_statistics($params, &$smarty)
         
     }
     if ($places) {
-        $output .=  "<tr><td valign=\"top\" class=\"databack\"><span class=\"normal\">$text[total] $text[places]</span></td>\n";
-        $output .=  "<td valign=\"top\" class=\"databack\"><span class=\"normal\">$numplaces &nbsp;</span></td></tr>\n";
+        $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[total] $text[places]</span></td>\n";
+        $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$numplaces &nbsp;</span></td></tr>\n";
       if ($geocode) {
-        $output .=  "<tr><td valign=\"top\" class=\"databack\"><span class=\"normal\">$text[total] Geocode $text[places]</span></td>\n";
-        $output .=  "<td valign=\"top\" class=\"databack\"><span class=\"normal\">$geocoded ($percentgeocoded%) &nbsp;</span></td></tr>\n";
+        $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[total] Geocode $text[places]</span></td>\n";
+        $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$geocoded ($percentgeocoded%) &nbsp;</span></td></tr>\n";
       }
-        $output .=  "<tr><td valign=\"top\" class=\"databack\"><span class=\"normal\">$text[total] $text[gmapevent] $text[places]</span></td>\n";
-        $output .=  "<td valign=\"top\" class=\"databack\"><span class=\"normal\">$refplaces &nbsp;</span></td></tr>\n";
+        $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[total] $text[gmapevent] $text[places]</span></td>\n";
+        $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$refplaces &nbsp;</span></td></tr>\n";
 
       if ($geocode) {
-        $output .=  "<tr><td valign=\"top\" class=\"databack\"><span class=\"normal\">$text[total] Geocode $text[gmapevent] $text[places]</span></td>\n";
-        $output .=  "<td valign=\"top\" class=\"databack\"><span class=\"normal\">$refgeocoded ($percentrefgeocoded%) &nbsp;</span></td></tr>\n";
+        $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[total] Geocode $text[gmapevent] $text[places]</span></td>\n";
+        $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$refgeocoded ($percentrefgeocoded%) &nbsp;</span></td></tr>\n";
       } 
     }
 

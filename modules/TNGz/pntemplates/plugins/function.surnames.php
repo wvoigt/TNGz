@@ -147,6 +147,7 @@ function smarty_function_surnames($params, &$smarty)
         $output .= "</table>";
     }
     if ($menu == 'yes'){
+        $output .= "<div class=\"surnames-menu\">";
         $output .= "<form style=\"margin:0px\" action=\"index.php\" method=\"post\">";
         $output .= "<input type=\"hidden\" name=\"module\" value=\"TNGz\" />";
         $output .= "<input type=\"hidden\" name=\"show\" value=\"surnames100\" />";
@@ -160,6 +161,7 @@ function smarty_function_surnames($params, &$smarty)
         $output .= "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'surnames-all'))) . "\">" . _TNGZ_SURNAMES_LINK_SURNAMES_ALL  . "</a>";
         $output .= "<br />";
         $output .= "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'surnames'    ))) . "\">" . _TNGZ_SURNAMES_LINK_SURNAMES . "</a>";
+        $output .= "</div>";
     }
     
     // now update the cache
