@@ -63,6 +63,8 @@
  define("_TNGZDEBUG"         , "Debug-Information");
  define("_TNGZDEBUGMSG"      , "Informationen zum Lösen von Problemen. Könnte bei der Meldung von Fehlern hilfreich sein.");
  define("_TNGZCHANGELOG"     , "Changelog");
+ define("_TNGZUSERLOG"       , "Benutzerlog");
+ define("_TNGZADMINLOG"      , "Administrationslog");
  define("_TNGZREADME"        , "Detaillierte Readme-Datei");
 
  define("_TNGZ_HOMEPAGE"     , "Benutze Hauptseite von TNGz anstatt der TNG-Index-Seite");
