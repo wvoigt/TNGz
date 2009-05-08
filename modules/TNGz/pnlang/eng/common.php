@@ -211,8 +211,8 @@ define("_TNGZOTHERSETTINGS" ,        "Other Settings");
 define("_TNGCONFG"          ,        "TNG Administration");
 define("_TNGZINSTRUCT"      ,        "Installation Instructions");
 define("_TNGZDEBUGINFO"     ,        "Information");
-define("_TNGZUSERLOG"       ,        "Benutzerlog");
-define("_TNGZADMINLOG"      ,        "Administrationslog");
+define("_TNGZUSERLOG"       ,        "User Log");
+define("_TNGZADMINLOG"      ,        "Administration Log");
 
 define("_TNGZDEBUG"         ,        "Debug Information");
 define("_TNGZDEBUGMSG"      ,        "Information used to debug problems. This might be useful if you need to report a problem.");
