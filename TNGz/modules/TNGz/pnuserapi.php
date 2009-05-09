@@ -484,7 +484,7 @@ function TNGz_userapi_ShowPage($args)
         //$TNGoutput = preg_replace_callback( "/(\s+href\s*=\s*[\"\'])(.*)([\"\'])/iU", "TNGz_userapi_ShortURLencode", $TNGoutput);
     }
 
-
+    $HTMLvalidation = true; // Make this optional in the future when TNG fixes
 
     if($TNGrenderpage) {
         // Clean up TNG HTML, remove HTML validation errors, etc.
@@ -541,8 +541,9 @@ function TNGz_userapi_ShowPage($args)
             PageUtil::AddVar('rawtext', $match[0]);
         }
 
-        // Fix up href and onclick for HTML validation
-        $TNGoutput = preg_replace_callback(
+        if ($HTMLvalidation) {
+            // Fix up href and onclick for HTML validation
+            $TNGoutput = preg_replace_callback(
                '/(href\=\"(.*)\")|(onclick\=\"(.*)\")|(onchange\=\"(.*)\")/iU',
                 create_function(
                     '$matches',
@@ -550,8 +551,8 @@ function TNGz_userapi_ShowPage($args)
                 ),
                 $TNGoutput);
 
-        // Add CDATA for scripts, but only do if not already there.  Also don't do if just giving src file name
-        $TNGoutput = preg_replace_callback(
+            // Add CDATA for scripts, but only do if not already there.  Also don't do if just giving src file name
+            $TNGoutput = preg_replace_callback(
                      "|(\<script[ ]+.*\>)(.*)(\<\/script\>)|isU",
                      create_function(
                         '$matches',
@@ -562,11 +563,23 @@ function TNGz_userapi_ShowPage($args)
                          }'
                     ),
                     $TNGoutput);
+        }
 
         // Now finish the clean up
         ksort($patterns);      // The sorts are recommended to make sure the pattern/replacement are aligned
         ksort($replacements);
         $TNGoutput = preg_replace($patterns, $replacements, $TNGoutput);
+    }
+    
+    if ($TNGshowpage=="tngrss.php" && $HTMLvalidation) {
+        // Fix up links
+        $TNGoutput = preg_replace_callback(
+                "|(\<link\>)(.*)(\<\/link\>)|isU",
+                create_function(
+                    '$matches',
+                    'return str_replace("&","&amp;", str_replace("&amp;", "&", $matches[0]) );'
+                ),
+                $TNGoutput);
     }
 
     //////////////////////////////////////////////////////
@@ -779,36 +792,32 @@ function TNGz_userapi_Cache($args)
     if (!isset($TNG_updated) &&  $TNGz_useDBtime !=0) { // do this only once
 
         $TNG_updated = $time_zero; // Initialize, also a flag if stays at $time_zero
-
-        // Get the TNG information
-        $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
-        if (!file_exists($TNG['configfile']) ) {
-            return false;
+    
+        if (!$TNG = pnModAPIFunc('TNGz','user','TNGconfig') ) {
+           return false; // can't get to the data
         }
-        include $TNG['configfile'];
 
         // Set the tables we want to check
-        $TNG_tables['people']   = $people_table;
-        $TNG_tables['family']   = $families_table;
-        $TNG_tables['children'] = $children_table;
-        $TNG_tables['places']   = $places_table;
-        $TNG_tables['events']   = $events_table;
+        $TNG_tables['people']   = $TNG['people_table'];
+        $TNG_tables['family']   = $TNG['families_table'];
+        $TNG_tables['children'] = $TNG['children_table'];
+        $TNG_tables['places']   = $TNG['places_table'];
+        $TNG_tables['events']   = $TNG['events_table'];
         /* Others that could be checked include:
-          $albums_table, $album2entities_table, $albumlinks_table, $media_table, $medialinks_table,
-          $mediatypes_table, $address_table, $languages_table, $cemeteries_table, $states_table,
-          $countries_table, $sources_table, $repositories_table, $citations_table
+          albums_table, album2entities_table, albumlinks_table, media_table, medialinks_table,
+          mediatypes_table, address_table, languages_table, cemeteries_table, states_table,
+          countries_table, sources_table, repositories_table, citations_table
         */
 
         // Now actually go find the last update time stamp on various TNG tables
-        $TNG_conn = &ADONewConnection('mysql');
-        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name );
-        $TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
-        
+        if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+           return false; // can't get to the data
+        }
         foreach($TNG_tables as $table){
             // now get the update time for the table
             $query = "SHOW TABLE STATUS LIKE '$table'";
             
-            if (!$result = &$TNG_conn->Execute($query) ) {
+            if (!$result = $TNG_conn->Execute($query) ) {
                 return false;
             }
             for (; !$result->EOF; $result->MoveNext()) {
@@ -817,7 +826,6 @@ function TNGz_userapi_Cache($args)
             }
             $result->Close();
         }
-        $TNG_conn->Close();
     }
 
     // Can't cache if settings and values don't make sense
@@ -1286,100 +1294,6 @@ function TNGz_userapi_GetTNGurl($args)
     return $url;
 }
 
-
-
-/**
-* Generate reference link back to TNGz items
-* @param int args['RefType'] 0 or 1 depending upon URL style
-* @param int args['func'] what function to call from TNG
-* @param int args['personID']
-* @param int args['tree']
-* @param int args['ordernum']
-* @param int args['photoID']
-* @param int args['familyID']
-* @param int args['docID']
-* @param int args['url']
-* @param int args['target']
-* @param int args['description'] image description
-* @return reference link
-*/
-function TNGz_userapi_MakeRef_old($args)
-{
-
-    extract($args);
-    // Valid call combinations
-    // $RefType, $func="getperson", $personID, $tree $target $description
-    // $RefType, $func="showphoto", $personID, $tree, $ordernum $target $description
-    // $RefType, $func="photo", $photoID $target $description
-    // $RefType, $func="familygroup", $familyID, $tree $target $description
-    // $RefType, $func="showhistory", $docID $target $description
-    // $RefType, $func="url", $url $target $description
-    // $RefType, $func="main" $target $description
-
-    // Optional arguments.
-    if (!isset($RefType)) {
-        $RefType = 0;
-    }
-
-    $RefType = 0; // FIX
-
-    if (!isset($target)) {
-        $target = "";
-    }
-    if ($target !="" ) {
-        $target = "target = \"$target\"";
-    }
-    if (!isset($func)) {
-        $func = "main";
-    }
-    if (!isset($description)) {
-        $description = "";
-    }
-    if (!isset($url)) {
-        $url = false;
-        $amp = "&amp;";
-    } else {
-        $url = true;
-        $amp = "&";
-    }
-
-    switch ($RefType) {
-        case "1":
-                $Ref = "index.php?module=TNGz".$amp."func=";
-                break;
-        case "0":
-        default :
-            $Ref = "index.php?module=TNGz".$amp."func=main".$amp."show=";
-    }
-
-
-    switch ($func) {
-        case "getperson":
-                $Ref .= "getperson".$amp."personID=$personID".$amp."tree=$tree";
-                break;
-        case "showmedia":
-                $Ref .= "showmedia".$amp."mediaID=$mediaID".$amp."medialinkID=$medialinkID";
-                break;
-        case "showphoto":
-                $Ref .= "showmedia".$amp."personID=$personID".$amp."tree=$tree".$amp."mediatypeID=photo".$amp."ordernum=$ordernum";
-                break;
-        case "photo":
-                $Ref .= "showmedia".$amp."mediaID=$photoID";
-                break;
-        case "familygroup":
-                $Ref .= "familygroup".$amp."familyID=$familyID".$amp."tree=$tree";
-                break;
-        case "showhistory":
-                $Ref .= "showhistory".$amp."docID=$docID";
-                break;
-        case "main":
-        default:
-            $Ref = "index.php?module=TNGz";
-    }
-
-    return "<a href=\"" . $Ref . "\" $target >$description</a>";
-
-}
 /**
 * Generate reference link back to TNGz items
 * @param str $args['target'],      to add any special target parameters to the link
@@ -1517,38 +1431,33 @@ function TNGz_userapi_getRecords($args)
     }
     // $limit is still true only if $start and $count are valid
 
-    // Now go get the informaiton
-    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
-
-    // Check to be sure we can get to the TNG information
-    $have_info = 0;
-    if (file_exists($TNG['configfile']) ) {
-        include($TNG['configfile']);
-        $TNG_conn = &ADONewConnection('mysql');
-        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
-        $have_info = 1;
+    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+       return false; // can't get to the data
     }
-    if (!$have_info) {
-        return(false);
+    
+    if (!$TNG = pnModAPIFunc('TNGz','user','TNGconfig') ) {
+       return false; // can't get to the data
     }
+    
     if ($kind == "people") {
-        $query  =  "SELECT gedcom, personID, changedate FROM $people_table";
+        $query  =  "SELECT gedcom, personID, changedate FROM ".$TNG['people_table'];
     } elseif ( $kind == "family") {
-        $query   =  "SELECT gedcom, familyID, changedate FROM $families_table";
+        $query   =  "SELECT gedcom, familyID, changedate FROM ". $TNG['families_table'];
     }
     if ($limit) {
         $query  .= " LIMIT ". $start . ", " . $count;
 
     }
 
-    if (!$result = &$TNG_conn->Execute($query) ) {
+    if (!$result = $TNG_conn->Execute($query) ) {
         return(false);
     }
     $thelist = array();
     if($result->RecordCount()>0) {
         for (; !$result->EOF; $result->MoveNext()) {
-            $items = array();
-            list( $items['tree'],$items['id'],$items['changedate'] ) = $result->fields;
+            $items = $result->fields;
+            $items['tree'] = $items['gedcom'];
+            $items['id']   = $items['personID'];
             $items['changedate'] = substr($items['changedate'],0,10);  // mod to handle date format change in TNGv6
             if ($items['changedate'] == "0000-00-00" || $items['changedate'] == "" ) {
                 $items['changedate'] = date("Y-m-d");
@@ -1577,21 +1486,15 @@ function TNGz_userapi_getRecordsCount($args)
 
     $facts = array();
 
-    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
-
-    // Check to be sure we can get to the TNG information
-    $have_info = 0;
-    if (file_exists($TNG['configfile']) ) {
-        include($TNG['configfile']);
-        $TNG_conn = &ADONewConnection('mysql');
-        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
-        $have_info = 1;
+    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+       return false; // can't get to the data
     }
-    if (!$have_info) {
-        return(false);
+    
+    if (!$TNG = pnModAPIFunc('TNGz','user','TNGconfig') ) {
+       return false; // can't get to the data
     }
 
-    $query  =  "SELECT count(id) as pcount FROM $people_table";
+    $query  =  "SELECT count(id) as pcount FROM ". $TNG['people_table'];
     if (!$result = &$TNG_conn->Execute($query) ) {
         return(false);
     }
@@ -1599,7 +1502,7 @@ function TNGz_userapi_getRecordsCount($args)
         list( $facts['people'] ) = $result->fields;
     }
 
-    $query  =  "SELECT count(id) as pcount FROM $families_table";
+    $query  =  "SELECT count(id) as pcount FROM ".$TNG['families_table'];
     if (!$result = &$TNG_conn->Execute($query) ) {
         return(false);
     }
@@ -1635,26 +1538,21 @@ function TNGz_userapi_GetSurnames($args)
     $top = $args['top'];
     $top  = (is_numeric($top) && $top > 0)? intval($top) : 50;  // Get valid value or set default
 
-    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
+    $TNGz = pnModAPIFunc('TNGz','user','GetTNGpaths');
 
-    // Check to be sure we can get to the TNG information
-    $have_info = 0;
-    if (file_exists($TNG['configfile']) ) {
-        include($TNG['configfile']);
-        $TNG_conn = &ADONewConnection('mysql');
-        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
-        $have_info = 1;
+    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+       return false; // can't get to the data
     }
-    if (!$have_info) {
-        return pnVarPrepHTMLDisplay("Failed to find TNG database");
+    
+    if (!$TNG = pnModAPIFunc('TNGz','user','TNGconfig') ) {
+       return false; // can't get to the data
     }
 
-    $cms['tngpath']    = $TNG['directory']. "/";
+    $cms['tngpath']    = $TNGz['directory']. "/";
 
     // First get all unique surnames
-    $query = "SELECT ucase( $binary TRIM(CONCAT_WS(' ',lnprefix,lastname) ) ) as surnameuc, TRIM(CONCAT_WS(' ',lnprefix,lastname) ) as surname, count( ucase($binary lastname ) ) as count FROM $people_table WHERE lastname<>'' GROUP BY surname ORDER by count DESC ";
-    $saved_fetch_mode = &$TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
-    if (!$result = &$TNG_conn->Execute($query) ) {
+    $query = "SELECT ucase( $binary TRIM(CONCAT_WS(' ',lnprefix,lastname) ) ) as surnameuc, TRIM(CONCAT_WS(' ',lnprefix,lastname) ) as surname, count( ucase($binary lastname ) ) as count FROM ".$TNG['people_table']." WHERE lastname<>'' GROUP BY surname ORDER by count DESC ";
+    if (!$result = $TNG_conn->Execute($query) ) {
         return pnVarPrepHTMLDisplay("Failed the TNG query");
     }
 
@@ -1702,10 +1600,6 @@ function TNGz_userapi_GetSurnames($args)
     }
     array_multisort($surname, SORT_ASC, $SurnameAlpha);
 
-    // Clean up
-    $saved_fetch_mode= &$TNG_conn->SetFetchMode($saved_fetch_mode);
-    $TNG_conn->Close();
-
     return array( 'alpha' => $SurnameAlpha,
                   'rank'  => $SurnameRank,
                   'count' => $SurnameCount,
@@ -1727,26 +1621,22 @@ function TNGz_userapi_GetPlaces($args)
     $validsorts = array('rank', 'alpha');  // first in list is the default
     $sort = (in_array($args['sort'], $validsorts))? $args['sort'] : $validsorts[0];
 
-    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
+    $TNGz = pnModAPIFunc('TNGz','user','GetTNGpaths');
 
-    // Check to be sure we can get to the TNG information
-    $have_info = 0;
-    if (file_exists($TNG['configfile']) ) {
-        include($TNG['configfile']);
-        $TNG_conn = &ADONewConnection('mysql');
-        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
-        $have_info = 1;
+    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+       return pnVarPrepHTMLDisplay("Failed to find TNG database");
     }
-    if (!$have_info) {
-        return pnVarPrepHTMLDisplay("Failed to find TNG database");
+    
+    if (!$TNG = pnModAPIFunc('TNGz','user','TNGconfig') ) {
+       return pnVarPrepHTMLDisplay("Failed to find TNG database");
     }
-    $cms['tngpath']    = $TNG['directory']. "/";
+
+    $cms['tngpath']    = $TNGz['directory']. "/";
 
     $thePlaces = array();
 
-    $query = "SELECT distinct trim(substring_index(place,',',-1)) as myplace, count(distinct place) as placecount FROM $places_table WHERE trim(substring_index(place,',',-1)) != \"\" GROUP BY myplace ORDER by placecount DESC LIMIT $top";
-    $saved_fetch_mode = &$TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
-    if (!$result = &$TNG_conn->Execute($query) ) {
+    $query = "SELECT distinct trim(substring_index(place,',',-1)) as myplace, count(distinct place) as placecount FROM ".$TNG['places_table']." WHERE trim(substring_index(place,',',-1)) != \"\" GROUP BY myplace ORDER by placecount DESC LIMIT $top";
+    if (!$result = $TNG_conn->Execute($query) ) {
         return pnVarPrepHTMLDisplay("Failed the TNG query");
     }
     $count = 1;
@@ -1754,7 +1644,7 @@ function TNGz_userapi_GetPlaces($args)
         $place = $result->fields;
         $place2 = urlencode($place['myplace']);
         if( $place2 != "" ) {
-            $query = "SELECT count(distinct place) as placecount FROM $places_table WHERE place = \"$place[myplace]\"";
+            $query = "SELECT count(distinct place) as placecount FROM ".$TNG['places_table']." WHERE place = \"$place[myplace]\"";
             if (!$result2 = &$TNG_conn->Execute($query) ) {
                 return pnVarPrepHTMLDisplay("Failed to TNG query");
             }
@@ -1767,10 +1657,6 @@ function TNGz_userapi_GetPlaces($args)
             $count++;
         }
     }
-
-    // Clean up
-    $saved_fetch_mode= &$TNG_conn->SetFetchMode($saved_fetch_mode);
-    $TNG_conn->Close();
 
     if ($sort == 'alpha') {
         ksort($thePlaces);
@@ -1788,6 +1674,7 @@ function TNGz_userapi_GetPlaces($args)
 *                           $matches[3] = '" >'
 * @return string  html anchor with TNGz href converted to a short URL (directory style)
 */
+/* Disable for now 
 function TNGz_userapi_ShortURLencode($matches)
 {
     global $cms;
@@ -1817,13 +1704,14 @@ function TNGz_userapi_ShortURLencode($matches)
     $url = pnModAPIFunc('TNGz', 'user', 'encodeurl', array('modname' => 'TNGz', 'func' => 'main', 'args' => $args));
     return $matches[1].$url.$matches[3];
 }
-
+*/
 
 /**
  * form custom url string
  *
  * @return string custom url string
  */
+ /* Disable for now
 function TNGz_userapi_encodeurl($args)
 {
     // check we have the required input
@@ -1880,12 +1768,14 @@ function TNGz_userapi_encodeurl($args)
         return $args['modname'] . '/' . $args['func'] . '/' . $vars . '/';
     }
 }
+*/
 
 /**
  * decode the custom url string
  *
  * @return bool true if successful, false otherwise
  */
+ /* Disable for now
 function TNGz_userapi_decodeurl($args)
 {
     // check we actually have some vars to work with...
@@ -1921,7 +1811,7 @@ function TNGz_userapi_decodeurl($args)
 
     return true;
 }
-
+*/
 
 /* **************************  POSTNUKE TO TNG Field Mappings **************************************************************
  * POSTNUKE              pnTYPE          TNG             TNG TYPE    DESCRIPTION
