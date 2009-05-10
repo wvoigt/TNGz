@@ -1,0 +1,36 @@
+<!--[*  $Id$  *]-->
+<!--[counter start=0 name=ItemCount assign=ItemCount ]-->
+<div style="text-align:left;">
+    <!--[if $WantedText ]-->
+        <div style="text-align:center;"><!--[$WantedText|pnvarprephtmldisplay]--><br /></div>
+    <!--[/if]-->
+    <!--[if $WantedPeopleList ]-->
+        <div style="text-align:center;"><strong><br /><!--[pnml name="_TNGZ_WHATSNEW_HEAD_PEOPLE"|pnvarprephtmldisplay]--></strong></div>
+        <ul>
+        <!--[foreach item=item from=$WantedPeopleList]-->
+        <li><!--[$item]--></li>
+        <!--[/foreach]-->
+        </ul>
+        <!--[counter name=ItemCount assign=ItemCount ]-->
+    <!--[/if]-->
+    <!--[if $WantedFamilyList ]-->
+        <div style="text-align:center;"><strong><br /><!--[pnml name="_TNGZ_WHATSNEW_HEAD_FAMILY"|pnvarprephtmldisplay]--></strong></div>
+        <ul>
+        <!--[foreach item=item from=$WantedFamilyList]-->
+        <li><!--[$item]--></li>
+        <!--[/foreach]-->
+        </ul>
+        <!--[counter name=ItemCount assign=ItemCount ]-->
+    <!--[/if]-->
+    <!--[if $ItemCount eq 0 ]-->
+        <div style="text-align:center;"><br /><!--[pnml name="_NONETNG"|pnvarprephtmldisplay]--><br /></div>
+    <!--[/if]-->
+    <!--[if $WantedMenuLink ]-->
+        <div style="text-align:center;"><strong><br /><!--[$WantedMenuLink]--></strong><br /></div>
+    <!--[/if]-->
+</div>
+<!--[ if $access_edit ]-->
+<div style="text-align:right;">
+    <a href="<!--[ pnmodurl modname=Blocks type=admin func=modify bid=$blockinfo.bid fromblock=1]-->" title="<!--[ pnml name='_ACCESS_EDIT' ]-->"><!--[ pnml name='_EMENU_EDITTHISBLOCK' ]--></a>
+</div>
+<!--[ /if ]-->

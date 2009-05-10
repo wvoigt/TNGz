@@ -1,0 +1,186 @@
+.surnames-cloud {
+  	font-family: Verdana, Tahoma, Arial;
+  	padding: 2px 2px 2px 2px;
+  	letter-spacing:  0.0em;
+	word-spacing:    0.0em;
+  	text-decoration: none;
+  	font-weight:     normal;
+    text-align:      center;	
+}
+
+div.surname-small {
+	font-size: 1.3em;
+}
+
+div.surname-big {
+	font-size: 1.6em;
+}
+
+div.surname-block-intro {
+	font-weight: bold;
+	text-align:center;
+}
+
+span.size1      { color: #000099; font-size: 130%; }
+a.size1:link    { color: #000099; }
+a.size1:visited { color: #000099; }
+
+span.size2      { color: #3333CC; font-size: 120%; }
+a.size2:link    { color: #3333CC; }
+a.size2:visited { color: #3333CC; }
+
+span.size3      { color: #006633; font-size: 110%; }
+a.size3:link    { color: #006633; }
+a.size3:visited { color: #006633; }
+
+span.size4      { color: #993300; font-size: 100%; }
+a.size4:link    { color: #993300; }
+a.size4:visited { color: #993300; }
+
+span.size5      { color: #CC0033; font-size: 90%; }
+a.size5:link    { color: #CC0033; }
+a.size5:visited { color: #CC0033; }
+
+span.size6      { color: #666666; font-size: 80%; }
+a.size6:link    { color: #666666; }
+a.size6:visited { color: #666666; }
+
+span.size7      { color: #CC9900; font-size: 70%; }
+a.size7:link    { color: #CC9900; }
+a.size7:visited { color: #CC9900; }
+
+span.size8      { color: #999933; font-size: 60%; }
+a.size8:link    { color: #999933; }
+a.size8:visited { color: #999933; }
+
+span.size9      { color: #000000; font-size: 50%; }
+a.size9:link    { color: #000000; }
+a.size9:visited { color: #000000; }
+
+span.size0      { color: #000000; font-size: 40%; }
+a.size0:link    { color: #000000; }
+a.size0:visited { color: #000000; }
+
+.surnames-list {
+	font-size: 0.8em;
+}
+
+.surnames-menu {
+	font-size: 0.8em;
+}
+
+.surnames-table {
+	border-width: 1px 1px 1px 1px;
+	border-style: none none none none;	
+	border-spacing: 2px;
+}
+
+.surnames-table tr {
+}
+
+.surnames-table td {
+	padding: 1px 1px 1px 1px;
+}
+
+div.places-small {
+	font-size: 0.8em;
+}
+
+div.places-big {
+	font-size: 2.0em;
+}
+
+
+div.places-block-intro {
+	font-weight: bold;
+	text-align:center;
+}
+
+.places-list {
+	font-size: 0.8em;
+}
+
+.places-menu {
+	font-size: 0.8em;
+}
+
+.places-table {
+	border-width: 1px 1px 1px 1px;
+	border-style: none none none none;	
+	border-spacing: 2px;
+}
+
+.places-table tr {
+}
+
+.places-table td {
+	padding: 3px 3px 3px 3px;
+}
+
+.placemap-scrollbarbox {
+    text-decoration: underline;
+	color: #4444ff;
+}
+
+ul.placemap-scrollbar-list {
+	font-size: 0.8em;
+	font-weight: normal;
+    list-style-type: disc;
+    list-style-position: outside;
+    padding: 1em;
+    margin-left: 1em;
+}
+
+.placemap-scrollbar {
+}
+
+img.placemap {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+ul.thisday {
+font-size: 1.0em;
+font-style: normal;
+line-height: 1em;
+font-weight: normal;
+font-variant: normal;
+text-transform: none;
+text-decoration: none;
+text-indent: 0.0em;
+list-style-position: outside; 
+list-style-type: disc;
+padding: 2px;
+margin: 2px;
+}
+
+ul.thisday li {
+} 
+
+h3.thisday {
+    text-align: center;
+}
+
+h4.thisday {
+    text-align: center;
+}
+
+span.statistics-plugin-data{
+	font-size: 0.8em;
+    text-align: left;	
+}
+
+span.statistics-plugin-lable{
+	font-size: 0.8em;
+    text-align: left;	
+}
+
+span.statistics-plugin-header{
+	font-size: 1.0em;
+	font-weight: bold;
+    text-align: left;	
+}
+
+.statistics-plugin-cell{
+}

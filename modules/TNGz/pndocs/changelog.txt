@@ -1,0 +1,62 @@
+======================================================================================
+CHANGE LOG
+TNGz /pndoc/changelog.txt
+TNGz (C) 2009 Wendel Voigt
+======================================================================================
+
+version 1.2
+  * added option to use TNGz's templated 'homepage' instead of TNG's index page. 
+    This allows the construction of a home page based upon the TNGz plugins.
+    Template name is TNGz_show_home.html
+    This template is an example of what can be done with the plugins
+  * added ability to add your own templated TNGz pages.  Just add a template of the form
+    TNGz_show_yyyyy.html to add a page index.php?modlule=TNGz&show=yyyyy
+  * Added plugin 'namesearch' for a mini form to search for names in TNG
+  * Added plugin 'showphoto' for showing a random or particular photo
+  * Added plugin 'statistics' for showing information about the TNG data
+  * Added plugin 'placemap' for displaying all geocoded places with Google Map
+  * Updated plugin for 'places' and 'surnames' list to allow for links into TNG pages 
+  * Updated plugin for 'places' and 'surnames' to allow items to not have links
+  * Added ability to load in TNG language files to be used in plugins and templates
+  * Added ability to block direct access to TNG.  Redirects to go through Zikula.
+  * Updated Zikula search to use TNGz display name
+  * Renamed index_Zikula.php to index_Sample.php to avoid confusion
+  * Fixed several minor items for TNG 7.1.0 support
+  * Added support for Family Group PDF generation found in TNG 7.1.0
+  * Fixed problems with rendering print pages
+  * Major enhancement to HTML Validation.  Many pages now have no validation errors.
+  * Some code clean-up and stream lining.
+  * Added data caching for plugin data -- should significantly reduce page creation time and database usage
+  * Added cache settings in administration
+  * Added ability to display individual TNG data from template
+  * Added option to identify the main/primary person in the TNG database
+  * Added option to display TNG logs in TNGz administration
+  * For a list of all changes, see http://code.zikula.org/tngz/query?group=status&milestone=TNGz+1.2
+
+version 1.1
+  * added Surnames block, including Surname cloud, top surnames
+  * added Places block
+  * added surnames plugin
+  * added places plugin
+  * added placemap plugin
+  * added new version notification for TNG and TNGz in Administration
+  * added sitemap generation options (either direct or with SEsitemap)
+  * added ability to switch TNG language to match Zikula language
+  * added ability to use the module display name for calling TNGz (i.e., can call something other than TNGz)
+  * fixed problem with showing PDF charts
+  * fixed problem when using pnRender caching
+  * Updated blocks to see TNGz style sheet, even if not the main module called
+  * removed all deprecated Zikula functions
+  * Template bugfixes, Validation bugfixes
+  * removed TNG js, loading directly into header with PageUtil to solve version conflicts
+  * simplified pninit.php
+  * For a list of all changes, see http://code.zikula.org/tngz/query?group=status&milestone=TNGz+1.1
+
+version 1.01
+  * Converted pnTNG to TNGz (major rewrite and update)
+  * Updated integration techniques to allow for a more complete integration into Zikula
+     - All HTML is now templated
+     - Removed iframe option
+  * Updated module Administration
+     - Followed Zikula design guidelines
+     - Integrated TNG Administration into TNGz Administration

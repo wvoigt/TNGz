@@ -1,0 +1,64 @@
+<!--[*  $Id$  *]-->
+<!--[*<h2>Genealogy</h2>*]-->
+
+<!--[*  Get the text from TNG (in the right language) *]-->
+<!--[pnmodapifunc modname=TNGz type=user func=GetTNGtext assign=text ]-->
+
+<!--[*  Set the page title *]-->
+<!--[ pnpagesetvar name="title" value=$text.homepage]-->
+
+<!--[*  Get the primary person if they exist *]-->
+<!--[pnmodapifunc modname=TNGz type=user func=getperson assign=person ]-->
+
+<div>
+    <center>
+    <font face="Arial,Helvetica,sans-serif" size="4">
+    <!--[if $person ]-->
+    <a href="<!--[pnmodurl modname=TNGz show=pedigree personID=$person.id tree=$person.tree generations=4 ]-->"><!--[$person.fullname ]--> - <!--[$text.ancestors ]--></a>&nbsp;|&nbsp;
+    <a href="<!--[pnmodurl modname=TNGz show=extrastree personID=$person.id tree=$person.tree ]-->"><!--[$person.fullname ]--> - <!--[$text.ancestors ]-->&nbsp;<!--[$text.mnuphotos ]--> &amp; <!--[$text.mnuhistories ]--></a>
+    <br />
+    <!--[/if]-->
+    <a href="<!--[pnmodurl modname=TNGz show=whatsnew      ]-->"><!--[$text.mnuwhatsnew   ]--></a> &nbsp;|&nbsp;
+    <a href="<!--[pnmodurl modname=TNGz show=browsephotos  ]-->"><!--[$text.mnuphotos     ]--></a> &nbsp;|&nbsp;
+    <a href="<!--[pnmodurl modname=TNGz show=browsesources ]-->"><!--[$text.mnusources    ]--></a> &nbsp;|&nbsp;
+    <a href="<!--[pnmodurl modname=TNGz show=reports       ]-->"><!--[$text.mnureports    ]--></a> &nbsp;|&nbsp;
+    <a href="<!--[pnmodurl modname=TNGz show=browsetrees   ]-->"><!--[$text.mnustatistics ]--></a> &nbsp;|&nbsp;
+    <a href="<!--[pnmodurl modname=TNGz show=suggest       ]-->"><!--[$text.suggest       ]--></a>
+    <br />
+
+    <!--[pnsecauthaction_block component='TNGz::' instance='::' level=ACCESS_ADMIN]-->
+    <a href="<!--[pnmodurl modname=TNGz show=showlog            ]-->"><!--[$text.mnushowlog ]--></a> &nbsp;|&nbsp;
+    <a href="<!--[pnmodurl modname=TNGz type=admin func=TNGadmin]-->"><!--[$text.mnuadmin   ]--></a>
+    <br />
+    <!--[/pnsecauthaction_block]-->
+
+    </font>
+    </center>  
+</div>
+<hr />
+<table>
+    <tr>
+        <th width="30%"></th>
+        <th width="40%"></th>
+        <th width="30%"></th>
+    </tr>
+    <tr>
+        <td align="center" valign="middle" ><!--[showphoto showliving='L' phototype='T' photolist='' max_height='150' max_width='150']--></td>
+	<td align="center" valign="top" ><div class="surname-big"><!--[surnames type='cloud' top='25' links='yes']--></div></td>
+	<td align="center" valign="middle" ><a href="<!--[pnmodurl modname=TNGz show=placemap ]-->"><img src="<!--[pnmodurl modname=TNGz type=user func=worldmap size='tiny']-->" alt="Map" /></a></td>
+    </tr>
+    <tr>
+        <td align="left"   valign="top" ><div><!--[surnames type='list' top='25' sort='rank' links='yes' menu='yes']--></div></td>
+	<td align="center" valign="top" ><div><center>
+	                                      <hr />
+	                                       <!--[namesearch]-->
+	                                      <hr />
+					      <strong><!--[$text.mnustatistics ]--></strong>
+	                                      <!--[statistics]-->
+					      <hr />
+					      </center>
+					</div></td>
+	<td align="left"   valign="top" ><div><!--[places type='list' top='25' sort='rank' links='yes' menu='yes']--></div></td>
+    </tr>
+</table>
+

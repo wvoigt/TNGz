@@ -1,0 +1,14 @@
+<!--[* $Id$ *]-->
+<!--[nocache]--><!--[php]-->header("Content-type: text/xml");<!--[/php]--><!--[/nocache]-->
+<?xml version='1.0' encoding='UTF-8'?>
+<sitemapindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+http://www.sitemaps.org/schemas/sitemap/0.9/siteindex.xsd"
+xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<!--[foreach from=$sitemaps item=i]-->
+    <sitemap>
+      <loc><!--[pnmodurl modname=TNGz func=sitemap map=$i.map start=$i.start count=$i.count fqurl=true]--></loc>
+      <lastmod><!--[$smarty.now|date_format:"%Y-%m-%d"]--></lastmod>
+    </sitemap>
+<!--[/foreach]-->
+</sitemapindex>

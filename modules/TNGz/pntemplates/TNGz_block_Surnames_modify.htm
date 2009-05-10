@@ -1,0 +1,36 @@
+<!--[*  $Id$  *]-->
+<div class="pn-informationmsg">
+  <!--[pnml name="_TNGZ_SURNAMES_INSTRUCTIONS" html="1"]-->
+</div>
+
+<div class="pn-adminformrow">
+  <label for="tngz_surnames_top"><!--[pnml name="_TNGZ_TOP"]--></label>
+  <input id="tngz_surnames_top" type="text" name="top" value="<!--[$top|pnvarprephtmldisplay]-->" size="3" maxlength="4" />
+</div>
+
+<div class="pn-adminformrow">
+  <label for="tngz_surnames_sort"><!--[pnml name="_TNGZ_SORTED"]--></label>
+  <select id="tngz_surnames_sort" name="sort"><!--[html_options options=$sortlist selected=$sort]--></select>
+</div>
+
+<div class="pn-adminformrow">
+  <label for="tngz_surnames_type"><!--[pnml name="_TNGZ_TYPE"]--></label>
+  <select id="tngz_surnames_type" name="stype"><!--[html_options options=$stypelist selected=$stype]--></select>
+</div>
+
+<div class="pn-adminformrow">
+  <label for="tngz_surnames_cols"><!--[pnml name="_TNGZ_COLS"]--></label>
+  <input id="tngz_surnames_cols" type="text" name="cols" value="<!--[$cols|pnvarprephtmldisplay]-->" size="1" maxlength="1" />
+</div>
+
+<div class="pn-adminformrow">
+  <label for="tngz_surnames_intro"><!--[pnml name="_TNGZ_TEXT"]--></label>
+  <ul style="list-style-type: none;">  
+  <!--[ foreach item=introtext from=$intro key=lang ]-->
+      <li style="margin: 5px;" class="pn-clearfix"><span style="width: 8em; float: left;">
+      <label  for="tngz_surnames_intro_<!--[ $lang ]-->"><!--[ $lang ]-->:</label></span>
+      <textarea id="tngz_surnames_intro_<!--[ $lang ]-->" name="intro[<!--[ $lang ]-->]" rows="2" cols="60"><!--[$intro[$lang]|pnvarprephtmldisplay]--></textarea>
+      </li>
+  <!--[ /foreach ]-->
+  </ul>
+</div>
