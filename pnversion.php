@@ -13,7 +13,7 @@
  */
 
 $modversion['name']           = 'TNGz';   //Module name
-$modversion['version']        = '1.1.1';  //Version number
+$modversion['version']        = '1.2';    //Version number
 $modversion['description']    = 'TNG integration into Zikula';  //Module description
 $modversion['credits']        = 'pndocs/credits.txt';  //Credits file
 $modversion['help']           = 'pndocs/readme.html';  //Help file
