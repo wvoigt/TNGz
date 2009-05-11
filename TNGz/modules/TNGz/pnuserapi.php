@@ -491,7 +491,9 @@ function TNGz_userapi_ShowPage($args)
 
         // Remove TNG <title> tag.  Each page should only have one and Zikula provides.
         $patterns[]     = "/<title>(.*)<\/title>/iU";
-        $replacements[] = "<!-- $0 -->\n";
+        //$replacements[] = "<!-- $0 -->\n";
+        $replacements[] = "";
+
         // Now Get Title information to add to Zikula title
         if (preg_match("/<meta name=\"Keywords\" content=\"(.+)\"/", $TNGoutput, $tng_title) ) {
             $GLOBALS['info']['title'] = $tng_title[1];
@@ -499,27 +501,33 @@ function TNGz_userapi_ShowPage($args)
 
         // Remove the <meta> tags.  TNG's not in the right place and do not add much new informaiton
         $patterns[]     = "/<meta (.*)>/iU";
-        $replacements[] = "<!-- $0 -->\n";
+        //$replacements[] = "<!-- $0 -->\n";
+        $replacements[] = "";
     
         // Remove the TNG's DOCTYPE (Each page should only have one, and Zikula provides)
         $patterns[]     = "|<!DOCTYPE[^\"]+\"([^\"]+)\"[^\"]+\"([^\"]+)/([^/]+)\.dtd\">|i";
-        $replacements[] = "<!-- $0 -->\n";
+        //$replacements[] = "<!-- $0 -->\n";
+        $replacements[] = "";
     
         // Remove TNG javascripts and load files into head (also using Zikula versions).
         $patterns[]     = "/<script(.*)prototype.js(.*)<\/script>/iU";
-        $replacements[] = "<!-- $0 -->\n";
+        //$replacements[] = "<!-- $0 -->\n";
+        $replacements[] = "";
         PageUtil::AddVar('javascript', 'javascript/ajax/prototype.js');
 
         $patterns[]     = "/<script(.*)scriptaculous.js(.*)<\/script>/iU";
-        $replacements[] = "<!-- $0 -->\n";
+        //$replacements[] = "<!-- $0 -->\n";
+        $replacements[] = "";
         PageUtil::AddVar('javascript', 'javascript/ajax/scriptaculous.js');
 
         $patterns[]     = "/<script(.*)net.js(.*)<\/script>/iU";
-        $replacements[] = "<!-- $0 -->\n";
+        //$replacements[] = "<!-- $0 -->\n";
+        $replacements[] = "";
         PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/net.js');
 
         $patterns[]     = "/<script(.*)litbox.js(.*)<\/script>/iU";
-        $replacements[] = "<!-- $0 -->\n";    
+        //$replacements[] = "<!-- $0 -->\n";
+        $replacements[] = "";
         PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/litbox.js');
 
         // Question: What happens if Zikula and TNG use different versions of these libraries
@@ -527,7 +535,8 @@ function TNGz_userapi_ShowPage($args)
 
         // Take care of embedded <style>, move up into Zikula head
         $patterns[]     = "|\<style (.*)\<\/style\>|isU";
-        $replacements[] = "<!-- $0 -->\n";
+        //$replacements[] = "<!-- $0 -->\n";
+        $replacements[] = "";
         preg_match_all("|\<style (.*)\<\/style\>|isU", $TNGoutput, $matches, PREG_SET_ORDER);
         foreach($matches as $match){
             PageUtil::AddVar('rawtext', $match[0]);
@@ -535,7 +544,8 @@ function TNGz_userapi_ShowPage($args)
         
         // Take care of embedded <link>, move up into Zikula head
         $patterns[]     = "|\<link (.*)\/\>|iU";
-        $replacements[] = "<!-- $0 -->\n";
+        //$replacements[] = "<!-- $0 -->\n";
+        $replacements[] = "";
         preg_match_all("|\<link (.*)\/\>|iU", $TNGoutput, $matches, PREG_SET_ORDER);
         foreach($matches as $match){
             PageUtil::AddVar('rawtext', $match[0]);
