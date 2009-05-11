@@ -53,6 +53,15 @@ function TNGz_upgrade($oldversion)
               $successful = true;
               break;
     }
+
+    // clear the cache folders
+    $smarty =& new Smarty;
+    $smarty->compile_dir = pnConfigGetVar('temp') . '/pnRender_compiled';
+    $smarty->cache_dir = pnConfigGetVar('temp') . '/pnRender_cache';
+    $smarty->use_sub_dirs = false;
+    $smarty->clear_compiled_tpl();
+    $smarty->clear_all_cache();
+
     return $successful;
 }
 
