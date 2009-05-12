@@ -15,25 +15,4 @@
  * @version $Id$
  */
 
-// common defines
-define("_TNGZ_SHOWTOP", "Zeige Top ");
-define("_TNGZ_BYOCCURRENCE", " nach Häufigkeit sortiert");
-define("_TNGZ_GO", "Zeige");
-define("_TNGZ_SORTEDALPHA", " alphabetisch sortiert");
-
-// places item
-define("_TNGZ_PLACETITLE", "Top Orte");
-define("_TNGZ_TOPPLACES", "Top Orte");
-define("_TNGZ_TOTALPLACES", "Orte gesamt");
-define("_TNGZ_SHOWALLPLACES", "Zeige alle Orte");
-define("_TNGZ_MAINPLACESPAGE", "Hauptansicht der Orte");
-
-// surnames item
-define("_TNGZ_SURNAMETITLE", "Top Nachnamen");
-define("_TNGZ_TOP", "Top");
-define("_TNGZ_SURNAMES", "Nachnamen");
-define("_TNGZ_OUTOF", "von");
-define("_TNGZ_TOTALSURNAMES", "eindeutigen Nachnamen gesamt");
-define("_TNGZ_SHOWALLSURNAMES", "Alle Nachnamen anzeigen");
-define("_TNGZ_MAINSURNAMESPAGE", "Hauptansicht der Nachnamen");
-
+ require_once dirname(realpath(__FILE__)).'/common.php';
