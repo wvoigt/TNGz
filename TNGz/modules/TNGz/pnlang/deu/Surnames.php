@@ -15,5 +15,5 @@
  * @version $Id$
  */
 
- require_once dirname(realpath(__FILE__)).'/global.php';
+ require_once dirname(realpath(__FILE__)).'/common.php';
 
