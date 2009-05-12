@@ -21,6 +21,12 @@
         <br />
         <!--[versioncheck program=TNG version=$TNG_version]-->
         <input type="hidden" name="tngversion" value="<!--[$TNG_version]-->" />
+        <br />
+        <!--[if $md5hash eq true]-->
+        <img src="images/icons/extrasmall/button_ok.gif" alt="" />&nbsp;<!--[pnml name="_TNGZPWHASHOK"]-->
+        <!--[else]-->
+        <img src="images/icons/extrasmall/error.gif" alt="" />&nbsp;<!--[pnml name="_TNGZPWHASHNOTOK"]-->
+        <!--[/if]-->
 
         </div>
         <div class="pn-informationmsg"><!--[pnml name=_TNGZCONFIGTIP]--></div>

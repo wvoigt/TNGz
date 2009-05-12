@@ -130,6 +130,15 @@ function TNGz_admin_modifyconfig()
     // What version of TNGz
     $pnRender->assign('TNGzVersion', $ModInfo['version']);
 
+    // check password hash - TNG uses MD5 and should be used in Zikula
+    $pwhash = pnModGetVar('Users', 'hash_method');
+    if ($pwhash == 'md5') {
+      $md5hash = true;
+    } else {
+      $md5hash = false;
+    }
+    $pnRender->assign('md5hash', $md5hash);
+
     // Is the TNG setup found?
     $pnRender->assign('tngconfig'     ,$TNG_config);
     $pnRender->assign('tngfound'     , $TNG_found);

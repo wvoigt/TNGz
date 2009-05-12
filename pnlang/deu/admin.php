@@ -34,6 +34,9 @@
  define("_TNGZROOTPATHGOOD"  , "TNG-Hauptverzeichnis ist korrekt!");
  define("_TNGZROOTPATHBAD"   , "TNG-Hauptverzeichnis sollte lauten: ");
 
+ define("_TNGZPWHASHOK"      , "Password-Hashmethode von Zikula ist MD5.");
+ define("_TNGZPWHASHNOTOK"   , "Password-Hashmethode von Zikula sollte auf MD5 gesetzt werden, um eine korrekte Synchronisation mit TNG zu ermöglichen!");
+
  define("_TNGZLIVING"        , "  - Erlaube erstelltem Benutzer lebende Personen anzusehen");
  define("_TNGZGEDCOM"        , "  - Erlaube erstelltem Benutzer GEDCOMs herunterzuladen");
  define("_TNGZLDS"           , "  - Erlaube erstelltem Benutzer LDS-Informationen anzusehen");

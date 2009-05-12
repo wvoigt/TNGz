@@ -187,6 +187,9 @@ define("_TNGZFOUNDNOT"      ,        "TNG files Not Found");
 define("_TNGZROOTPATHGOOD"  ,        "TNG Root Path is correct!");
 define("_TNGZROOTPATHBAD"   ,        "TNG Root Path should be ");
 
+define("_TNGZPWHASHOK"      ,        "Password hash method from Zikula is set to MD5.");
+define("_TNGZPWHASHNOTOK"   ,        "Password hash method from Zikula should be set to MD5 in order to get in sync with TNG!");
+
 define("_TNGZLIVING"        ,        "  - Allow created user to view living");
 define("_TNGZGEDCOM"        ,        "  - Allow created user to download GEDCOMs");
 define("_TNGZLDS"           ,        "  - Allow created user to view LDS information");
