@@ -15,9 +15,4 @@
  * @version $Id$
  */
 
-define('_TNGZ_SEARCH_LIVING', 'Die folgenden Personen sind als lebend gekennzeichnet und wurden deshalb ausgeblendet.');
-define('_TNGZ_SEARCH', 'Ahnenforschungssuche');
-define('_TNGZ_SEARCH_BORN', 'geb.');
-define('_TNGZ_SEARCH_DIED', 'gest.');
-define('_TNGZ_SEARCH_RESULTS', 'Personen gefunden');
-define('_TNGZ_SEARCH_NONEFOUND', 'Niemand gefunden');
+ require_once dirname(realpath(__FILE__)).'/common.php';
