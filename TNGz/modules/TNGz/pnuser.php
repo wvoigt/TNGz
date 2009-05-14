@@ -361,3 +361,34 @@ function TNGz_map_coordinates($lat, $lon, $width, $height)
    $y = ((($lat * -1) + 90) * ($height / 180));
    return array("x"=>round($x),"y"=>round($y));
 }
+
+function TNGz_user_saveid()
+{
+    if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_READ)) {
+        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+    }
+
+    // Get arguments
+    $personID    = FormUtil::getPassedValue('personID', false, 'GETPOST');
+    $tree        = FormUtil::getPassedValue('tree',     false, 'GETPOST');
+    $show        = FormUtil::getPassedValue('show',     false, 'GETPOST');
+    $generations = FormUtil::getPassedValue('generations',"",  'GETPOST');
+    $display     = FormUtil::getPassedValue('display',    "",  'GETPOST');
+    $delete      = FormUtil::getPassedValue('delete',    false, 'GETPOST');
+
+    if (!pnUserLoggedIn() || !$personID || !$tree || !$show ) {
+        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+    }
+
+    $username = pnUserGetVar('uname');
+    $SaveList = unserialize(pnModGetVar('TNGz','SaveList',''));
+    if ($delete) {
+        unset($SaveList[$username]);
+    } else {
+        $SaveList[$username] = array('id'=>$personID,'tree'=>$tree);
+    }
+    pnModSetVar('TNGz','SaveList',serialize($SaveList));
+
+    pnRedirect(pnModURL('TNGz','user','main', array('show'=>$show,'personID'=>$personID,'tree'=>$tree,'generations'=>$generations,'display'=>$display), null, null, true));
+    return true;
+}

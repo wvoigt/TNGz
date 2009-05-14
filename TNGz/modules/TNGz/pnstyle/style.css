@@ -184,3 +184,23 @@ span.statistics-plugin-header{
 
 .statistics-plugin-cell{
 }
+
+#relationship-plugin{
+	width: 100%;
+    padding: 0px;
+    margin:  0px;
+    text-align: right;
+}
+
+#relationship-plugin ul{
+	list-style-type: disc;
+    padding: 0px;
+    margin:  0px;
+	display: inline;
+}
+
+#relationship-plugin ul li{
+	list-style-type: disc;
+	display: inline;
+	padding-right: 15px;
+}
