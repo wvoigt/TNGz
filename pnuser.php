@@ -369,26 +369,37 @@ function TNGz_user_saveid()
     }
 
     // Get arguments
-    $personID    = FormUtil::getPassedValue('personID', false, 'GETPOST');
-    $tree        = FormUtil::getPassedValue('tree',     false, 'GETPOST');
-    $show        = FormUtil::getPassedValue('show',     false, 'GETPOST');
-    $generations = FormUtil::getPassedValue('generations',"",  'GETPOST');
-    $display     = FormUtil::getPassedValue('display',    "",  'GETPOST');
-    $delete      = FormUtil::getPassedValue('delete',    false, 'GETPOST');
+    $params['show']        = FormUtil::getPassedValue('show',       false, 'GETPOST');
+    $params['personID']    = FormUtil::getPassedValue('personID',   false, 'GETPOST');
+    $params['primaryID']   = FormUtil::getPassedValue('primaryID',  false, 'GETPOST');
+    $params['tree']        = FormUtil::getPassedValue('tree',       false, 'GETPOST');
+    $params['generations'] = FormUtil::getPassedValue('generations',false, 'GETPOST');
+    $params['display']     = FormUtil::getPassedValue('display',    false, 'GETPOST');
+    $delete                = FormUtil::getPassedValue('delete',     false, 'GETPOST');
 
-    if (!pnUserLoggedIn() || !$personID || !$tree || !$show ) {
+    $pID  = ($params['personID']) ? $params['personID'] : $params['primaryID'];
+
+    if (!pnUserLoggedIn() || !$pID || !$params['tree'] || !$params['show'] ) {
         return pnVarPrepHTMLDisplay(_MODULENOAUTH);
     }
 
     $username = pnUserGetVar('uname');
     $SaveList = unserialize(pnModGetVar('TNGz','SaveList',''));
+    
     if ($delete) {
         unset($SaveList[$username]);
     } else {
-        $SaveList[$username] = array('id'=>$personID,'tree'=>$tree);
+        $SaveList[$username] = array('id'=>$pID,'tree'=>$params['tree']);
     }
     pnModSetVar('TNGz','SaveList',serialize($SaveList));
 
-    pnRedirect(pnModURL('TNGz','user','main', array('show'=>$show,'personID'=>$personID,'tree'=>$tree,'generations'=>$generations,'display'=>$display), null, null, true));
+    // don't pass empty parameters
+    foreach ($params as $key => $value) {
+        if (!$value) {
+            unset($params[$key]);
+        }
+    }
+
+    pnRedirect(pnModURL('TNGz','user','main', $params, null, null, true));
     return true;
 }
