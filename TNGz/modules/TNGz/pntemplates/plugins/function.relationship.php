@@ -23,14 +23,16 @@
 function smarty_function_relationship($params, &$smarty)
 {
     // Get current person.  Only continue if there is a valid person
-    $personID   = FormUtil::getPassedValue('personID', false, 'GETPOST');
-    $personTree = FormUtil::getPassedValue('tree',     false, 'GETPOST');
-    
+    $personID   = FormUtil::getPassedValue('personID',  false, 'GETPOST');
+    $primaryID  = FormUtil::getPassedValue('primaryID', false, 'GETPOST');
+    $personTree = FormUtil::getPassedValue('tree',      false, 'GETPOST');
+
+    $pID = ($personID) ? $personID : $primaryID;
     $Valid = true;  // // start off expecting it to be valid
-    if (!$personID || !$personTree) {
+    if ( !$pID || !$personTree) {
         $Valid = false; // need to have both to show anything
     } else {
-        $person = pnModAPIFunc('TNGz','user','getperson', array('id'=>$personID, 'tree'=>$personTree)); //false if not exist
+        $person = pnModAPIFunc('TNGz','user','getperson', array('id'=>$pID, 'tree'=>$personTree)); //false if not exist
         if (!$person) {
             $Valid = false;
         }
@@ -64,10 +66,18 @@ function smarty_function_relationship($params, &$smarty)
         $text = pnModAPIFunc('TNGz','user','GetTNGtext',array('textpart'=>'relate'));
 
         // Get the other inportant parameters so can return here if needed
-        $show        = FormUtil::getPassedValue('show',       '', 'GETPOST');
-        $generations = FormUtil::getPassedValue('generations','', 'GETPOST');
-        $display     = FormUtil::getPassedValue('display',    '', 'GETPOST');
-
+        $show        = FormUtil::getPassedValue('show',       false, 'GETPOST');
+        $generations = FormUtil::getPassedValue('generations',false, 'GETPOST');
+        $display     = FormUtil::getPassedValue('display',    false, 'GETPOST');
+        
+        $saveidArgs = array(); // hold the call back arguments
+        if ($show)       { $saveidArgs['show']        = $show; }
+        if ($personID)   { $saveidArgs['personID']    = $personID; }
+        if ($primaryID)  { $saveidArgs['primaryID']   = $primaryID; }
+        if ($personTree) { $saveidArgs['tree']        = $personTree; }
+        if ($display)    { $saveidArgs['display']     = $display; }
+        if ($generations){ $saveidArgs['generations'] = $generations; }
+        
         // The "Save this person" link
         $showSaveThis = true;  // start off intending to display it
         if (!$LoggedIn){
@@ -96,7 +106,7 @@ function smarty_function_relationship($params, &$smarty)
         // Now, Output the results
         if ($showSaveThis) {
             $output .= "<li>";
-            $output .= "<a href=\"".pnModURL('TNGz','user','saveid', array('show'=>$show,'tree'=>$person['tree'],'personID'=>$person['personID'],'display'=>$display,'generations'=>$generations))."\">".$text['save']."&nbsp;".$person['fullname']."</a>";
+            $output .= "<a href=\"".pnModURL('TNGz','user','saveid', $saveidArgs)."\">".$text['save']."&nbsp;".$person['fullname']."</a>";
             $output .= "</li>\n";
         }
         if ($showSaved) {
@@ -106,7 +116,7 @@ function smarty_function_relationship($params, &$smarty)
             }
             $output .= "<a href=\"".pnModURL('TNGz','user','main', array('show'=>'getperson','tree'=>$saved['tree'],'personID'=>$saved['personID']))."\">".$saved['fullname']."</a>";
             $output .= "&nbsp;";
-            $output .= "("."<a href=\"".pnModURL('TNGz','user','saveid', array('show'=>$show,'tree'=>$person['tree'],'personID'=>$person['personID'],'display'=>$display,'generations'=>$generations, 'delete'=>'1'))."\">".$text['text_delete']."</a>".")";
+            $output .= "("."<a href=\"".pnModURL('TNGz','user','saveid', $saveidArgs + array('delete'=>'1'))."\">".$text['text_delete']."</a>".")";
             $output .= "</li>\n";
         }
         if ($showPrimary){
