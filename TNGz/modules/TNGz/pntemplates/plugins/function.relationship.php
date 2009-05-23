@@ -78,6 +78,8 @@ function smarty_function_relationship($params, &$smarty)
         if ($display)    { $saveidArgs['display']     = $display; }
         if ($generations){ $saveidArgs['generations'] = $generations; }
         
+        $generations = ($generations) ? $generations : 15;  // set a default if needed.
+        
         // The "Save this person" link
         $showSaveThis = true;  // start off intending to display it
         if (!$LoggedIn){
@@ -112,7 +114,7 @@ function smarty_function_relationship($params, &$smarty)
         if ($showSaved) {
             $output .= "<li>";
             if ( $saved['tree'] == $person['tree']) {
-                $output .= "<a href=\"".pnModURL('TNGz','user','main', array('show'=>'relationship','tree'=>$person['tree'],'primarypersonID'=>$person['personID'],'secondpersonID'=>$saved['personID']))."\">".$text['relateto']."</a>&nbsp;";
+                $output .= "<a href=\"".pnModURL('TNGz','user','main', array('show'=>'relationship','tree'=>$person['tree'],'primarypersonID'=>$person['personID'],'secondpersonID'=>$saved['personID'], 'generations'=>$generations))."\">".$text['relateto']."</a>&nbsp;";
             }
             $output .= "<a href=\"".pnModURL('TNGz','user','main', array('show'=>'getperson','tree'=>$saved['tree'],'personID'=>$saved['personID']))."\">".$saved['fullname']."</a>";
             $output .= "&nbsp;";
@@ -122,7 +124,7 @@ function smarty_function_relationship($params, &$smarty)
         if ($showPrimary){
             $output .= "<li>";
             if ($primary['tree'] == $person['tree']) {
-                $output .= "<a href=\"".pnModURL('TNGz','user','main', array('show'=>'relationship','tree'=>$person['tree'],'primarypersonID'=>$person['personID'],'secondpersonID'=>$primary['personID']))."\">".$text['relateto']."</a>&nbsp;";
+                $output .= "<a href=\"".pnModURL('TNGz','user','main', array('show'=>'relationship','tree'=>$person['tree'],'primarypersonID'=>$person['personID'],'secondpersonID'=>$primary['personID'], 'generations'=>$generations))."\">".$text['relateto']."</a>&nbsp;";
             }
             $output .= "<a href=\"".pnModURL('TNGz','user','main', array('show'=>'getperson','tree'=>$primary['tree'],'personID'=>$primary['personID']))."\">".$primary['fullname']."</a>";
             $output .= "</li>\n";
