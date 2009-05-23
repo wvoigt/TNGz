@@ -184,6 +184,8 @@ function smarty_function_statistics($params, &$smarty)
                      UNION ALL
                    (SELECT count(deathplace) as used, deathplace as place FROM $people_table GROUP BY place)
                      UNION ALL
+                   (SELECT count(altbirthplace) as used, altbirthplace as place FROM $people_table GROUP BY place)
+                     UNION ALL
                    (SELECT count(baptplace) as used, baptplace as place FROM $people_table GROUP BY place)
                      UNION ALL
                    (SELECT count(burialplace) as used, burialplace as place FROM $people_table GROUP BY place)
@@ -216,6 +218,8 @@ function smarty_function_statistics($params, &$smarty)
                    (SELECT count(birthplace) as used, birthplace as place FROM $people_table GROUP BY place)
                      UNION ALL
                    (SELECT count(deathplace) as used, deathplace as place FROM $people_table GROUP BY place)
+                     UNION ALL
+                   (SELECT count(altbirthplace) as used, altbirthplace as place FROM $people_table GROUP BY place)
                      UNION ALL
                    (SELECT count(baptplace) as used, baptplace as place FROM $people_table GROUP BY place)
                      UNION ALL
