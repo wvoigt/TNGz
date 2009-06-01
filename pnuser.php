@@ -289,7 +289,7 @@ function TNGz_user_worldmap()
     // Load the background map
     $imagefile = "800px-Whole_world_-_land_and_oceans.jpg";
     if (!$source  = imagecreatefromjpeg("modules/TNGz/pnimages/". $imagefile)) {
-        return pnVarPrepHTMLDisplay("aaaWorld Map image failed to load");
+        return pnVarPrepHTMLDisplay("World Map image failed to load");
     }
     // find the base image size
     $source_x = imagesx($source);
@@ -402,4 +402,253 @@ function TNGz_user_saveid()
 
     pnRedirect(pnModURL('TNGz','user','main', $params, null, null, true));
     return true;
+}
+
+function TNGz_user_histogram()
+{
+    if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_READ)) {
+        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+    }
+
+    // Parameters
+    $step    = FormUtil::getPassedValue('step'  , 1, 'GETPOST');
+    $step    = ((int)$step > 0) ? (int)$step : 1;
+    
+    $scale   = FormUtil::getPassedValue('scale'  , 100, 'GETPOST');
+    $scale   = ((int)$scale > 0) ? (int)$scale : 100;
+    
+    $width   = FormUtil::getPassedValue('width'  , 600, 'GETPOST');
+    $width   = ((int)$width > 0 && (int)$width < 1200 ) ? (int)$width : 600;
+    
+    $height  = FormUtil::getPassedValue('height'  , 400, 'GETPOST');
+    $height  = ((int)$height > 0 && (int)$height < 1200 ) ? (int)$height : 400;
+
+    $color_default = "004080";
+    $color_in     = FormUtil::getPassedValue('color'  , $color_default, 'GETPOST');
+    if (!$color = Hex2RGB($color_in)) {
+         $color = Hex2RGB($color_default);
+    }
+
+    $graph  = FormUtil::getPassedValue('graph'  , "bar", 'GETPOST');
+    $graph  = ($graph == "line" ) ? "line" : "bar"; 
+
+    $showvalues = FormUtil::getPassedValue('values'  , true, 'GETPOST');
+    $showvalues = ( $showvalues && $showvalues!='no' ) ? true : false;
+
+    $background = FormUtil::getPassedValue('background'  , "Time.png", 'GETPOST');
+    $imagefile = "modules/TNGz/pnimages/". $background;  // Need to check the validity of this later
+    if (!file_exists($imagefile)) {
+        $background="none";
+    }
+
+    // See if already in the cache
+    $cachefile    = sprintf("histogram_%s_%s_%s_%s_%s_%s_%s_%s.png",$step,$scale,$width,$height,$color_in,$graph,$showvalues,$background);
+    $cacheresults = pnModAPIFunc('TNGz','user','Cache',     array( 'item'=> $cachefile ));
+    if ($cacheresults) {
+        header ("Content-type: image/png");
+        echo $cacheresults;
+        return true;
+    }
+
+    // General variables
+    $data      = array(); // holds the results of query
+    $values    = array(); // holds final year information to be graphed
+    $year_min  = 9999;    // earliest year (start high and work lower)
+    $year_max  = 0000;    // latest year (start low and work higher)
+    $count_max = 0000;    // greatest number of events
+
+
+    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+       return false; // can't get to the data
+    }
+    
+    if (!$TNG = pnModAPIFunc('TNGz','user','TNGconfig') ) {
+       return false; // can't get to the data
+    }
+
+    $query = "select count(A.year) as yearcount, year from (
+                (SELECT YEAR(birthdatetr)    as year FROM ".$TNG['people_table']."  WHERE (birthdatetr != '0000-00-00') )
+                 UNION ALL
+                (SELECT YEAR(deathdatetr)    as year FROM ".$TNG['people_table']."  WHERE (deathdatetr != '0000-00-00') )
+                 UNION ALL
+                (SELECT YEAR(burialdatetr)   as year FROM ".$TNG['people_table']."  WHERE (burialdatetr != '0000-00-00') )
+                 UNION ALL
+                (SELECT YEAR(altbirthdatetr) as year FROM ".$TNG['people_table']."  WHERE (altbirthdatetr != '0000-00-00') )
+                 UNION ALL
+                (SELECT YEAR(baptdatetr)     as year FROM ".$TNG['people_table']."  WHERE (baptdatetr != '0000-00-00') )
+                 UNION ALL
+                (SELECT YEAR(eventdatetr)    as year FROM ".$TNG['events_table']."  WHERE (eventdatetr != '0000-00-00') )
+                 UNION ALL
+                (SELECT YEAR(marrdatetr)     as year FROM ".$TNG['families_table']." WHERE (marrdatetr != '0000-00-00') )
+               ) as A 
+                 GROUP BY year
+                 ORDER BY year " ;
+                 
+    if (!$result = $TNG_conn->Execute($query)  ) {
+        return false;
+    }
+
+    // Get the raw data
+    for (; !$result->EOF; $result->MoveNext()) {
+        $row = $result->fields;
+        $data[ $row['year'] ] = $row['yearcount'];
+        $year_min = ($row['year'] < $year_min)? $row['year'] : $year_min;
+        $year_max = ($row['year'] > $year_max)? $row['year'] : $year_max;
+    }
+    $result->Close();
+
+    // Now lump into the right buckets for display
+    for ( $i=$year_min; $i<=$year_max; $i++) {
+        $group = $i - ( $i % $step);
+        $values[$group] += (isset($data[$i])) ? $data[$i] : 0;
+    }
+
+    $margins     = 40;  // > 35
+    $border      = 0;
+    $pen_legend  = 3;
+    $pen_value   = 0;
+ 
+    // Calculate the usable size of the graph
+    $graph_width      = $width  - $margins * 2;
+    $graph_height     = $height - $margins * 2; 
+    $total_bars       = count($values);
+    $bar_width        = ($graph_width / ($total_bars + 1)) - 5;
+    $bar_width        = ($bar_width > 0)? $bar_width : 5;
+    $gap              = ($graph_width- ($total_bars * $bar_width) ) / ($total_bars +1);
+    $max_value        = max($values);
+    $horizontal_lines = ceil($max_value / $scale );  // Number of horizonal lines (scale)
+    $ratio            = $graph_height/ ($horizontal_lines * $scale); // scaling factor for each vaule to fit on graph
+    $horizontal_gap   = ceil($graph_height/($horizontal_lines));
+
+
+    // Create the image
+    $have_background = true; // Start off assuming we do, then change if we know we don't
+    if (!file_exists($imagefile)) {
+        list($width_file, $height_file, $type_file) = array(0,0,0);
+        $have_background = false;
+    } else {
+        $file_info = getimagesize($imagefile);
+        list($width_file, $height_file, $type_file) = $file_info;
+    }
+
+    // Get the image
+    switch ( $type_file ) {
+        case IMAGETYPE_GIF:  $image = imagecreatefromgif($imagefile); break;
+        case IMAGETYPE_JPEG: $image = imagecreatefromjpeg($imagefile); break;
+        case IMAGETYPE_PNG:  $image = imagecreatefrompng($imagefile); break;
+        default:             $have_background = false;
+    }
+
+    // Create a transparent image to start working on
+    $img = imagecreatetruecolor( $width, $height );  // new image
+    imagealphablending($img, false); // for now, turn off transparency blending
+    $transparency = imagecolorallocatealpha($img, 0, 0, 0, 127); //Create a new transparent color for image
+    imagefill($img, 0, 0, $transparency); // fill background with the new color
+    imagesavealpha($img, true); // turn on transparency blending
+
+    if ($have_background) {
+        if ( ($type_file == IMAGETYPE_GIF) || ($type_file == IMAGETYPE_PNG) ) {
+            $transparency = imagecolortransparent($image);
+             if ($transparency >= 0) { // specific transparent color
+                $transparent_color = imagecolorsforindex($image, $trnprt_indx); //Get image's transparent color's RGB values
+                $transparency      = imagecolorallocate($img, $transparent_color['red'], $transparent_color['green'], $transparent_color['blue']); // Make same in the new image
+                imagefill($img, 0, 0, $transparency); // Fill the background of the new image with the background color
+                imagecolortransparent($img, $transparency); //Set the background color for new image to transparent
+            }
+        }
+        imagecopyresampled($img, $image, $margins, $margins, 0, 0, $graph_width, $graph_height, $width_file, $height_file);
+    }
+
+    // define the colors to use
+    $bar_color        = imagecolorallocate($img,  $color['r'], $color['g'], $color['b']);
+    $line_color       = imagecolorallocate($img,220,220,220);
+
+    //$background_color = imagecolorallocate($img,240,240,255);
+    //$border_color     = imagecolorallocate($img,240,240,255); // 200, 200, 200
+
+    // Create the Boarder
+    //imagefilledrectangle($img,$border,$border,$width-$border,$height-$border,$border_color);
+
+    // Create the Margin
+    //imagefilledrectangle($img,$margins,$margins,$width-$margins,$height-$margins,$background_color);
+
+    // Draw the horizontal lines and label them
+    for($i=0;$i<=$horizontal_lines;$i++){
+        $y=$height - $margins - $horizontal_gap * $i ;
+        imageline($img, $margins, $y, $width-$margins, $y, $line_color);        // the line
+        imagestring($img, $pen_legend, 5 + $border, $y - 5 , $i * $scale, $bar_color); // the label
+    }
+
+    // Now draw the bars or the lines
+    reset($values);
+    $last_x = $margins + $gap;
+    $last_y = $margins +$graph_height;
+    for($i=0;$i< $total_bars; $i++){ 
+        list($key,$value)=each($values);  // Get key and value for current grouping
+        $x1= $margins + $gap + $i * ($gap+$bar_width) ;
+        $x2= $x1 + $bar_width;
+        $x3= $x1 + ($bar_width/2);
+        $y1=$margins +$graph_height- intval($value * $ratio) ;
+        $y2=$height-$margins;
+        if ($showvalues) {
+            imagestring($img, $pen_value, $x1 + 3, $y1 - 10, $value ,$bar_color);             // The value
+        }
+        imagestringup($img, $pen_legend, $x1+($bar_width/2)-5,$margins + $graph_height + 35,$key,$bar_color); // the year group label
+        if ($graph == "bar") {
+            imagefilledrectangle($img, $x1, $y1, $x2, $y2, $bar_color); // the bar
+        } else {
+            imageline($img, $last_x, $last_y, $x3, $y1, $bar_color);   // the line
+        }
+        $last_x = $x3;
+        $last_y = $y1;
+    }
+
+    // Save the map image using a PNG format since it gives better final image quality
+    ob_start();
+    imagepng($img);
+    $saved_image = ob_get_contents();
+    ob_end_clean();
+    imagedestroy($img);
+    imagedestroy($image);
+    
+    // Now Display it
+    header ("Content-type: image/png");
+    echo $saved_image;
+
+    // now update the cache
+    pnModAPIFunc('TNGz','user','CacheUpdate', array( 'item'=> $cachefile, 'data' => $saved_image) );
+    return true;
+
+}
+
+function Hex2RGB($hex)
+{
+    $hex = trim($hex);
+    if(!eregi("^[0-9ABCDEFabcdef\#]+$", $hex)) {
+        return false;
+    }
+    $hex = ereg_replace("#", "", $hex); // take off leading #
+    $color = array();
+
+    if(strlen($hex) == 3) {
+        $color[0] = $color['r'] = $color['red']   = hexdec(substr($hex, 0, 1));
+        $color[1] = $color['g'] = $color['green'] = hexdec(substr($hex, 1, 1));
+        $color[2] = $color['b'] = $color['blue']  = hexdec(substr($hex, 2, 1));
+    } else if(strlen($hex) == 6) {
+        $color[0] = $color['r'] = $color['red']   = hexdec(substr($hex, 0, 2));
+        $color[1] = $color['g'] = $color['green'] = hexdec(substr($hex, 2, 2));
+        $color[2] = $color['b'] = $color['blue']  = hexdec(substr($hex, 4, 2));
+    } else {
+        return false;
+    }
+    return $color;
+}
+ 
+function RGB2Hex($r, $g, $b)
+{
+    $hex = "#";
+    $hex.= dechex($r);
+    $hex.= dechex($g);
+    $hex.= dechex($b);
+    return $hex;
 }
