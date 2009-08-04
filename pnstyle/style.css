@@ -166,6 +166,10 @@ h4.thisday {
     text-align: center;
 }
 
+div.thisday{
+	text-align: center;
+}
+
 span.statistics-plugin-data{
 	font-size: 0.8em;
     text-align: left;	
