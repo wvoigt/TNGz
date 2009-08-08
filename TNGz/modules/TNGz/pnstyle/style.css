@@ -170,6 +170,36 @@ div.thisday{
 	text-align: center;
 }
 
+ul.whatsnew {
+font-size: 1.0em;
+font-style: normal;
+line-height: 1em;
+font-weight: normal;
+font-variant: normal;
+text-transform: none;
+text-decoration: none;
+text-indent: 0.0em;
+list-style-position: outside; 
+list-style-type: disc;
+padding: 2px;
+margin: 2px;
+}
+
+ul.whatsnew li {
+} 
+
+h3.whatsnew {
+    text-align: center;
+}
+
+h4.whatsnew {
+    text-align: center;
+}
+
+div.whatsnew {
+	text-align: center;
+}
+
 span.statistics-plugin-data{
 	font-size: 0.8em;
     text-align: left;	
