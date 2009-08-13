@@ -22,8 +22,10 @@
 function smarty_function_namesearch($params, &$smarty)
 {
 
+    $params['title'] = (empty($params['title'])) ? _TNGZ_NAMESEARCH_SEARCH : DataUtil::formatForDisplay($params['title']);
+
     $output  = "<div class=\"namesearch\">";
-    $output .= "<h2>" . _TNGZ_NAMESEARCH_SEARCH . "</h2>\n";
+    $output .= "<h3 class=\"namesearch\">" . $params['title'] . "</h3>\n";
     $output .= "<form action=\"index.php\" method=\"get\">\n";
     $output .= "<input type=\"hidden\" name=\"module\" value=\"TNGz\"/>\n";
     $output .= "<input type=\"hidden\" name=\"show\"   value=\"search\"/>\n";

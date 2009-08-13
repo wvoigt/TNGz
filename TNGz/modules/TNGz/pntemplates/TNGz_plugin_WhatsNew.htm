@@ -1,7 +1,10 @@
 <!--[*  $Id:$  *]-->
 <div>
+<!--[if $title ]-->
+    <h3 class="whatsnew"><!--[$title|pnvarprephtmldisplay]--></h3>
+<!--[/if]-->
 
-<div style="text-align:center;">
+<div class="whatsnew">
 <!--[$maxitems]-->&nbsp;<!--[pnml name="_TNGZ_WHATSNEW_RECENT"|pnvarprephtmldisplay]-->
 <!--[$howlong]-->&nbsp;<!--[pnml name="_TNGZ_WHATSNEW_DAYS"|pnvarprephtmldisplay]-->
 <br /></div>
@@ -11,59 +14,45 @@
 <!--[/if]-->
 
 <!--[if $showpeople ]-->
-    <h4><!--[pnml name="_TNGZ_WHATSNEW_HEAD_PEOPLE"|pnvarprephtmldisplay]--></h4>
+    <h4 class="whatsnew"><!--[pnml name="_TNGZ_WHATSNEW_HEAD_PEOPLE"|pnvarprephtmldisplay]--></h4>
     <!--[if $showpeopleitems ]-->
-        <ul>
+        <ul class="whatsnew">
         <!--[foreach item=item from=$showpeopleitems]-->
         <li><!--[$item]--></li>
         <!--[/foreach]-->
         </ul>
     <!--[else]-->
-    <div style="text-align:center;"><!--[pnml name="_TNGZ_WHATSNEW_NOCHANGES"|pnvarprephtmldisplay]--><br /></div>
+        <div class="whatsnew"><!--[pnml name="_TNGZ_WHATSNEW_NOCHANGES"|pnvarprephtmldisplay]--><br /></div>
     <!--[/if]-->
     <br />
 <!--[/if]-->
 
 <!--[if $showfamily ]-->
-    <h4><!--[pnml name="_TNGZ_WHATSNEW_HEAD_FAMILY"|pnvarprephtmldisplay]--></h4>
+    <h4 class="whatsnew"><!--[pnml name="_TNGZ_WHATSNEW_HEAD_FAMILY"|pnvarprephtmldisplay]--></h4>
     <!--[if $showfamilyitems ]-->
-        <ul>
+        <ul class="whatsnew">
         <!--[foreach item=item from=$showfamilyitems]-->
         <li><!--[$item]--></li>
         <!--[/foreach]-->
         </ul>
     <!--[else]-->
-    <div style="text-align:center;"><!--[pnml name="_TNGZ_WHATSNEW_NOCHANGES"|pnvarprephtmldisplay]--><br /></div>
+        <div class="whatsnew"><!--[pnml name="_TNGZ_WHATSNEW_NOCHANGES"|pnvarprephtmldisplay]--><br /></div>
     <!--[/if]-->
     <br />
 <!--[/if]-->
 
 <!--[if $showphotos ]-->
-    <h4><!--[pnml name="_TNGZ_WHATSNEW_HEAD_PHOTOS"|pnvarprephtmldisplay]--></h4>
+    <h4 class="whatsnew"><!--[pnml name="_TNGZ_WHATSNEW_HEAD_PHOTOS"|pnvarprephtmldisplay]--></h4>
     <!--[if $showphotositems ]-->
-        <div style="text-align:center;">
+        <div class="whatsnew">
         <!--[foreach item=item from=$showphotositems]-->
              <!--[$item]-->
         <!--[/foreach]-->
         </div>
     <!--[else]-->
-    <div style="text-align:center;"><!--[pnml name="_TNGZ_WHATSNEW_NOCHANGES"|pnvarprephtmldisplay]--><br /></div>
+        <div class="whatsnew"><!--[pnml name="_TNGZ_WHATSNEW_NOCHANGES"|pnvarprephtmldisplay]--><br /></div>
     <!--[/if]-->
     <br />
 <!--[/if]-->
-
-<!--[if $showhistory ]-->
-    <h4><!--[pnml name="_DEATH"|pnvarprephtmldisplay]--></h4>
-    <!--[if $death ]-->
-        <ul>
-        <!--[foreach item=item from=$death]-->
-        <li><!--[$item]--></li>
-        <!--[/foreach]-->
-    <!--[else]-->
-    <div style="text-align:center;"><!--[pnml name="_TNGZ_WHATSNEW_NOCHANGES"|pnvarprephtmldisplay]--><br /></div>
-    <!--[/if]-->
-    <br />
-<!--[/if]-->
-
 
 </div>

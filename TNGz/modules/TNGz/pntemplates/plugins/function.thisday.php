@@ -26,6 +26,7 @@
  * @param $params['link']  add link to main TNGz page (no, yes)
  * @param $params['cache']  cache the page (yes, no)
  * @param $params['newwindow']  open links in new windows (no, yes)
+ * @param $params['title']  if set, adds the text at the top
  * @return string containing HTML formated display of today's events
  */
 function smarty_function_thisday($params, &$smarty)
@@ -33,11 +34,11 @@ function smarty_function_thisday($params, &$smarty)
     // Valid answers, default is the first in the list
     $answer_yes    = array('Y', 'yes', 'y', '1', 'all');  // Answers for Yes or All
     $answer_no     = array('N', 'no',  'n', '0', 'none'); // Answers for No or none
-    $answer_living = array('L', 'living');                // Answers for Show Living only if user is logged in
+    $answer_living = array('L', 'user');                  // Answers for Show Living only if user is logged in
     $answer_dead   = array('D', 'dead');                  // Answers for Show only those that are dead
     $answer_name   = array('N', 'name');                  // Answers for Sort by Name
-    $answer_up     = array('D', 'up', 'ascending');       // Answers for Sort by date ascending
-    $answer_down   = array('R', 'down', 'decending');     // Answers for Show by date decending
+    $answer_up     = array('D', 'up',  'ascending', '1'); // Answers for Sort by date ascending
+    $answer_down   = array('R', 'down','decending', '0'); // Answers for Show by date decending
     
     $answer_YN     = array_merge($answer_yes, $answer_no);
     $answer_YNLD   = array_merge($answer_yes, $answer_no, $answer_living, $answer_dead );
@@ -74,7 +75,7 @@ function smarty_function_thisday($params, &$smarty)
     $params['wikipedia'] = (in_array($params['wikipedia'], $answer_no  ))? $answer_no[0]       : $params['wikipedia'];    
     $params['wikipedia'] = (in_array($params['wikipedia'], $answer_yes ))? $answer_yes[0]      : $params['wikipedia']; 
 
-    $params['link'] = (in_array($params['link'], $answer_YN  ))? $params['link'] : $answer_no[0];
+    $params['link'] = (in_array($params['link'], $answer_YN  ))? $params['link'] : $answer_yes[0];
     $params['link'] = (in_array($params['link'], $answer_no  ))? $answer_no[0]   : $params['link'];    
     $params['link'] = (in_array($params['link'], $answer_yes ))? $answer_yes[0]  : $params['link']; 
 
@@ -85,7 +86,9 @@ function smarty_function_thisday($params, &$smarty)
     $params['newwindow'] = (in_array($params['newwindow'], $answer_YN  ))? $params['newwindow']: $answer_no[0];
     $params['newwindow'] = (in_array($params['newwindow'], $answer_no  ))? $answer_no[0]       : $params['newwindow'];    
     $params['newwindow'] = (in_array($params['newwindow'], $answer_yes ))? $answer_yes[0]      : $params['newwindow']; 
-    
+
+    $params['title'] = (empty($params['title'])) ? "" : DataUtil::formatForDisplay($params['title']);
+
     $lang = pnUserGetLang(); // get language used in Zikula
 
     $UserLoggedIn = ( pnUserLoggedIn() ) ? true : false ;
@@ -125,12 +128,13 @@ function smarty_function_thisday($params, &$smarty)
         
         $thedate  = date('Ymd', $thisday_time );
         $Living   = ($User_Can_See_Living)? "Living" : "NoLiving";
+        $title_hash = ($params['title'])? md5($params['title']) : "x";
         
-        $cachefile    = sprintf("thisday_%s_%s_%s_%s_%s_%s_%s_%s_%s_%s.html",$thedate, $lang, $Living,
+        $cachefile    = sprintf("thisday_%s_%s_%s_%s_%s_%s_%s_%s_%s_%s_%s_%s.html",$thedate, $lang, $Living,
                                                                $params['date'],     $params['birth'], 
-                                                               $params['marriage'], $params['death'], 
+                                                               $params['marriage'], $params['death'], $params['link'], 
                                                                $params['sortby'],   $params['wikipedia'],
-                                                               $params['newwindow']);
+                                                               $params['newwindow'], $title_hash);
 
         $cacheresults = pnModAPIFunc('TNGz','user','Cache', array( 'item'=> $cachefile ));
         if ($cacheresults) {
@@ -215,13 +219,17 @@ function smarty_function_thisday($params, &$smarty)
                         }
                     }
                     $title1 .= "]" ;
-                    $temp = pnModAPIFunc('TNGz','user','MakeRef',
+                    if ($params['link']=='Y') {
+                        $temp = pnModAPIFunc('TNGz','user','MakeRef',
                                array('func'        => "getperson",
                                      'personID'    => $row['personID'],
                                      'tree'        => $row['gedcom'],
                                      'description' => $title1,
                                      'target'      => $target
                                     ));
+                    } else {
+                        $temp = $title1;
+                    }
                     $thisday_birthitems[] = $temp;
                 }
             }
@@ -281,13 +289,17 @@ function smarty_function_thisday($params, &$smarty)
                     if ($row['divdate']!="" ){
                         $title1 .= "(" . _DIVORCED . ")" ;
                     }
-                    $temp = pnModAPIFunc('TNGz','user','MakeRef',
+                    if ($params['link']=='Y') {
+                        $temp = pnModAPIFunc('TNGz','user','MakeRef',
                                array('func'        => "familygroup",
                                      'familyID'    => $row['familyID'],
                                      'tree'        => $row['gedcom'],
                                      'description' => $title1,
                                      'target'      => $target
                                     ));
+                    } else {
+                        $temp = $title1;
+                    }
                     $thisday_marriageitems[] = $temp;
 	    	    }
 	        }
@@ -336,13 +348,17 @@ function smarty_function_thisday($params, &$smarty)
                         $title1 .= $TNGzyear;
                     }
                     $title1 .= "]" ;
-                    $temp = pnModAPIFunc('TNGz','user','MakeRef',
+                    if ($params['link']=='Y') {
+                        $temp = pnModAPIFunc('TNGz','user','MakeRef',
                                array('func'        => "getperson",
                                      'personID'    => $row['personID'],
                                      'tree'        => $row['gedcom'],
                                      'description' => $title1,
                                      'target'      => $target
                                     ));
+                    } else {
+                        $temp = $title1;
+                    }
                     $thisday_deathitems[] = $temp;
 	    	    }
 	        }
@@ -383,6 +399,7 @@ function smarty_function_thisday($params, &$smarty)
     $pnRender->assign('showwiki'     , $thisday_showwiki);
     $pnRender->assign('mainmenu'     , $thisday_mainmenu);
     $pnRender->assign('thisdayerror' , $thisday_error);
+    $pnRender->assign('title'        , $params['title']);
 
     // Populate block info and pass to theme
     $output = $pnRender->fetch('TNGz_plugin_ThisDay.htm');

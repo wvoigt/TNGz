@@ -1,0 +1,9 @@
+<!--[*  $Id:$  *]-->
+<div>
+<!--[if $histogram.title ]-->
+    <h3 class="histogram"><!--[$histogram.title|pnvarprephtmldisplay]--></h3>
+<!--[/if]-->
+<a href="<!--[pnmodurl modname=TNGz show=histogram]-->">
+<img src="<!--[pnmodurl modname=TNGz type=user func=histogram step=$histogram.step scale=$histogram.scale height=$histogram.height width=$histogram.width color=$histogram.color graph=$histogram.graph values=$histogram.values background=$histogram.background]-->" alt="<!--[$histogram.title]-->" />
+</a>
+</div>

@@ -43,24 +43,22 @@
         <th width="30%"></th>
     </tr>
     <tr>
-        <td align="center" valign="middle" ><!--[showphoto showliving='L' phototype='T' photolist='' max_height='150' max_width='150']--></td>
-	<td align="center" valign="top" ><div class="surname-big"><!--[surnames type='cloud' top='25' links='yes']--></div></td>
+        <td align="center" valign="middle" ><!--[showphoto showliving='user' phototype='thumb' photolist='' max_height='200' max_width='200']--></td>
+	<td align="center" valign="top" ><div class="surname-big"><!--[surnames title="" type='cloud' top='25' links='yes']--></div></td>
 	<td align="center" valign="middle" ><a href="<!--[pnmodurl modname=TNGz show=placemap ]-->"><img src="<!--[pnmodurl modname=TNGz type=user func=worldmap size='tiny']-->" alt="Map" /></a></td>
     </tr>
     <tr>
-        <td align="left"   valign="top" ><div><!--[surnames type='list' top='25' sort='rank' links='yes' menu='yes']--></div></td>
+        <td valign="top" ><div><!--[surnames title=$text.surnames type='list' top='25' sort='rank' links='yes' menu='yes']--></div></td>
 	<td align="center" valign="top" ><div><center>
 	                                      <hr />
-	                                       <!--[namesearch]-->
+	                                       <!--[namesearch title=$text.search]-->
 	                                      <hr />
-					      <strong><!--[$text.mnustatistics ]--></strong>
-	                                      <!--[statistics]-->
+	                                      <!--[statistics title=$text.mnustatistics]-->
 					      <hr />
-					      Histogram
-					      <a href="<!--[pnmodurl modname=TNGz show=histogram ]-->"><img src="<!--[pnmodurl modname=TNGz type=user func=histogram step='20' scale='500' height='200' width='300' color='000000' graph='bar' values='no' background='Sundial.png']-->" alt="Histogram" /></a>
+					      <!--[histogram title="`$text.date` Histogram" step=20 scale=200 width=400 height=300 color='000000' graph='bar' values='no' background='Sundial.png']-->
 					      </center>
 					</div></td>
-	<td align="left"   valign="top" ><div><!--[places type='list' top='25' sort='rank' links='yes' menu='yes']--></div></td>
+	<td valign="top" ><div><!--[places title=$text.places type='list' top='25' sort='rank' links='yes' menu='yes']--></div></td>
     </tr>
 </table>
 

@@ -22,11 +22,17 @@
  * @param $params['sort'] order of listing - alpha, rank
  * @param $params['cols'] number of columns (table only)
  * @param $params['links']  no or yes to add links to place pages
+ * @param $params['title']  if set, adds the text at the top
  * @return string containing HTML formated places
  */
 function smarty_function_places($params, &$smarty)
 {
     // Get parameters
+    // Valid answers, default is the first in the list
+    $answer_yes    = array('Y', 'yes', 'y', '1', 'on', 'all');  // Answers for Yes or All
+    $answer_no     = array('N', 'no',  'n', '0', 'off','none'); // Answers for No or none
+    $answer_YN     = array_merge($answer_yes, $answer_no);
+    
     $top = $params['top'];  
     $top  = (is_numeric($top) && $top > 0)? intval($top) : 50;  // Get valid value or set default
 
@@ -36,20 +42,24 @@ function smarty_function_places($params, &$smarty)
     $validsorts = array('rank', 'alpha');  // first in list is the default
     $sort = (in_array($params['sort'], $validsorts))? $params['sort'] : $validsorts[0];
 
-    $cols = $params['cols'];
+    $cols = $params['col'];
     $cols  = (is_numeric($cols) && $cols > 0)? intval($cols) : 2;  // Get valid value or set default
 
-    $validlinks = array('yes', 'no');  // first in list is the default
-    $links = (in_array($params['links'], $validlinks))? $params['links'] : $validlinks[0];
-    $hidelinks = ($links == "yes") ? false : true;
+    $params['links'] = (in_array($params['links'], $answer_YN  ))? $params['links'] : $answer_yes[0];
+    $params['links'] = (in_array($params['links'], $answer_no  ))? $answer_no[0]    : $params['links'];
+    $params['links'] = (in_array($params['links'], $answer_yes ))? $answer_yes[0]   : $params['links'];
     
-    $validmenus = array('no', 'yes');  // first in list is the default
-    $menu = (in_array($params['menu'], $validmenus))? $params['menu'] : $validmenus[0];
+    $params['menu'] = (in_array($params['menu'], $answer_YN  ))? $params['menu']  : $answer_no[0];
+    $params['menu'] = (in_array($params['menu'], $answer_no  ))? $answer_no[0]    : $params['menu'];
+    $params['menu'] = (in_array($params['menu'], $answer_yes ))? $answer_yes[0]   : $params['menu'];
+
+    $params['title'] = (empty($params['title'])) ? "" : DataUtil::formatForDisplay($params['title']);
 
     $lang = pnUserGetLang(); // get language used in Zikula
-    
+
     // See if already in the cache
-    $cachefile    = sprintf("places_%s_%s_%s_%s_%s_%s_%s.html",$lang,$type,$sort,$top,$cols,$links,$menu);
+    $title_hash = ($params['title'])? md5($params['title']) : "x";
+    $cachefile    = sprintf("places_%s_%s_%s_%s_%s_%s_%s_%s_%s.html",$lang,$type,$sort,$top,$cols,$links,$params['menu'],$params['links'],$title_hash);
     $cacheresults = pnModAPIFunc('TNGz','user','Cache', array( 'item'=> $cachefile ));
     if ($cacheresults) {
         return $cacheresults;
@@ -58,12 +68,14 @@ function smarty_function_places($params, &$smarty)
     // Get the Places
     $Places =  pnModAPIFunc('TNGz','user','GetPlaces', array('top'=> $top, 'sort' => $sort));
 
+    $output  .= ( $params['title'] ) ? "<h3 class=\"places\" >" . $params['title'] . "</h3>\n" : "";
+
     if ($type == 'list'){
         $list = ($sort == 'alpha') ? "ul" : "ol";
-        $output = "<$list class=\"places-list\">";
+        $output .= "<$list class=\"places-list\">";
         foreach($Places as $place){
             $output .= "<li>";
-            if ($hidelinks) {
+            if ($params['links']=='N') {
                 $output .= $place['place'];
             } else {
                 $output .= $place['name'] . " " . $place['link'];
@@ -108,8 +120,8 @@ function smarty_function_places($params, &$smarty)
         }
 
         // Now write out the table
-        $output = "<table class=\"places-table\">";
-        
+        $output .= "<table class=\"places-table\">";
+
         for($row=0; $row<$rows; $row++){
             $output .= "<tr>";
             for($col=0; $col<$cols; $col++){
@@ -119,7 +131,7 @@ function smarty_function_places($params, &$smarty)
                      if ($sort == 'rank'){
                          $output .= $place['rank'] . ". ";
                      }
-                     if ($hidelinks) {
+                     if ($$params['links']=='N') {
                          $output .= $place['place'];
                      } else {
                          $output .= $place['name'] . " " . $place['link'];
@@ -131,7 +143,7 @@ function smarty_function_places($params, &$smarty)
         }
         $output .= "</table>";
     }
-    if ($menu == 'yes'){
+    if ($params['menu'] == 'Y'){
         $output .= "<div class=\"places-menu\">";
         $output .= "<form style=\"margin:0px\" action=\"index.php\" method=\"post\">";
         $output .= "<input type=\"hidden\" name=\"module\" value=\"TNGz\" />";
