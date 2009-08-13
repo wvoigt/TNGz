@@ -24,6 +24,7 @@
  * @param $params['days']    number of days to look for changes
  * @param $params['cache']  cache the page (yes, no)
  * @param $params['newwindow']  open links in new windows (no, yes)
+ * @param $params['title']  if set, adds the text at the top
  * @return string containing HTML formated display of the changed items
  */
 function smarty_function_whatsnew($params, &$smarty)
@@ -55,9 +56,16 @@ function smarty_function_whatsnew($params, &$smarty)
     $params['newwindow'] = (in_array($params['newwindow'], $answer_no  ))? $answer_no[0]       : $params['newwindow'];    
     $params['newwindow'] = (in_array($params['newwindow'], $answer_yes ))? $answer_yes[0]      : $params['newwindow']; 
 
+    $params['link'] = (in_array($params['link'], $answer_YN  ))? $params['link'] : $answer_yes[0];
+    $params['link'] = (in_array($params['link'], $answer_no  ))? $answer_no[0]   : $params['link'];    
+    $params['link'] = (in_array($params['link'], $answer_yes ))? $answer_yes[0]  : $params['link']; 
+
     $params['cache'] = (in_array($params['cache'], $answer_YN  ))? $params['cache'] : $answer_yes[0];
     $params['cache'] = (in_array($params['cache'], $answer_no  ))? $answer_no[0]    : $params['cache'];    
     $params['cache'] = (in_array($params['cache'], $answer_yes ))? $answer_yes[0]   : $params['cache']; 
+
+    $params['title'] = (empty($params['title'])) ? "" : DataUtil::formatForDisplay($params['title']);
+    
 
     if (empty($params['max']) || !is_numeric($params['max']) ) {
         $params['max']    = _TNGZ_WHATSNEW_HOWMANY_NUM;
@@ -78,9 +86,11 @@ function smarty_function_whatsnew($params, &$smarty)
 
     if ($params['cache'] == "Y") {
         // See if already in the cache
-        $cachefile    = sprintf("whatsnew_%s_%s_%s_%s_%s_%s_%s.html",
-                                 $lang, $params['people'], $params['family'], $params['photos'], 
-                                 $params['max'], $params['days'], $params['newwindow']);
+        $title_part = ($params['title'])? md5($params['title']) : "x";
+        
+        $cachefile    = sprintf("whatsnew_%s_%s_%s_%s_%s_%s_%s_%s.html",
+                                 $lang, $params['people'], $params['family'], $params['photos'], $params['link'],
+                                 $params['max'], $params['days'], $params['newwindow'], $title_part);
 
         $cacheresults = pnModAPIFunc('TNGz','user','Cache', array( 'item'=> $cachefile ));
         if ($cacheresults) {
@@ -121,13 +131,18 @@ function smarty_function_whatsnew($params, &$smarty)
             if ( $result->RecordCount() != 0 ){
                 for (; !$result->EOF; $result->MoveNext()) {
                     $row = $result->fields;
-                    $whatsnew_showpeopleitems[] = pnModAPIFunc('TNGz','user','MakeRef',
+                    $title = $row['lastname'] . ", " . $row['firstname'];
+                    if ($params['link'] == 'Y') {
+                        $whatsnew_showpeopleitems[] = pnModAPIFunc('TNGz','user','MakeRef',
                                                       array('func'        => "getperson",
                                                             'personID'    => $row['personID'],
                                                             'tree'        => $row['gedcom'],
-                                                            'description' => $row['lastname'] . ", " . $row['firstname'],
+                                                            'description' => $title,
                                                             'target'      => $target
                                                       ));
+                    } else {
+                        $whatsnew_showpeopleitems[] = $title;
+                    }
                 }
             }
             $result->Close();
@@ -146,13 +161,18 @@ function smarty_function_whatsnew($params, &$smarty)
             if ( $result->RecordCount() != 0 ){
 	            for (; !$result->EOF; $result->MoveNext()) {
                     $row = $result->fields;
-                    $whatsnew_showfamilyitems[] = pnModAPIFunc('TNGz','user','MakeRef',
+                    $title = $row['hlast'] . " - " . $row['wlast'];
+                    if ($params['link'] == 'Y') {
+                        $whatsnew_showfamilyitems[] = pnModAPIFunc('TNGz','user','MakeRef',
                                                                   array('func'        => "familygroup",
                                                                         'familyID'    => $row['familyID'],
                                                                         'tree'        => $row['gedcom'],
-                                                                        'description' => $row['hlast'] . " - " . $row['wlast'],
+                                                                        'description' => $title,
                                                                         'target'      => $target
                                                                         ));
+                    } else {
+                        $whatsnew_showfamilyitems[] = $title;
+                    }
                 }
             }
             $result->Close();
@@ -200,12 +220,15 @@ function smarty_function_whatsnew($params, &$smarty)
                                           'max_width'   => 100,
                                           'text'        => "",
                                           'description' => "border='0'"));
-
-                    $whatsnew_showphotositems[]  = pnModAPIFunc('TNGz','user','MakeRef',
+                    if ($params['link'] == 'Y') {
+                        $whatsnew_showphotositems[]  = pnModAPIFunc('TNGz','user','MakeRef',
                                                                 array('func'        => "showmedia",
                                                                       'mediaID'     => $row['mediaID'],
                                                                       'description' => $temp1
                                                                 ));
+                    } else {
+                        $whatsnew_showphotositems[]  = $temp1;
+                    }
                 }
             }
             $result->Close();
@@ -227,6 +250,7 @@ function smarty_function_whatsnew($params, &$smarty)
     $pnRender->assign('showphotositems' , $whatsnew_showphotositems);
     $pnRender->assign('maxitems'        , $whatsnew_maxitems);
     $pnRender->assign('howlong'         , $whatsnew_howlong);
+    $pnRender->assign('title'           , $params['title']);
 
     // Populate block info and pass to theme
     $output = $pnRender->fetch('TNGz_plugin_WhatsNew.htm');

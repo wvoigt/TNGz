@@ -16,20 +16,14 @@
 
 /**
  * TNGz showphoto
- * Add a TNG photo
- * @param showliving
- *           L = *show living only if user is logged in
- *           N = No or None
- *           D = show only dead people (no living)
- *           Y = show all
- * @param phototype
- *           T = *use Thumbnail
- *    ...    P = use Photo
- * @param max_height  largest height of picture -- scale to this if bigger
- * @param max_width   largest width of picture  -- scale to this if bigger
- * @param photolist   a list of photo ids to choose from (can be just 1).  If none given, choose from all.
- * @param window      if set, then will open in a new window
- * @return string containing HTML for including a TNG photo
+ * Display a TNG photo
+ * @param $params['showliving']  To show living people or not (user, yes/all, no/none, dead)
+ * @param $params['phototype']   The type of photo to show (thumbnail, photo)
+ * @param $params['max_height']  largest height of picture -- scale to this if bigger
+ * @param $params['max_width']   largest width of picture  -- scale to this if bigger
+ * @param $params['photolist']   A list of photo ids to choose from (can be just 1).  If none given, choose from all.
+ * @param $params['newwindow']   open links in new windows (no, yes)
+ * @return string containing HTML for displaying a TNG photo
  */
 function smarty_function_showphoto($params, &$smarty)
 {
@@ -37,39 +31,47 @@ function smarty_function_showphoto($params, &$smarty)
         return false;
     }
 
-    // Make sure there are defaults
-    if (empty($params['showliving'])) {
-        $params['showliving']  = 'L';
-    //    N = No or None
-    //    D = show only dead people (no living)
-    //    Y = show all
-    //    L = show living only if user is logged in
-    }
-    if (empty($params['phototype'])) {
-        $params['phototype']  = 'T';
-    //    T = use Thumbnail
-    //    P = use Photo
-    }
+    // Valid answers, default is the first in the list
+    $answer_yes    = array('Y', 'yes', 'y', '1', 'on',  'all');  // Answers for Yes or All
+    $answer_no     = array('N', 'no',  'n', '0', 'off', 'none'); // Answers for No or none
+    $answer_living = array('L', 'user');                         // Answers for Show Living only if user is logged in
+    $answer_dead   = array('D', 'dead');                         // Answers for Show only those that are dead
+    $answer_thumb  = array('T', 'thumbnail', 'thumb');           // Answers for Photo Thumbnails
+    $answer_photo  = array('P', 'photo',  'photograph', 'full'); // Answers for Full photos
+    
+    $answer_YN     = array_merge($answer_yes, $answer_no);
+    $answer_YNLD   = array_merge($answer_yes, $answer_no, $answer_living, $answer_dead );
+    $answer_TP     = array_merge($answer_thumb, $answer_photo);
+
+    $params['showliving'] = (in_array($params['showliving'], $answer_YNLD  ))? $params['showliving'] : $answer_living[0];
+    $params['showliving'] = (in_array($params['showliving'], $answer_no    ))? $answer_no[0]         : $params['showliving'];    
+    $params['showliving'] = (in_array($params['showliving'], $answer_yes   ))? $answer_yes[0]        : $params['showliving']; 
+    $params['showliving'] = (in_array($params['showliving'], $answer_living))? $answer_living[0]     : $params['showliving'];    
+    $params['showliving'] = (in_array($params['showliving'], $answer_dead  ))? $answer_dead[0]       : $params['showliving'];
+
+    $params['newwindow'] = (in_array($params['newwindow'], $answer_YN  ))? $params['newwindow']: $answer_no[0];
+    $params['newwindow'] = (in_array($params['newwindow'], $answer_no  ))? $answer_no[0]       : $params['newwindow'];    
+    $params['newwindow'] = (in_array($params['newwindow'], $answer_yes ))? $answer_yes[0]      : $params['newwindow']; 
+    $target = ($params['newwindow'] == 'Y' )? "target=_blank" :"" ;
+
+    $params['phototype'] = (in_array($params['phototype'], $answer_TP    ))? $params['phototype']  : $answer_thumb[0];
+    $params['phototype'] = (in_array($params['phototype'], $answer_thumb ))? $answer_thumb[0]  : $params['phototype'];
+    $params['phototype'] = (in_array($params['phototype'], $answer_photo ))? $answer_photo[0]  : $params['phototype']; 
+
     if (empty($params['max_height'])) {
         $params['max_height']  = '150';
     //  max_height = largest height of picture -- scale to this if bigger
     }
     if (empty($params['max_width'])) {
         $params['max_width']    = '150';
-   // max_width  = largest width of picture  -- scale to this if bigger
+    // max_width  = largest width of picture  -- scale to this if bigger
     }
 
     if (empty($params['photolist'])) {
         $params['photolist']   = "";
     // Empty is no photos in list
     }
-
-    if (empty($params['window'])) {
-        $target = "";
-    } else {
-        $target = "target=_blank" ; // open in a new window if set
-    }
-
+    // Now make sure we have a clean photo list in standard format
     $PhotoList   = "";
     $record_sep  = "";
     $entrylist   = preg_split("/[\s ]*[,;\s]+[\s ]*/",trim($params['photolist']));
@@ -81,22 +83,17 @@ function smarty_function_showphoto($params, &$smarty)
     }
 
     $max_strikes = 3;   // The Maximum times to try and find a photo before giving up
-    $target = "" ;
     $photo_ref = "";
     $photo_description = "";
     $photo_error = "";
 
-    $window=pnModGetVar('TNGz', '_window');
-    $TNGstyle = pnModGetVar('TNGz', '_style');
-
-    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
-    $TNG_path = $TNG['SitePath'] . "/" . $TNG['directory'];
-    $TNG_ref  = $TNG['directory'];                          // a relative path
-    // $TNG_ref  = $TNG['WebRoot']   . "/" . $TNG['directory'];    // absolute path
+    $TNGpaths = pnModAPIFunc('TNGz','user','GetTNGpaths');
+    $TNG_path = $TNGpaths['SitePath'] . "/" . $TNGpaths['directory'];
+    $TNG_ref  = $TNGpaths['directory'];  // a relative path
 
     // Check to be sure we can get to the TNG information
-    if (file_exists($TNG['configfile']) ){
-        include($TNG['configfile']);
+    if (file_exists($TNGpaths['configfile']) ){
+        include($TNGpaths['configfile']);
         $TNG_conn = &ADONewConnection('mysql');
         $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
         $have_info = 1;
@@ -104,7 +101,6 @@ function smarty_function_showphoto($params, &$smarty)
         $have_info = 0;
         $photo_error  = ""._PEOPLEDBFERROR."";
     }
-
 
     if ($params['showliving'] != 'N' && $have_info == 1 ){
 
@@ -202,16 +198,7 @@ function smarty_function_showphoto($params, &$smarty)
                                                 'max_width'   => $params['max_width'],
                                                 'text'        => $t_description,
                                                 'description' => "border='0'"));
-/*
-                        $photo_ref     = pnModAPIFunc('TNGz','user','MakeRef',
-                                                   array('func'        => "showmedia",
-                                                         'personID'    => $t_personID,
-                                                         'mediaID'     => $t_mediaID,
-                                                         'medialinkID' => $t_medialinkID,
-                                                         'description' => $temp1,
-                                                         'target'      => $target
-                                                         ));
-*/
+
                         $photo_ref     = pnModAPIFunc('TNGz','user','MakeRef',
                                                    array('func'        => "getperson",
                                                          'personID'    => $t_personID,
@@ -219,11 +206,9 @@ function smarty_function_showphoto($params, &$smarty)
                                                          'description' => $temp1,
                                                          'target'      => $target
                                                          ));
-
                         $photo_description = $t_description;
                         $need_photo = false;
                     }
-
                 }
             }
             $result->Close();
@@ -232,10 +217,6 @@ function smarty_function_showphoto($params, &$smarty)
             // Didn't get a photo this time
             $photo_error  .= ""._NOPHOTOFOUND." ";
         }
-
-    }
-    if ($have_info == 1 ){
-        $TNG_conn->Close();
     }
 
     $output  = "<div>";
@@ -245,7 +226,5 @@ function smarty_function_showphoto($params, &$smarty)
         $output .= $photo_ref . "<br />" . pnVarPrepHTMLDisplay($photo_description);
     }
     $output .= "</div>\n";
-
     return $output;
 }
-

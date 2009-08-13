@@ -22,6 +22,7 @@
  * @param $params['surnames']  show number unique surnames
  * @param $params['sex']       show gender information (must have people)
  * @param $params['living']    show number of living individuals in database
+ * @param $params['title']  if set, adds the text at the top
  * @return string containing HTML formated statistics in a table
  */
 function smarty_function_statistics($params, &$smarty)
@@ -48,10 +49,13 @@ function smarty_function_statistics($params, &$smarty)
     //$places   = (in_array($params['places'],   $valid_yes))? true : false ;
     //$geocode  = (in_array($params['geocode'],  $valid_yes))? true : false ;
 
+    $params['title'] = (empty($params['title'])) ? "" : DataUtil::formatForDisplay($params['title']);
+
     $lang = pnUserGetLang(); // get language used in Zikula
 
     // See if already in the cache
-    $cachefile    = sprintf("statistics_%s_%s_%s_%s_%s_%s_%s_%s.html",$lang,$people,$family,$surnames,$sex,$living,$places,$geocode);
+    $title_part = ($params['title'])? md5($params['title']) : "x";
+    $cachefile    = sprintf("statistics_%s_%s_%s_%s_%s_%s_%s_%s_%s.html",$lang,$people,$family,$surnames,$sex,$living,$places,$geocode,$title_part);
     $cacheresults = pnModAPIFunc('TNGz','user','Cache', array( 'item'=> $cachefile ));
     if ($cacheresults) {
         return $cacheresults;
@@ -71,11 +75,12 @@ function smarty_function_statistics($params, &$smarty)
     $text = pnModAPIFunc('TNGz','user','GetTNGtext', array('textpart' => 'stats'));
     $text = pnModAPIFunc('TNGz','user','GetTNGtext', array('textpart' => 'places'));
     
-    $output  = "<table cellpadding=\"3\" cellspacing=\"1\" border=\"0\" >";
-	$output .= "<tr>";
-	$output .= "<td class=\"statistics-cell\"><span class=\"statistics-plugin-header\">" . $text[description] . "</span></td>";
-	$output .= "<td class=\"statistics-cell\"><span class=\"statistics-plugin-header\">" . $text[quantity] .    "</span></td>";
-	$output .= "</tr>";
+    $output  = ( $params['title'] ) ? "<h3 style=\"statistics\" >" . $params['title'] . "</h3>\n" : "";
+    $output .= "<table cellpadding=\"3\" cellspacing=\"1\" border=\"0\" >";
+    $output .= "<tr>";
+    $output .= "<td class=\"statistics-cell\"><span class=\"statistics-plugin-header\">" . $text[description] . "</span></td>";
+    $output .= "<td class=\"statistics-cell\"><span class=\"statistics-plugin-header\">" . $text[quantity] .    "</span></td>";
+    $output .= "</tr>";
 
     if ($people) {
         $query = "SELECT count(id) as pcount FROM $people_table $wherestr";
@@ -87,9 +92,8 @@ function smarty_function_statistics($params, &$smarty)
         $result->Close();
         $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[totindividuals]</span></td>\n";
         $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$totalpeople &nbsp;</span></td></tr>\n";
-
     }
-    
+
     if ($family) {
         $query = "SELECT count(id) as fcount FROM $families_table $wherestr";
         if (!$result = &$TNG_conn->Execute($query)  ) {
@@ -166,9 +170,8 @@ function smarty_function_statistics($params, &$smarty)
 
         $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[totunknown]</span></td>\n";
         $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$unknownsex ($percentunknownsex%) &nbsp;</span></td></tr>\n";
-
     }
-    
+
     if ($places) {
         $query = "SELECT count(id) as pcount FROM $places_table";
         if (!$result = &$TNG_conn->Execute($query)  ) {
@@ -177,8 +180,7 @@ function smarty_function_statistics($params, &$smarty)
         $row = $result->fields;
         $numplaces = $row[pcount];
         $result->Close();
-        
-        
+
         $query = "select sum(A.used) as TheTotal from (
                    (SELECT count(birthplace) as used, birthplace as place FROM $people_table GROUP BY place)
                      UNION ALL
@@ -202,10 +204,8 @@ function smarty_function_statistics($params, &$smarty)
         $row = $result->fields;
         $refplaces = $row[TheTotal];
         $result->Close();
-
-
     }
-    
+
     if ($geocode && $places) {
         $query = "SELECT count(id) as pcount FROM $places_table WHERE latitude <> \"\" and longitude <> \"\"";
         if (!$result = &$TNG_conn->Execute($query)  ) {
@@ -245,17 +245,16 @@ function smarty_function_statistics($params, &$smarty)
     if ($places) {
         $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[total] $text[places]</span></td>\n";
         $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$numplaces &nbsp;</span></td></tr>\n";
-      if ($geocode) {
-        $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[total] Geocode $text[places]</span></td>\n";
-        $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$geocoded ($percentgeocoded%) &nbsp;</span></td></tr>\n";
-      }
+        if ($geocode) {
+            $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[total] Geocode $text[places]</span></td>\n";
+            $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$geocoded ($percentgeocoded%) &nbsp;</span></td></tr>\n";
+        }
         $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[total] $text[gmapevent] $text[places]</span></td>\n";
         $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$refplaces &nbsp;</span></td></tr>\n";
-
-      if ($geocode) {
-        $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[total] Geocode $text[gmapevent] $text[places]</span></td>\n";
-        $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$refgeocoded ($percentrefgeocoded%) &nbsp;</span></td></tr>\n";
-      } 
+        if ($geocode) {
+            $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[total] Geocode $text[gmapevent] $text[places]</span></td>\n";
+            $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$refgeocoded ($percentrefgeocoded%) &nbsp;</span></td></tr>\n";
+        } 
     }
 
     $output .=  "</table>";
@@ -266,4 +265,3 @@ function smarty_function_statistics($params, &$smarty)
     pnModAPIFunc('TNGz','user','CacheUpdate', array( 'item'=> $cachefile, 'data' => $output) );
     return $output;
 }
-
