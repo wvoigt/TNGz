@@ -92,7 +92,7 @@ function TNGz_admin_modifyconfig()
     $TNG_versionimage = 'error.gif';
     $TNG_versionlast  =  pnModGetVar('TNGz', '_version');
 
-    $TNGversionfile = dirname($TNG['configfile']) . "/version.php";
+    $TNGversionfile = $TNG['TNGpath'] . "version.php";
     if (file_exists($TNGversionfile) ) {
         include($TNGversionfile);
         if ( $tng_version ) {
