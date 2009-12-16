@@ -275,6 +275,18 @@ function TNGz_userapi_ShowPage($args)
     //////////////////////////////////////////////////////
     $newlanguage = pnModAPIFunc('TNGz','user','GetTNGlanguage');
 
+    // Now fix lang parameter in URL
+    // As of Zikula 1.2.0, the lang parameter is used to pass the non-site default language
+    // But for TNG, lang had been used as by folks attacking sites, and now assumes you are bad if you use
+    // So the solution is to save the value at this point, remove it from $_GET and then restore it after TNG is done.
+    unset($Save_GET_lang);   // Being safe.  Should only be set if using.
+    $Pass_lang = "";         // Used to pass on lang parameter in the TNG URL
+    if (isset($_GET['lang'])) {
+        $Pass_lang = "&lang=" . $_GET['lang']; // pass on the language parameter
+        $Save_GET_lang = $_GET['lang'];       // save for later
+        unset($_GET['lang']);                 // Clear so TNG does not choke
+    }
+
     //////////////////////////////////////////////////////
     // Get the TNG configuration information
     //////////////////////////////////////////////////////
@@ -298,7 +310,7 @@ function TNGz_userapi_ShowPage($args)
                         // TODO: Need to figure out the best way to do this
     //$cms[url]        = "index.php?module=$TNGz_modname&func=main&show";
     //$cms[url]        = "index.php?module=$TNGz_modname&amp;func=main&amp;show";
-    $cms[url]          = "index.php?module=$TNGz_modname&show";    
+    $cms[url]          = "index.php?module=$TNGz_modname".$Pass_lang."&show";
     //$cms[url]        = rtrim(pnModURL('TNGz','user','main', array('show'=>'')),"=");
                          // these are not as good
     //$cms[url]        = _TNGZ_PREFIX;
@@ -339,8 +351,12 @@ function TNGz_userapi_ShowPage($args)
         $the_globals = $_SERVER + $_ENV + $_GET +$_POST;
         if( $the_globals && is_array( $the_globals ) ) {
             foreach ( $the_globals as $key=>$value ) {
-                if ( in_array($key, array('cms','lang', 'language', 'mylanguage', 'session_language', 'rootpath')) ) die("sorry!");
-                ${$key} = $value;
+                if ( in_array($key, array('cms','lang', 'language', 'mylanguage', 'session_language', 'rootpath')) ) {
+                    // die("sorry!");  // OK, so let's just remove instead of dying
+                    unset($_GET[$key]);
+                } else {
+                    ${$key} = $value;
+                }
             }
         }
         unset($the_globals);
@@ -591,6 +607,13 @@ function TNGz_userapi_ShowPage($args)
                 ),
                 $TNGoutput);
     }
+
+  
+    // Restore the original $_GET['lang'] if needed
+    if (isset($Save_GET_lang)) {
+        $_GET['lang'] = $Save_GET_lang;
+    }
+
 
     //////////////////////////////////////////////////////
     // Now get ready to display
