@@ -3,6 +3,12 @@ CHANGE LOG
 TNGz /pndoc/changelog.txt
 TNGz (C) 2009 Wendel Voigt
 ======================================================================================
+version 1.4
+  * This version requires Zikula 1.2.x or above
+  * Fixed problem with &lang= parameter now used by Zikula. Before fix, TNG would choke on it if it was used.
+  * added new Zikula $modversion['url'] for module
+  * changed to support new Zikula language constructs.  Including use of 2 letter language designations instead of 3 letter.
+  
 version 1.3
   * Added WhatsNew plugin
   * Added ThisDay plugin
