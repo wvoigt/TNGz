@@ -74,7 +74,7 @@ function smarty_function_whatsnew($params, &$smarty)
         $params['days']     = _TNGZ_WHATSNEW_HOWLONG_NUM;
     }
     
-    $lang = pnUserGetLang(); // get language used in Zikula
+    $lang = ZLanguage::getLanguageCode(); // get language used in Zikula
 
     $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
     if ($TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {

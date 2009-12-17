@@ -89,7 +89,7 @@ function smarty_function_thisday($params, &$smarty)
 
     $params['title'] = (empty($params['title'])) ? "" : DataUtil::formatForDisplay($params['title']);
 
-    $lang = pnUserGetLang(); // get language used in Zikula
+    $lang = ZLanguage::getLanguageCode(); // get language used in Zikula
 
     $UserLoggedIn = ( pnUserLoggedIn() ) ? true : false ;
 

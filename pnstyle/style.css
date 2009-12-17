@@ -61,6 +61,10 @@ span.size0      { color: #000000; font-size: 40%; }
 a.size0:link    { color: #000000; }
 a.size0:visited { color: #000000; }
 
+h3.surnames {
+    text-align: center;
+}
+
 .surnames-list {
 	font-size: 0.8em;
 }
@@ -82,6 +86,10 @@ a.size0:visited { color: #000000; }
 	padding: 1px 1px 1px 1px;
 }
 
+h3.places {
+    text-align: center;
+}
+
 div.places-small {
 	font-size: 0.8em;
 }
@@ -98,6 +106,7 @@ div.places-block-intro {
 
 .places-list {
 	font-size: 0.8em;
+	text-align: left;
 }
 
 .places-menu {
@@ -200,6 +209,10 @@ div.whatsnew {
 	text-align: center;
 }
 
+h3.statistics {
+    text-align: center;
+}
+
 span.statistics-plugin-data{
 	font-size: 0.8em;
     text-align: left;	
@@ -217,6 +230,17 @@ span.statistics-plugin-header{
 }
 
 .statistics-plugin-cell{
+}
+
+div.namesearch {
+}
+
+h3.namesearch {
+    text-align: center;
+}
+
+h3.histogram {
+    text-align: center;
 }
 
 #relationship-plugin{

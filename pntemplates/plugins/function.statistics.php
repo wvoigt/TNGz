@@ -51,7 +51,7 @@ function smarty_function_statistics($params, &$smarty)
 
     $params['title'] = (empty($params['title'])) ? "" : DataUtil::formatForDisplay($params['title']);
 
-    $lang = pnUserGetLang(); // get language used in Zikula
+    $lang = ZLanguage::getLanguageCode(); // get language used in Zikula
 
     // See if already in the cache
     $title_part = ($params['title'])? md5($params['title']) : "x";

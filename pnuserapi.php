@@ -644,7 +644,7 @@ function TNGz_userapi_GetTNGlanguage($args)
     //////////////////////////////////////////////////////
     // Language Settings
     //////////////////////////////////////////////////////
-    $languages = array(
+    $languages3 = array(
     // Zikula => TNG
         'deu' => 'German',
         'fra' => 'French',
@@ -668,23 +668,69 @@ function TNGz_userapi_GetTNGlanguage($args)
         'por' => 'Portuguese',
          // Non-ISO entries are written as x_[language name]
         'x_brazilian_portuguese' => 'PortugueseBR',
-         // todo: figure out when to use UTF-8 versions
-//      'fra' => 'French-UTF8',
-//      'deu' => 'German-UTF8',
         'eng' => 'English'
     );
 
-    $newlanguage = false; // default to use language setting from TNG
-    $zikulalang = pnUserGetLang(); // get language used in Zikula
-    if ( isset($languages[$zikulalang]) ) { // is it defined?
+    $languages2 = array(
+        'de'    => 'German-UTF8',
+        'fr'    => 'French-UTF8',
+        'pl'    => 'Polish-UTF8',
+        'it'    => 'Italian-UTF8',
+        'dk'    => 'Dutch-UTF8',
+        'es'    => 'Spanish-UTF8',
+        'af'    => 'Afrikaans-UTF8',
+        'hr'    => 'Croatian-UTF8',
+        'cz'    => 'Czech-UTF8',
+        'da'    => 'Danish-UTF8',
+        'fi'    => 'Finnish-UTF8',
+        'el'    => 'Greek-UTF8',
+        'is'    => 'Icelandic-UTF8',
+        'nb'    => 'Norwegian-UTF8',
+        'nn'    => 'Norwegian-UTF8',
+        'ro'    => 'Romanian-UTF8',
+        'ru'    => 'Russian-UTF8',
+        'sr'    => 'Serbian-UTF8',
+        'sv'    => 'Swedish-UTF8',
+        'pt'    => 'PortugueseBR-UTF8',
+        'en'    => 'English-UTF8'
+    );
+    
+
+    // Check legacy 3 character language codes  
+    $zikulalang3 = ZLanguage::getLanguageCodeLegacy(); // get old 3 character language code used in Zikula
+    if ( isset($languages3[$zikulalang3]) ) { // is it defined?
         // If the Zikula language has been installed in TNG, then use it
         // NOTE: May want to add a Zikula Administration setting to turn this on/off
         // QUESTION: Is there a TNG setting that must be enabled for this to work?
-        if (file_exists($TNG['directory']. "/" . $languages[$zikulalang] . "/text.php") ) {
-            $newlanguage = $languages[$zikulalang];
+        if (file_exists($TNG['directory']. "/" . $languages3[$zikulalang3] . "/text.php") ) {
+            $newlanguage3 = $languages3[$zikulalang3];
+        } else {
+            $newlanguage3 = false;
         }
     }
-    return $newlanguage;
+
+    // Check new 2 character language codes
+    $zikulalang2 = ZLanguage::getLanguageCode();       // get new 2 character language code used in Zikula
+    if ( isset($languages2[$zikulalang2]) ) { // is it defined?
+        // If the Zikula language has been installed in TNG, then use it
+        // NOTE: May want to add a Zikula Administration setting to turn this on/off
+        // QUESTION: Is there a TNG setting that must be enabled for this to work?
+        if (file_exists($TNG['directory']. "/" . $languages2[$zikulalang2] . "/text.php") ) {
+            $newlanguage2 = $languages2[$zikulalang2];
+        } else {
+            $newlanguage2 = false;
+        }
+    }
+    
+    // echo "<!--" . "languages: $newlanguage2 $newlanguage3 " . echo "-->\n";
+    
+    if ($newlanguage2) {  // prefer this if set
+       return $newlanguage2;
+    }
+    if ($newlanguage3) {  // fall back to legacy if set
+       return $newlanguage3;
+    }
+    return false;  // otherwise, default to use language setting from TNG
 }
 
 

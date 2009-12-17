@@ -45,7 +45,7 @@ function TNGz_Surnamesblock_display($blockinfo)
         return false;
     }
 
-    $userlanguage = pnUserGetLang();  //get the user's language
+    $userlanguage = ZLanguage::getLanguageCode(); //get the user's language
 
     // Get variables from content block
     $vars = pnBlockVarsFromContent($blockinfo['content']);
@@ -109,8 +109,10 @@ function TNGz_Surnamesblock_modify($blockinfo)
     if (!isset($vars['intro'])) {
         $vars['intro'] = array();
     }
-    Loader::loadClass('LanguageUtil');
-    $languages = LanguageUtil::getLanguages();
+
+    Loader::loadClass('ZLanguage');
+    $languages    = ZLanguage::getInstalledLanguages();
+
     // make sure each language has an initial value
     foreach($languages as $lang) {
         if (!array_key_exists($lang, $vars['intro'])) {
