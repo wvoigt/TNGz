@@ -13,7 +13,7 @@
  */
 
 $modversion['name']           = 'TNGz';   //Module name
-$modversion['version']        = '1.3';    //Version number
+$modversion['version']        = '1.4a';    //Version number
 $modversion['description']    = 'TNG integration into Zikula';  //Module description
 $modversion['displayname']    = 'TNG integration module for Zikula';  // Module display name
 $modversion['url']            = 'TNGz';  // used in creating URLs
