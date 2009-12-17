@@ -50,7 +50,7 @@ function smarty_function_placemap($params, &$smarty)
     $lng   = ($lng >  180 ) ?  180 : $lng ;   // check max
     $lng   = ($lng < -180 ) ? -180 : $lng ;   // check min
 
-    $lang = pnUserGetLang(); // get language used in Zikula
+    $lang = ZLanguage::getLanguageCode(); // get language used in Zikula
 
     // Check to be sure we can get to the TNG information
     $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');

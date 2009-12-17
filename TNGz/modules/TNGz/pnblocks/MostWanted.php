@@ -75,8 +75,8 @@ function TNGz_MostWantedblock_display($blockinfo)
     //    E = Order Entered
     }
 
-    // get language and default to eng
-    $userlanguage = pnUserGetLang();
+    // get language and default to en
+    $userlanguage = ZLanguage::getLanguageCode();
 
     // Upgrade from prior version that used $vars['wantedtext'] (i.e., a single language version)
     // If nothing exists in existing language, use any value that was in 'wantedtext'
@@ -320,10 +320,10 @@ function TNGz_MostWantedblock_modify($blockinfo)
         $vars['sortby']     = "E";
     }
 
-    // get language and default to eng
-    Loader::loadClass('LanguageUtil');
-    $languages = LanguageUtil::getLanguages();
-    $userlanguage = pnUserGetLang();
+    // get language and default to en
+    Loader::loadClass('ZLanguage');
+    $languages    = ZLanguage::getInstalledLanguages();
+    $userlanguage = ZLanguage::getLanguageCode();
 
     // Upgrade from prior version that used $vars['wantedtext'] (i.e., a single language version)
     // If nothing exists in existing language, use any value that was in 'wantedtext'
