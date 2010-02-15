@@ -30,7 +30,9 @@
  * @return string containing HTML formated display of today's events
  */
 function smarty_function_thisday($params, &$smarty)
-{   
+{
+    $dom = ZLanguage::getModuleDomain('TNGz');
+
     // Valid answers, default is the first in the list
     $answer_yes    = array('Y', 'yes', 'y', '1', 'all');  // Answers for Yes or All
     $answer_no     = array('N', 'no',  'n', '0', 'none'); // Answers for No or none
@@ -98,7 +100,7 @@ function smarty_function_thisday($params, &$smarty)
         $have_info = 1;
     } else {
         $have_info = 0;
-        $thisday_error  = ""._PEOPLEDBFERROR." " . $TNG_conn->ErrorMsg();
+        $thisday_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
     }
 
     // Check to see of this user has the permissions to see living conditionally
@@ -192,7 +194,7 @@ function smarty_function_thisday($params, &$smarty)
             $query .= " order by birthdate ASC";
         }
         if (!$result = $TNG_conn->Execute($query)  ) {
-            $thisday_error  = ""._PEOPLEDBFERROR." " . $TNG_conn->ErrorMsg();
+            $thisday_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
         } else {
             $found = $result->RecordCount();
             if ($found == 0){
@@ -263,7 +265,7 @@ function smarty_function_thisday($params, &$smarty)
             $query .= " order by marrdatetr ASC";
         }
         if (!$result = &$TNG_conn->Execute($query) ) {
-            $thisday_error  = ""._PEOPLEDBFERROR." " . $TNG_conn->ErrorMsg();
+            $thisday_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
         } else {
             $found = $result->RecordCount();
             if ($found == 0){
@@ -273,7 +275,8 @@ function smarty_function_thisday($params, &$smarty)
  	    		    $title1 = $row['HLast'];
                     $title1 .= ", " ;
                     $title1 .= $row['HFirst'];
-                    $title1 .= " " . _MARRIAGE_AND . " ";
+                    /* ThisDay plugin marriage 'and' */
+                    $title1 .= " " . __('&', $dom /*! ThisDay plugin marriage 'and'*/) . " ";
 	    		    $title1 .= $row['WFirst'];
                     if ($row['WLast'] != ""){
                         $title1 .= " " . $row['WLast'];
@@ -287,7 +290,7 @@ function smarty_function_thisday($params, &$smarty)
                     }
                     $title1 .= "]" ;
                     if ($row['divdate']!="" ){
-                        $title1 .= "(" . _DIVORCED . ")" ;
+                        $title1 .= "(" . __('Divorced', $dom) . ")" ;
                     }
                     if ($params['link']=='Y') {
                         $temp = pnModAPIFunc('TNGz','user','MakeRef',
@@ -322,7 +325,7 @@ function smarty_function_thisday($params, &$smarty)
             $query .= " order by deathdate ASC";
         }
         if (!$result = &$TNG_conn->Execute($query) ) {
-            $thisday_error  = ""._PEOPLEDBFERROR." " . $TNG_conn->ErrorMsg();
+            $thisday_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
         } else {
             $found = $result->RecordCount();
             if ($found == 0){
@@ -376,7 +379,7 @@ function smarty_function_thisday($params, &$smarty)
     if ($params['link'] == "Y") {
         $thisday_mainmenu = pnModAPIFunc('TNGz','user','MakeRef',
                                           array('func'        => "",
-                                                'description' => ""._ACCESSTNG."",
+                                                'description' => __('Genealogy Page', $dom),
                                                 'target'      => $target
                                                ));
     } else {
@@ -384,25 +387,25 @@ function smarty_function_thisday($params, &$smarty)
     }
 
 
-    $pnRender = pnRender::getInstance('TNGz', false);
+    $render = & pnRender::getInstance('TNGz', false);
 
     PageUtil::addVar('stylesheet', ThemeUtil::getModuleStylesheet('TNGz'));
 
-    $pnRender->assign('todaytime'    , $thisday_time);
-    $pnRender->assign('showdate'     , $thisday_showdate);
-    $pnRender->assign('showbirth'    , $thisday_showbirth);
-    $pnRender->assign('birth'        , $thisday_birthitems);
-    $pnRender->assign('showmarriage' , $thisday_showmarriage);
-    $pnRender->assign('marriage'     , $thisday_marriageitems);
-    $pnRender->assign('showdeath'    , $thisday_showdeath);
-    $pnRender->assign('death'        , $thisday_deathitems);
-    $pnRender->assign('showwiki'     , $thisday_showwiki);
-    $pnRender->assign('mainmenu'     , $thisday_mainmenu);
-    $pnRender->assign('thisdayerror' , $thisday_error);
-    $pnRender->assign('title'        , $params['title']);
+    $render->assign('todaytime'    , $thisday_time);
+    $render->assign('showdate'     , $thisday_showdate);
+    $render->assign('showbirth'    , $thisday_showbirth);
+    $render->assign('birth'        , $thisday_birthitems);
+    $render->assign('showmarriage' , $thisday_showmarriage);
+    $render->assign('marriage'     , $thisday_marriageitems);
+    $render->assign('showdeath'    , $thisday_showdeath);
+    $render->assign('death'        , $thisday_deathitems);
+    $render->assign('showwiki'     , $thisday_showwiki);
+    $render->assign('mainmenu'     , $thisday_mainmenu);
+    $render->assign('thisdayerror' , $thisday_error);
+    $render->assign('title'        , $params['title']);
 
     // Populate block info and pass to theme
-    $output = $pnRender->fetch('TNGz_plugin_ThisDay.htm');
+    $output = $render->fetch('TNGz_plugin_ThisDay.htm');
 
     // now update the cache
     if ($params['cache'] == "Y") {

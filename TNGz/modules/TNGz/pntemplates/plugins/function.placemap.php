@@ -27,6 +27,8 @@
  */
 function smarty_function_placemap($params, &$smarty)
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
+    
     // Get parameters
     $width = $params['width'];  
     $width  = (is_numeric($width) && $width > 0)? intval($width) : 600;  // Get valid value or set default
@@ -58,7 +60,7 @@ function smarty_function_placemap($params, &$smarty)
         include($TNG['configfile']);
         include($TNG['configpath'] . 'mapconfig.php');
     } else {
-        return ""._PEOPLEDBFERROR."";
+        return __('Error in accessing the TNG tables.', $dom);
     }
 
     $text = pnModAPIFunc('TNGz','user','GetTNGtext');

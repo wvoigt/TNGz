@@ -33,6 +33,7 @@ function TNGz_MostWanted_init()
 
 function TNGz_MostWantedblock_display($blockinfo)
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
 
     if( !pnSecAuthAction( 0, 'TNGz:MostWantedblock:', "$blockinfo[title]::", ACCESS_READ ) )
         return false;
@@ -129,7 +130,7 @@ function TNGz_MostWantedblock_display($blockinfo)
         $have_info = 1;
     } else {
         $have_info = 0;
-        $MostWanted_error  = ""._PEOPLEDBFERROR."";
+        $MostWanted_error  = __('Error in accessing the TNG tables.', $dom);
     }
 
     // Now go get those IDs and compile the list
@@ -146,7 +147,7 @@ function TNGz_MostWantedblock_display($blockinfo)
             $query .= ""; // use the order given
         }
         if (!$result = &$TNG_conn->Execute($query)  ) {
-            $MostWanted_error  = ""._PEOPLEDBFERROR." " . $TNG_conn->ErrorMsg();
+            $MostWanted_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
         } else {
             $found = $result->RecordCount();
             if ($found == 0) {
@@ -204,7 +205,7 @@ function TNGz_MostWantedblock_display($blockinfo)
             $query .= " order by marrdatetr ASC";
         }
         if (!$result = &$TNG_conn->Execute($query) ) {
-            $thisday_error  = ""._PEOPLEDBFERROR." " . $TNG_conn->ErrorMsg();
+            $thisday_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
         } else {
             $found = $result->RecordCount();
             if ($found == 0) {
@@ -259,7 +260,8 @@ function TNGz_MostWantedblock_display($blockinfo)
     if ($vars['wantedmenulink'] == "Y") {
         $MostWantedMenuLink = pnModAPIFunc('TNGz','user','MakeRef',
                                             array('func'        => "main",
-                                                'description' => ""._ACCESSTNG."",
+                                                /*! Genealogy Page link name */
+                                                'description' => __('Genealogy Page', $dom /*! Genealogy Page link name*/),
                                                 'target'      => $target,
                                                 'RefType'     => $TNGstyle
                                                 ));
@@ -277,23 +279,25 @@ function TNGz_MostWantedblock_display($blockinfo)
     // Create output object
     // Note that for a block the corresponding module must be passed.
 
-    $pnRender = pnRender::getInstance('TNGz', $zcaching);
+    $render = pnRender::getInstance('TNGz', $zcaching);
 
     PageUtil::addVar('stylesheet', ThemeUtil::getModuleStylesheet('TNGz'));
 
-    $pnRender->assign('WantedText',         $vars['wantedintro'][$userlanguage]);
-    $pnRender->assign('WantedPeopleList',   $Mostwantedpeoplelist);
-    $pnRender->assign('WantedFamilyList',   $Mostwantedfamilylist);
-    $pnRender->assign('WantedMenuLink',     $MostWantedMenuLink);
+    $render->assign('WantedText',         $vars['wantedintro'][$userlanguage]);
+    $render->assign('WantedPeopleList',   $Mostwantedpeoplelist);
+    $render->assign('WantedFamilyList',   $Mostwantedfamilylist);
+    $render->assign('WantedMenuLink',     $MostWantedMenuLink);
 
     // Populate block info and pass to theme
-    $blockinfo['content'] = $pnRender->fetch('TNGz_block_MostWanted.htm');
+    $blockinfo['content'] = $render->fetch('TNGz_block_MostWanted.htm');
 
     return themesideblock($blockinfo);
 }
 
 function TNGz_MostWantedblock_modify($blockinfo)
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
+
     // Get current content
     $vars = pnBlockVarsFromContent($blockinfo['content']);
 
@@ -340,37 +344,37 @@ function TNGz_MostWantedblock_modify($blockinfo)
     }
 
     // Create output object
-    $pnRender =& new pnRender('TNGz');
+    $render = & pnRender::getInstance('TNGz', false);
 
     // As Admin output changes often, we do not want caching.
-    $pnRender->caching = false;
+    $render->caching = false;
 
     // assign the approriate values
-    $pnRender->assign('sortbylist', array(
-                                            N => pnVarPrepHTMLDisplay(_SELECTORDERN),
-                                            D => pnVarPrepHTMLDisplay(_SELECTORDERD),
-                                            R => pnVarPrepHTMLDisplay(_SELECTORDERR),
-                                            E => pnVarPrepHTMLDisplay(_SELECTORDERE)
+    $render->assign('sortbylist', array(
+                                            N => pnVarPrepHTMLDisplay(__('Last Name, First Name', $dom)),
+                                            D => pnVarPrepHTMLDisplay(__('Event date - earliest to latest', $dom)),
+                                            R => pnVarPrepHTMLDisplay(__('Event date - latest to earliest', $dom)),
+                                            E => pnVarPrepHTMLDisplay(__('Order entered', $dom))
                                             ) );
-    $pnRender->assign('wantednamelist', array(
-                                            F => pnVarPrepHTMLDisplay(_SELECTFAMILYFULL),
-                                            S => pnVarPrepHTMLDisplay(_SELECTFAMILYSHORT)
-                                            ) );
-
-    $pnRender->assign('yeslist', array(
-                                            Y => pnVarPrepHTMLDisplay(_SELECTYES),
-                                            N => pnVarPrepHTMLDisplay(_SELECTNO)
+    $render->assign('wantednamelist', array(
+                                            F => pnVarPrepHTMLDisplay(__('Full names', $dom)),
+                                            S => pnVarPrepHTMLDisplay(__('Surnames only', $dom))
                                             ) );
 
-    $pnRender->assign('sortby'           , $vars['sortby']);
-    $pnRender->assign('wantedintro'      , $vars['wantedintro']);    
-    $pnRender->assign('wantedpeoplelist' , $vars['wantedpeoplelist']);
-    $pnRender->assign('wantedfamilylist' , $vars['wantedfamilylist']);
-    $pnRender->assign('wantedfamilyname' , $vars['wantedfamilyname']);
-    $pnRender->assign('wantedmenulink'   , $vars['wantedmenulink']);
+    $render->assign('yeslist', array(
+                                            Y => pnVarPrepHTMLDisplay(__('Yes', $dom)),
+                                            N => pnVarPrepHTMLDisplay(__('No', $dom))
+                                            ) );
+
+    $render->assign('sortby'           , $vars['sortby']);
+    $render->assign('wantedintro'      , $vars['wantedintro']);    
+    $render->assign('wantedpeoplelist' , $vars['wantedpeoplelist']);
+    $render->assign('wantedfamilylist' , $vars['wantedfamilylist']);
+    $render->assign('wantedfamilyname' , $vars['wantedfamilyname']);
+    $render->assign('wantedmenulink'   , $vars['wantedmenulink']);
 
     // Return the output that has been generated by this function
-    return $pnRender->fetch('TNGz_block_MostWanted_modify.htm');
+    return $render->fetch('TNGz_block_MostWanted_modify.htm');
 }
 
 function TNGz_MostWantedblock_update($blockinfo)
@@ -390,8 +394,8 @@ function TNGz_MostWantedblock_update($blockinfo)
     $blockinfo['content'] = pnBlockVarsToContent($vars);
 
     // clear the block cache
-    //	$pnRender =& new pnRender('TNGz');
-    //	$pnRender->clear_cache('example_block_first.htm');
+    //	$render =& new pnRender('TNGz');
+    //	$render->clear_cache('example_block_first.htm');
 
     return $blockinfo;
 }

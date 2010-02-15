@@ -27,6 +27,8 @@
  */
 function smarty_function_places($params, &$smarty)
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
+    
     // Get parameters
     // Valid answers, default is the first in the list
     $answer_yes    = array('Y', 'yes', 'y', '1', 'on', 'all');  // Answers for Yes or All
@@ -148,16 +150,17 @@ function smarty_function_places($params, &$smarty)
         $output .= "<form style=\"margin:0px\" action=\"index.php\" method=\"post\">";
         $output .= "<input type=\"hidden\" name=\"module\" value=\"TNGz\" />";
         $output .= "<input type=\"hidden\" name=\"show\" value=\"places100\" />";
-        $output .= _TNGZ_FORM_SHOWTOP;
+        $output .= __('Show top', $dom);
         $output .= " <input type=\"text\" name=\"topnum\" value=\"100\" size=\"3\" maxlength=\"3\" /> ";
-        $output .= _TNGZ_FORM_ORDERBYOCC;
+        $output .= __('ordered by occurrence', $dom);
         //$output .= "<input type=\"hidden\" name=\"tree\" value=\"\" />";
-        $output .= " <input type=\"submit\" value=\"". _TNGZ_FORM_GO ."\" />";
+        /*! Submit button */
+        $output .= " <input type=\"submit\" value=\"". __('Go', $dom  /*! The Submit Button*/) ."\" />";
         $output .= "</form>";
         $output .= "<br />";
-        $output .= "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'places-all'))) . "\">" . _TNGZ_PLACES_LINK_PLACES_ALL  . "</a>";
+        $output .= "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'places-all'))) . "\">" . __('Show all places alphabetically', $dom) . "</a>";
         $output .= "<br />";
-        $output .= "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'places'    ))) . "\">" . _TNGZ_PLACES_LINK_PLACES . "</a>";
+        $output .= "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'places'    ))) . "\">" . __('Main places page', $dom) . "</a>";
         $output .= "</div>";
     }
 

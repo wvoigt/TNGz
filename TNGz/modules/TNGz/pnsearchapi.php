@@ -27,8 +27,8 @@ function TNGz_searchapi_info()
 function TNGz_searchapi_options($args)
 {
     if (SecurityUtil::checkPermission( 'TNGz::', '::', ACCESS_READ)) {
-        $pnRender = pnRender::getInstance('TNGz');
-        return $pnRender->fetch('TNGz_search_options.htm');
+        $render = & pnRender::getInstance('TNGz', false);
+        return $render->fetch('TNGz_search_options.htm');
     }
 
     return '';
@@ -39,6 +39,8 @@ function TNGz_searchapi_options($args)
  **/
 function TNGz_searchapi_search($args)
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
+    
     pnModDBInfoLoad('Search');
        
     $pntable = pnDBGetTables();
@@ -68,7 +70,7 @@ function TNGz_searchapi_search($args)
         $TNG_conn = &ADONewConnection('mysql');
         $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
     } else {
-        return LogUtil::registerError (_GETFAILED . " (#1)");
+        return LogUtil::registerError (__('Error! Could not load items.', $dom) . " (#1)");
     }
     
     // Save a few TNG config variables for later use
@@ -119,7 +121,7 @@ VALUES ";
 
     if (!$result) {
         LogUtil::log('TNGz query : '.$sql, 'STRICT');
-        return LogUtil::registerError (_GETFAILED. " (#2)");
+        return LogUtil::registerError (__('Error! Could not load items.', $dom). " (#2)");
     }
 
     // Process the result set and insert into search result table
@@ -188,7 +190,7 @@ VALUES ";
                 }
                 $display_text = preg_replace('/(\s)*,(\s|,)+/',', ',$display_text);
             } else {
-                $display_text = _TNGZ_SEARCH_LIVING;
+                $display_text = __('The following individual is flagged as living - Details withheld.', $dom);
             }
 
             $sql = $insertSql . '('

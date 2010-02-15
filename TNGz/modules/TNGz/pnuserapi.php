@@ -239,9 +239,10 @@ function TNGz_userapi_getperson($args)
 
 function TNGz_userapi_ShowPage($args)
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
 
     if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_OVERVIEW)) {
-        return LogUtil::registerError(_MODULENOAUTH);
+        return LogUtil::registerError(__('Sorry! No authorization to access this module.', $dom));
     }
 
     // Check Render arguments
@@ -313,7 +314,7 @@ function TNGz_userapi_ShowPage($args)
     $cms[url]          = "index.php?module=$TNGz_modname".$Pass_lang."&show";
     //$cms[url]        = rtrim(pnModURL('TNGz','user','main', array('show'=>'')),"=");
                          // these are not as good
-    //$cms[url]        = _TNGZ_PREFIX;
+    //$cms[url]        = index.php?module=TNGz&func=main&show;
     //$cms[url]        = pnModURL('TNGz','user','main')."&amp;show"; //Some part of TNG does not work with short URLs enabled
 
     
@@ -625,12 +626,12 @@ function TNGz_userapi_ShowPage($args)
     }
 
     // Add TNG output to normal Zikula display
-    $pnRender = pnRender::getInstance('TNGz', false);
-    $pnRender->assign('TNGoutput'    , $TNGoutput);
-    $pnRender->assign('TNGtitle'     , $tng_title[1] );
-    $pnRender->assign('TNGzVersion'  , $TNGz_modinfo['version'] );
+    $render = & pnRender::getInstance('TNGz', false);
+    $render->assign('TNGoutput'    , $TNGoutput);
+    $render->assign('TNGtitle'     , $tng_title[1] );
+    $render->assign('TNGzVersion'  , $TNGz_modinfo['version'] );
 
-    return $pnRender->fetch('TNGz_user_main.htm');
+    return $render->fetch('TNGz_user_main.htm');
 
 }
 
@@ -1765,9 +1766,11 @@ function TNGz_userapi_ShortURLencode($matches)
  /* Disable for now
 function TNGz_userapi_encodeurl($args)
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
+    
     // check we have the required input
     if (!isset($args['modname']) || !isset($args['func']) || !isset($args['args'])) {
-        return LogUtil::registerError (_MODARGSERROR);
+        return LogUtil::registerError (__('Error! Could not do what you wanted. Please check your input.', $dom));
     }
 
     if (!isset($args['type'])) {
@@ -1829,9 +1832,11 @@ function TNGz_userapi_encodeurl($args)
  /* Disable for now
 function TNGz_userapi_decodeurl($args)
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
+    
     // check we actually have some vars to work with...
     if (!isset($args['vars'])) {
-        return LogUtil::registerError (_MODARGSERROR);
+        return LogUtil::registerError (__('Error! Could not do what you wanted. Please check your input.', $dom));
     }
 
     // define the available user functions

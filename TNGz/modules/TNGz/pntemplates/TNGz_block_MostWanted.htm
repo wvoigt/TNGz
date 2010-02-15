@@ -5,7 +5,7 @@
         <div style="text-align:center;"><!--[$WantedText|pnvarprephtmldisplay]--><br /></div>
     <!--[/if]-->
     <!--[if $WantedPeopleList ]-->
-        <div style="text-align:center;"><strong><br /><!--[pnml name="_TNGZ_WHATSNEW_HEAD_PEOPLE"|pnvarprephtmldisplay]--></strong></div>
+        <div style="text-align:center;"><strong><br /><!--[gt text="Individuals" domain="module_TNGz"]--></strong></div>
         <ul>
         <!--[foreach item=item from=$WantedPeopleList]-->
         <li><!--[$item]--></li>
@@ -14,7 +14,7 @@
         <!--[counter name=ItemCount assign=ItemCount ]-->
     <!--[/if]-->
     <!--[if $WantedFamilyList ]-->
-        <div style="text-align:center;"><strong><br /><!--[pnml name="_TNGZ_WHATSNEW_HEAD_FAMILY"|pnvarprephtmldisplay]--></strong></div>
+        <div style="text-align:center;"><strong><br /><!--[gt text="Families" domain="module_TNGz"]--></strong></div>
         <ul>
         <!--[foreach item=item from=$WantedFamilyList]-->
         <li><!--[$item]--></li>
@@ -23,7 +23,7 @@
         <!--[counter name=ItemCount assign=ItemCount ]-->
     <!--[/if]-->
     <!--[if $ItemCount eq 0 ]-->
-        <div style="text-align:center;"><br /><!--[pnml name="_NONETNG"|pnvarprephtmldisplay]--><br /></div>
+        <div style="text-align:center;"><br /><!--[gt text="Nobody found for today" domain="module_TNGz"]--><br /></div>
     <!--[/if]-->
     <!--[if $WantedMenuLink ]-->
         <div style="text-align:center;"><strong><br /><!--[$WantedMenuLink]--></strong><br /></div>
@@ -31,6 +31,6 @@
 </div>
 <!--[ if $access_edit ]-->
 <div style="text-align:right;">
-    <a href="<!--[ pnmodurl modname=Blocks type=admin func=modify bid=$blockinfo.bid fromblock=1]-->" title="<!--[ pnml name='_ACCESS_EDIT' ]-->"><!--[ pnml name='_EMENU_EDITTHISBLOCK' ]--></a>
+    <a href="<!--[pnmodurl modname=Blocks type=admin func=modify bid=$blockinfo.bid fromblock=1]-->" title="<!--[gt text='Edit' domain="module_TNGz"]-->"><!--[gt text='Edit this Block' domain="module_TNGz"]--></a>
 </div>
 <!--[ /if ]-->

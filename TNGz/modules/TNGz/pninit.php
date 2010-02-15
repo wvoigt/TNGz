@@ -18,11 +18,13 @@
  */
 function TNGz_init()
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
 
     pnModSetVar(TNGz, '_loc'     ,  'TNG');
     pnModSetVar(TNGz, '_window'  ,   0);
     pnModSetVar(TNGz, '_guest'   ,   0);
-    pnModSetVar(TNGz, '_gname'   ,  _TNGZGUESTDEFAULT);
+/* ! this is the default guest user name to be used with TNG */
+    pnModSetVar(TNGz, '_gname'   ,  __('Guest', $dom /* ! this is the default guest user name to be used with TNG */));
     pnModSetVar(TNGz, '_users'   ,   0);
     pnModSetVar(TNGz, '_living'  ,   0);
     pnModSetVar(TNGz, '_gedcom'  ,   0);
@@ -45,10 +47,10 @@ function TNGz_upgrade($oldversion)
     $successful = false;
 
     switch($oldversion) {
-        case 0.00:
-        case 1.01:
-        case 1.1:
-        case 2.00:
+        case '0.00':
+        case '1.01':
+        case '1.1':
+        case '2.00':
         default:
               $successful = true;
               break;

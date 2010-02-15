@@ -27,6 +27,8 @@
  */
 function smarty_function_surnames($params, &$smarty)
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
+    
     // Get parameters
     // Valid answers, default is the first in the list
     $answer_yes    = array('Y', 'yes', 'y', '1', 'on', 'all');  // Answers for Yes or All
@@ -163,16 +165,17 @@ function smarty_function_surnames($params, &$smarty)
         $output .= "<form style=\"margin:0px\" action=\"index.php\" method=\"post\">";
         $output .= "<input type=\"hidden\" name=\"module\" value=\"TNGz\" />";
         $output .= "<input type=\"hidden\" name=\"show\" value=\"surnames100\" />";
-        $output .= _TNGZ_FORM_SHOWTOP;
+        $output .= __('Show top', $dom);
         $output .= " <input type=\"text\" name=\"topnum\" value=\"100\" size=\"3\" maxlength=\"3\" /> ";
-        $output .= _TNGZ_FORM_ORDERBYOCC;
+        $output .= __('ordered by occurrence', $dom);
         //$output .= "<input type=\"hidden\" name=\"tree\" value=\"\" />";
-        $output .= " <input type=\"submit\" value=\"". _TNGZ_FORM_GO ."\" />";
+        /*! Submit button */
+        $output .= " <input type=\"submit\" value=\"". __('Go', $dom /*! The Submit button */)."\" />";
         $output .= "</form>";
         $output .= "<br />";
-        $output .= "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'surnames-all'))) . "\">" . _TNGZ_SURNAMES_LINK_SURNAMES_ALL  . "</a>";
+        $output .= "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'surnames-all'))) . "\">" . __('Show all surnames alphabetically', $dom) . "</a>";
         $output .= "<br />";
-        $output .= "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'surnames'    ))) . "\">" . _TNGZ_SURNAMES_LINK_SURNAMES . "</a>";
+        $output .= "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'surnames'    ))) . "\">" . __('Main surname page', $dom) . "</a>";
         $output .= "</div>";
     }
     

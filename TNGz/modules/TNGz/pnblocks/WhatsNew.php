@@ -37,6 +37,7 @@ function TNGz_WhatsNewblock_init()
 
 function TNGz_WhatsNewblock_display($blockinfo)
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
 
     if( !pnSecAuthAction( 0, 'TNGz:WhatsNewblock:', "$blockinfo[title]::", ACCESS_READ ) )
 	    return false;
@@ -63,10 +64,10 @@ function TNGz_WhatsNewblock_display($blockinfo)
         $vars['showphotos']  = "Y";
     }
     if (empty($vars['maxitems']) || !is_numeric($vars['maxitems']) ) {
-        $vars['maxitems']    = _TNGZ_WHATSNEW_HOWMANY_NUM;
+        $vars['maxitems']    = 10;
     }
     if (empty($vars['howlong'])  || !is_numeric($vars['howlong'])  ) {
-        $vars['howlong']     = _TNGZ_WHATSNEW_HOWLONG_NUM;
+        $vars['howlong']     = 30;
     }
     $howlong  = $vars['howlong'];
     $maxitems = $vars['maxitems'];
@@ -112,7 +113,7 @@ function TNGz_WhatsNewblock_display($blockinfo)
         $have_info = 1;
     } else {
         $have_info = 0;
-        $whatsnew_error = ""._PEOPLEDBFERROR."";
+        $whatsnew_error = __('Error in accessing the TNG tables.', $dom);
     }
 
     //////////// PEOPLE ///////////////////////
@@ -122,7 +123,7 @@ function TNGz_WhatsNewblock_display($blockinfo)
 	//select from people where date later than cutoff, order by changedate descending, limit = 10
 	$query = "SELECT personID, firstname, lastname, living, DATE_FORMAT(changedate,'%d %b') as changedatef, gedcom FROM $people_table WHERE TO_DAYS(NOW()) - TO_DAYS(changedate) <= $howlong ORDER BY changedate DESC, lastname, firstname LIMIT $maxitems";
 	if (!$result = &$TNG_conn->Execute($query)  ) {
-            $whatsnew_error = ""._TNGZ_WHATSNEW_SQLERROR . " " . $TNG_conn->ErrorMsg();
+            $whatsnew_error = __('Error in accessing the database.', $dom) . " " . $TNG_conn->ErrorMsg();
         } else {
             $found = $result->RecordCount();
             if ($found == 0){
@@ -157,7 +158,7 @@ function TNGz_WhatsNewblock_display($blockinfo)
 		ORDER BY f.changedate DESC, h.lastname LIMIT $maxitems";
 
 	if (!$result = &$TNG_conn->Execute($query)  ) {
-            $whatsnew_error = ""._TNGZ_WHATSNEW_SQLERROR." " . $TNG_conn->ErrorMsg();
+            $whatsnew_error = __('Error in accessing the database.', $dom)." " . $TNG_conn->ErrorMsg();
         } else {
             $found = $result->RecordCount();
             if ($found == 0){
@@ -189,7 +190,7 @@ function TNGz_WhatsNewblock_display($blockinfo)
 		FROM $histories_table ht WHERE TO_DAYS(NOW()) - TO_DAYS(changedate) <= $howlong
 		ORDER BY changedate DESC LIMIT $maxitems";
 	if (!$result = &$TNG_conn->Execute($query)  ) {
-            $view_history .= ""._TNGZ_WHATSNEW_SQLERROR." " . $TNG_conn->ErrorMsg();
+            $view_history .= __('Error in accessing the database.', $dom)." " . $TNG_conn->ErrorMsg();
         } else {
             $history_count == 0;
             for (; !$result->EOF; $result->MoveNext()) {
@@ -242,7 +243,7 @@ function TNGz_WhatsNewblock_display($blockinfo)
                          DESC LIMIT $maxitems";
 
 	if (!$result = &$TNG_conn->Execute($query)  ) {
-            $whatsnew_error .= ""._TNGZ_WHATSNEW_SQLERROR." " . $TNG_conn->ErrorMsg();
+            $whatsnew_error .= __('Error in accessing the database.', $dom)." " . $TNG_conn->ErrorMsg();
         } else {
             for (; !$result->EOF; $result->MoveNext()) {
                 list($mediaID,$description,$picpath, $thumbpath,$change_date) = $result->fields;
@@ -295,30 +296,31 @@ function TNGz_WhatsNewblock_display($blockinfo)
     // Create output object
     // Note that for a block the corresponding module must be passed.
 
-    $pnRender = pnRender::getInstance('TNGz', $zcaching);
+    $render = & pnRender::getInstance('TNGz', $zcaching);
 
     PageUtil::addVar('stylesheet', ThemeUtil::getModuleStylesheet('TNGz'));
 
-    $pnRender->assign('whatsnewerror'   , $whatsnew_error);
-    $pnRender->assign('showpeople'      , $whatsnew_showpeople);
-    $pnRender->assign('showpeopleitems' , $whatsnew_showpeopleitems);
-    $pnRender->assign('showfamily'      , $whatsnew_showfamily);
-    $pnRender->assign('showfamilyitems' , $whatsnew_showfamilyitems);
-    $pnRender->assign('showhistory'     , $whatsnew_showhistory);
-    $pnRender->assign('showhistoryitems', $whatsnew_showhistoryitems);
-    $pnRender->assign('showphotos'      , $whatsnew_showphotos);
-    $pnRender->assign('showphotositems' , $whatsnew_showphotositems);
-    $pnRender->assign('maxitems'        , $whatsnew_maxitems);
-    $pnRender->assign('howlong'         , $whatsnew_howlong);
+    $render->assign('whatsnewerror'   , $whatsnew_error);
+    $render->assign('showpeople'      , $whatsnew_showpeople);
+    $render->assign('showpeopleitems' , $whatsnew_showpeopleitems);
+    $render->assign('showfamily'      , $whatsnew_showfamily);
+    $render->assign('showfamilyitems' , $whatsnew_showfamilyitems);
+    $render->assign('showhistory'     , $whatsnew_showhistory);
+    $render->assign('showhistoryitems', $whatsnew_showhistoryitems);
+    $render->assign('showphotos'      , $whatsnew_showphotos);
+    $render->assign('showphotositems' , $whatsnew_showphotositems);
+    $render->assign('maxitems'        , $whatsnew_maxitems);
+    $render->assign('howlong'         , $whatsnew_howlong);
 
     // Populate block info and pass to theme
-    $blockinfo['content'] = $pnRender->fetch('TNGz_block_WhatsNew.htm');
+    $blockinfo['content'] = $render->fetch('TNGz_block_WhatsNew.htm');
 
     return themesideblock($blockinfo);
 }
 
 function TNGz_WhatsNewblock_modify($blockinfo)
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
 
     // Get current content
     $vars = pnBlockVarsFromContent($blockinfo['content']);
@@ -347,31 +349,33 @@ function TNGz_WhatsNewblock_modify($blockinfo)
     }
 
     // Create output object
-	$pnRender =& new pnRender('TNGz');
+    $render = & pnRender::getInstance('TNGz', false);
 
 	// As Admin output changes often, we do not want caching.
-	$pnRender->caching = false;
+	$render->caching = false;
 
     // assign the approriate values
-    $pnRender->assign('yesnolist', array(
-                                          Y => pnVarPrepHTMLDisplay(_TNGZ_WHATSNEW_YES),
-                                          N => pnVarPrepHTMLDisplay(_TNGZ_WHATSNEW_NO)
+    $render->assign('yesnolist', array(
+                                          Y => pnVarPrepHTMLDisplay(__('Yes', $dom)),
+                                          N => pnVarPrepHTMLDisplay(__('No', $dom))
                                          ) );
 
-	$pnRender->assign('showpeople'  , $vars['showpeople']);
-	$pnRender->assign('showfamily'  , $vars['showfamily']);
-	$pnRender->assign('showphotos'  , $vars['showphotos']);
-	$pnRender->assign('showhistory' , $vars['showhistory']);
-	$pnRender->assign('maxitems'    , $vars['maxitems']);
-	$pnRender->assign('howlong'     , $vars['howlong']);
-	$pnRender->assign('usecache'   , $vars['usecache']);
+	$render->assign('showpeople'  , $vars['showpeople']);
+	$render->assign('showfamily'  , $vars['showfamily']);
+	$render->assign('showphotos'  , $vars['showphotos']);
+	$render->assign('showhistory' , $vars['showhistory']);
+	$render->assign('maxitems'    , $vars['maxitems']);
+	$render->assign('howlong'     , $vars['howlong']);
+	$render->assign('usecache'   , $vars['usecache']);
 
     // Return the output that has been generated by this function
-	return $pnRender->fetch('TNGz_block_WhatsNew_modify.htm');
+	return $render->fetch('TNGz_block_WhatsNew_modify.htm');
 }
 
 function TNGz_WhatsNewblock_update($blockinfo)
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
+    
     //Get current content
     $vars = pnBlockVarsFromContent($blockinfo['content']);
 
@@ -385,10 +389,12 @@ function TNGz_WhatsNewblock_update($blockinfo)
     $vars['usecache']  = pnVarCleanFromInput('usecache');
 
     if (!is_numeric($vars['maxitems']) ){
-        $vars['maxitems'] = _TNGZ_WHATSNEW_HOWMANY_NUM;
+    //! WhatsNewBlock default maximum number of items
+        $vars['maxitems'] = 10;
     }
     if (!is_numeric($vars['howlong']) ) {
-        $vars['howlong']   = _TNGZ_WHATSNEW_HOWLONG_NUM;
+    //! WhatsNewBlock default for how many days
+        $vars['howlong']   = 30;
     }
 
     // write back the new contents

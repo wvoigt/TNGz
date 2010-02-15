@@ -24,17 +24,18 @@ function TNGz_user_main()
 {
 
     if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_READ)) {
-        return LogUtil::registerError(_MODULENOAUTH);
+        $dom = ZLanguage::getModuleDomain('TNGz');
+        return LogUtil::registerError(__('Sorry! No authorization to access this module.', $dom));
     }
 
     $TNGpage = FormUtil::getPassedValue('show', 'index', 'GETPOST');
 
-    $pnRender =& new pnRender('TNGz');
+    $render = & pnRender::getInstance('TNGz', false);
     
     // Create a possible template name from the input, if it exists, then do than instead of TNG
     $TNGzpage = 'TNGz_show_' . (($TNGpage == 'index' && pnModGetVar('TNGz', '_homepage', 0) ) ? 'home' : $TNGpage ) . '.htm';
-    if ( $pnRender->template_exists( $TNGzpage ) ) {
-        return $pnRender->fetch( $TNGzpage );
+    if ( $render->template_exists( $TNGzpage ) ) {
+        return $render->fetch( $TNGzpage );
     }
 
     switch ($TNGpage) {
@@ -76,9 +77,10 @@ function TNGz_user_main()
 */
 function TNGz_user_admin()
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
 
     if (!SecurityUtil::checkPermission('TNGz::', '::', ACCESS_OVERVIEW)) {
-        return LogUtil::registerError(_MODULENOAUTH);
+        return LogUtil::registerError(__('Sorry! No authorization to access this module.', $dom));
     }
 
     if (!pnUserLoggedIn()) {
@@ -95,12 +97,12 @@ function TNGz_user_admin()
     //////////////////////////////////////////////////////
     $TNGzModInfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
 
-    $pnRender =& new pnRender('TNGz');
+    $render = & pnRender::getInstance('TNGz', false);
 
-    $pnRender->assign('TNGzURL'      , $url);
-    $pnRender->assign('TNGzVersion'  , $TNGzModInfo['version'] );
+    $render->assign('TNGzURL'      , $url);
+    $render->assign('TNGzVersion'  , $TNGzModInfo['version'] );
 
-    return $pnRender->fetch('TNGz_user_admin.htm');
+    return $render->fetch('TNGz_user_admin.htm');
 
 }
 
@@ -119,8 +121,10 @@ function TNGz_user_admin()
 */
 function TNGz_user_sitemap()
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
+    
     if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_READ)) {
-        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+        return pnVarPrepHTMLDisplay(__('Sorry! No authorization to access this module.', $dom));
     }
 
     $none = "-1";  // flag
@@ -152,25 +156,27 @@ function TNGz_user_sitemap()
         $facts = pnModAPIFunc('TNGz','user','getRecordsCount');
         if ($facts['sitemapindex']) { // too big for a sitemap
             // return a sitemapindex file
-            $pnRender =& new pnRender('TNGz');
-            $pnRender->assign('sitemaps'  , $facts['sitemapindex']);
-            $pnRender->display('TNGz_user_sitemapindex.htm');
+            $render = & pnRender::getInstance('TNGz', false);
+            $render->assign('sitemaps'  , $facts['sitemapindex']);
+            $render->display('TNGz_user_sitemapindex.htm');
             return true;
         }
     }
 
     // Return a sitemap (either full, or a partial one)
-    $pnRender =& new pnRender('TNGz');
-    $pnRender->assign('records', $records);
-    $pnRender->display('TNGz_user_sitemap.htm');
+    $render = & pnRender::getInstance('TNGz', false);
+    $render->assign('records', $records);
+    $render->display('TNGz_user_sitemap.htm');
     return true;
 
 }
 
 function TNGz_user_view()
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
+    
     if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_READ)) {
-        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+        return pnVarPrepHTMLDisplay(__('Sorry! No authorization to access this module.', $dom));
     }
 
     $item   = FormUtil::getPassedValue('item', false, 'GET');
@@ -185,11 +191,11 @@ function TNGz_user_view()
         $thePlaces   = pnModAPIFunc('TNGz','user','GetPlaces', array('top'=> $top));
         $TNGzModInfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
 
-        $pnRender =& new pnRender('TNGz');
-        $pnRender->assign('TNGzVersion'  , $TNGzModInfo['version'] );
-        $pnRender->assign('top'          , $top);
-        $pnRender->assign('places'       , $thePlaces);
-        return $pnRender->fetch('TNGz_user_view_places.htm');
+        $render = & pnRender::getInstance('TNGz', false);
+        $render->assign('TNGzVersion'  , $TNGzModInfo['version'] );
+        $render->assign('top'          , $top);
+        $render->assign('places'       , $thePlaces);
+        return $render->fetch('TNGz_user_view_places.htm');
     }
 
     if ($item == "surnames" ) {
@@ -197,13 +203,13 @@ function TNGz_user_view()
         $Surnames =  pnModAPIFunc('TNGz','user','GetSurnames', array('top'=> $top));
         $TNGzModInfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
 
-        $pnRender =& new pnRender('TNGz');
-        $pnRender->assign('TNGzVersion'  , $TNGzModInfo['version'] );
-        $pnRender->assign('top'          , $top);
-        $pnRender->assign('SurnameCount' , $Surnames['count']);
-        $pnRender->assign('SurnameRank'  , $Surnames['rank']);
-        $pnRender->assign('SurnameAlpha' , $Surnames['alpha']);
-        return $pnRender->fetch('TNGz_user_view_surnames.htm');
+        $render = & pnRender::getInstance('TNGz', false);
+        $render->assign('TNGzVersion'  , $TNGzModInfo['version'] );
+        $render->assign('top'          , $top);
+        $render->assign('SurnameCount' , $Surnames['count']);
+        $render->assign('SurnameRank'  , $Surnames['rank']);
+        $render->assign('SurnameAlpha' , $Surnames['alpha']);
+        return $render->fetch('TNGz_user_view_surnames.htm');
     }
 
 }
@@ -211,8 +217,10 @@ function TNGz_user_view()
 
 function TNGz_user_worldmap()
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
+    
     if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_READ)) {
-        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+        return pnVarPrepHTMLDisplay(__('Sorry! No authorization to access this module.', $dom));
     }
 
     $size       = FormUtil::getPassedValue('size'  , false, 'GET');
@@ -364,8 +372,10 @@ function TNGz_map_coordinates($lat, $lon, $width, $height)
 
 function TNGz_user_saveid()
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
+    
     if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_READ)) {
-        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+        return pnVarPrepHTMLDisplay(__('Sorry! No authorization to access this module.', $dom));
     }
 
     // Get arguments
@@ -380,7 +390,7 @@ function TNGz_user_saveid()
     $pID  = ($params['personID']) ? $params['personID'] : $params['primaryID'];
 
     if (!pnUserLoggedIn() || !$pID || !$params['tree'] || !$params['show'] ) {
-        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+        return pnVarPrepHTMLDisplay(__('Sorry! No authorization to access this module.', $dom));
     }
 
     $username = pnUserGetVar('uname');
@@ -407,7 +417,7 @@ function TNGz_user_saveid()
 function TNGz_user_histogram()
 {
     if (!pnSecAuthAction(0, 'TNGz::', '::', ACCESS_READ)) {
-        return pnVarPrepHTMLDisplay(_MODULENOAUTH);
+        return pnVarPrepHTMLDisplay(__('Sorry! No authorization to access this module.', $dom));
     }
 
     // Parameters

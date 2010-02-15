@@ -2,44 +2,43 @@
 <div>
 
 <div style="text-align:center;">
-<!--[$maxitems]-->&nbsp;<!--[pnml name="_TNGZ_WHATSNEW_RECENT"|pnvarprephtmldisplay]-->
-<!--[$howlong]-->&nbsp;<!--[pnml name="_TNGZ_WHATSNEW_DAYS"|pnvarprephtmldisplay]-->
+ <!--[gt text='%1$s newest in %2$s days' tag1=$maxitems tag2=$howlong comment="%1 items, %2 is days" domain="module_TNGz"]-->
 <br /></div>
 
 <!--[if $whatsnewerror ]-->
     <p><!--[$whatsnewerror]--></p>
 <!--[/if]-->
 
-<!--[if $showpeople ]-->
-    <h4><!--[pnml name="_TNGZ_WHATSNEW_HEAD_PEOPLE"|pnvarprephtmldisplay]--></h4>
-    <!--[if $showpeopleitems ]-->
+<!--[if $showpeople]-->
+    <h4><!--[gt text="Individuals" domain="module_TNGz"]--></h4>
+    <!--[if $showpeopleitems]-->
         <ul>
         <!--[foreach item=item from=$showpeopleitems]-->
         <li><!--[$item]--></li>
         <!--[/foreach]-->
         </ul>
     <!--[else]-->
-    <div style="text-align:center;"><!--[pnml name="_TNGZ_WHATSNEW_NOCHANGES"|pnvarprephtmldisplay]--><br /></div>
+    <div style="text-align:center;"><!--[gt text="No new or updated records" domain="module_TNGz"]--><br /></div>
     <!--[/if]-->
     <br />
 <!--[/if]-->
 
-<!--[if $showfamily ]-->
-    <h4><!--[pnml name="_TNGZ_WHATSNEW_HEAD_FAMILY"|pnvarprephtmldisplay]--></h4>
-    <!--[if $showfamilyitems ]-->
+<!--[if $showfamily]-->
+    <h4><!--[gt text="Families" domain="module_TNGz"]--></h4>
+    <!--[if $showfamilyitems]-->
         <ul>
         <!--[foreach item=item from=$showfamilyitems]-->
         <li><!--[$item]--></li>
         <!--[/foreach]-->
         </ul>
     <!--[else]-->
-    <div style="text-align:center;"><!--[pnml name="_TNGZ_WHATSNEW_NOCHANGES"|pnvarprephtmldisplay]--><br /></div>
+    <div style="text-align:center;"><!--[gt text="No new or updated records" domain="module_TNGz"]--><br /></div>
     <!--[/if]-->
     <br />
 <!--[/if]-->
 
 <!--[if $showphotos ]-->
-    <h4><!--[pnml name="_TNGZ_WHATSNEW_HEAD_PHOTOS"|pnvarprephtmldisplay]--></h4>
+    <h4><!--[gt text="Photos" domain="module_TNGz"]--></h4>
     <!--[if $showphotositems ]-->
         <div style="text-align:center;">
         <!--[foreach item=item from=$showphotositems]-->
@@ -47,20 +46,20 @@
         <!--[/foreach]-->
         </div>
     <!--[else]-->
-    <div style="text-align:center;"><!--[pnml name="_TNGZ_WHATSNEW_NOCHANGES"|pnvarprephtmldisplay]--><br /></div>
+    <div style="text-align:center;"><!--[gt text="No new or updated records" domain="module_TNGz"]--><br /></div>
     <!--[/if]-->
     <br />
 <!--[/if]-->
 
 <!--[if $showhistory ]-->
-    <h4><!--[pnml name="_DEATH"|pnvarprephtmldisplay]--></h4>
+    <h4><!--[gt text="People Who Died" domain="module_TNGz"]--></h4>
     <!--[if $death ]-->
         <ul>
         <!--[foreach item=item from=$death]-->
         <li><!--[$item]--></li>
         <!--[/foreach]-->
     <!--[else]-->
-    <div style="text-align:center;"><!--[pnml name="_TNGZ_WHATSNEW_NOCHANGES"|pnvarprephtmldisplay]--><br /></div>
+    <div style="text-align:center;"><!--[gt text="No new or updated records" domain="module_TNGz"]--><br /></div>
     <!--[/if]-->
     <br />
 <!--[/if]-->

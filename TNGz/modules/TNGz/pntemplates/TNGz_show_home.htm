@@ -5,17 +5,17 @@
 <!--[pnmodapifunc modname=TNGz type=user func=GetTNGtext assign=text ]-->
 
 <!--[*  Set the page title *]-->
-<!--[ pnpagesetvar name="title" value=$text.homepage]-->
+<!--[pnpagesetvar name="title" value=$text.homepage]-->
 
 <!--[*  Get the primary person if they exist *]-->
-<!--[pnmodapifunc modname=TNGz type=user func=getperson assign=person ]-->
+<!--[pnmodapifunc modname=TNGz type=user func=getperson assign=person]-->
 
 <div>
     <center>
     <font face="Arial,Helvetica,sans-serif" size="4">
-    <!--[if $person ]-->
-    <a href="<!--[pnmodurl modname=TNGz show=pedigree personID=$person.id tree=$person.tree generations=4 ]-->"><!--[$person.fullname ]--> - <!--[$text.ancestors ]--></a>&nbsp;|&nbsp;
-    <a href="<!--[pnmodurl modname=TNGz show=extrastree personID=$person.id tree=$person.tree ]-->"><!--[$person.fullname ]--> - <!--[$text.ancestors ]-->&nbsp;<!--[$text.mnuphotos ]--> &amp; <!--[$text.mnuhistories ]--></a>
+    <!--[if $person]-->
+    <a href="<!--[pnmodurl modname=TNGz show=pedigree personID=$person.id tree=$person.tree generations=4]-->"><!--[$person.fullname]--> - <!--[$text.ancestors]--></a>&nbsp;|&nbsp;
+    <a href="<!--[pnmodurl modname=TNGz show=extrastree personID=$person.id tree=$person.tree]-->"><!--[$person.fullname]--> - <!--[$text.ancestors]-->&nbsp;<!--[$text.mnuphotos]--> &amp; <!--[$text.mnuhistories]--></a>
     <br />
     <!--[/if]-->
     <a href="<!--[pnmodurl modname=TNGz show=whatsnew      ]-->"><!--[$text.mnuwhatsnew   ]--></a> &nbsp;|&nbsp;
