@@ -1,12 +1,12 @@
 <!--[*  $Id$  *]-->
 <div id="tngz" style="position:relative; width:99%;">
-	<h2><!--[ pnml name="_TNGZ_PLACETITLE" ]--> </h2>
+	<h2><!--[gt text="Top Locations and Places"]--> </h2>
 
 	<div style="text-align:center;">
-		<!--[ pnml name="_TNGZ_TOPPLACES" ]--> (<!--[ pnml name="_TNGZ_TOTALPLACES" ]--> )
+		<!--[gt text="Top Places"]--> (<!--[gt text="Total Places"]--> )
 	</div>
 
-	<!--[if $places ]-->
+	<!--[if $places]-->
 	<div class="places-big">
 	<!--[places top=$top cols=4 sort=rank]-->
 	</div>
@@ -16,17 +16,17 @@
 			<input type="hidden" name="module" value="TNGz" />
 			<input type="hidden" name="func"   value="main" />
 			<input type="hidden" name="show"   value="places100" />
-			<!--[ pnml name="_TNGZ_SHOWTOP" ]-->
-			<input type="text" name="topplace" value="100" size="3" maxlength="3" /><!--[ pnml name="_TNGZ_BYOCCURRENCE" ]-->
-			<input type="submit" value="<!--[ pnml name="_TNGZ_GO" ]-->" />
+			<!--[gt text="Show top"]-->
+			<input type="text" name="topplace" value="100" size="3" maxlength="3" /><!--[gt text=" ordered by occurrence"]-->
+			<input type="submit" value="<!--[gt text="Go"]-->" />
 		</form>
 	</div>
 
 	<div>
-		<a href="<!--[pnmodurl fqurl=true modname=TNGz show=places-all ]-->"><!--[ pnml name="_TNGZ_SHOWALLPLACES" ]--></a><!--[ pnml name="_TNGZ_SORTEDALPHA" ]-->
+		<a href="<!--[pnmodurl fqurl=true modname=TNGz show=places-all]-->"><!--[gt text="All places"]--></a><!--[gt text=" sorted alphabetically"]-->
 	</div>
 	<div>
-		<a href="<!--[pnmodurl fqurl=true modname=TNGz show=places ]-->"><!--[ pnml name="_TNGZ_MAINPLACESPAGE" ]--></a>
+		<a href="<!--[pnmodurl fqurl=true modname=TNGz show=places]-->"><!--[gt text="Main place listing page"]--></a>
 	</div>
 	<hr>
 	<!--[placemap height=300 width=600 region=0 size=medium]-->

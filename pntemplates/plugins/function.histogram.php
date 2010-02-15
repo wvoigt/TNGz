@@ -102,14 +102,14 @@ function smarty_function_histogram($params, &$smarty)
     }
  
 
-    $pnRender = pnRender::getInstance('TNGz', false);
+    $render = & pnRender::getInstance('TNGz', false);
 
     PageUtil::addVar('stylesheet', ThemeUtil::getModuleStylesheet('TNGz'));
 
-    $pnRender->assign('histogram', $params);
+    $render->assign('histogram', $params);
 
     // Populate block info and pass to theme
-    $output = $pnRender->fetch('TNGz_plugin_histogram.htm');
+    $output = $render->fetch('TNGz_plugin_histogram.htm');
 
     // now update the cache
     pnModAPIFunc('TNGz','user','CacheUpdate', array( 'item'=> $cachefile, 'data' => $output) );

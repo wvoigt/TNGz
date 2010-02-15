@@ -37,6 +37,8 @@ function TNGz_RandomPhotoblock_init()
 
 function TNGz_RandomPhotoblock_display($blockinfo) {
 
+    $dom = ZLanguage::getModuleDomain('TNGz');
+
     if( !pnSecAuthAction( 0, 'TNGz:RandomPhotoblock:', "$blockinfo[title]::", ACCESS_READ ) )
 	    return;
 
@@ -110,7 +112,7 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
         $have_info = 1;
     } else {
         $have_info = 0;
-        $photo_error  = ""._PEOPLEDBFERROR."";
+        $photo_error  = __('Error in accessing the TNG tables.', $dom);
     }
 
 
@@ -147,7 +149,7 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
                           WHERE living.personID = person.personID AND person.living = 1
                           GROUP BY living.mediaID";
                 if (!$result = &$TNG_conn->Execute($query) ) {
-                    $photo_error .= ""._PEOPLEDBFERROR." [0] " . $TNG_conn->ErrorMsg() . " ";
+                    $photo_error .= __('Error in accessing the TNG tables.', $dom)." [0] " . $TNG_conn->ErrorMsg() ;
                 }
                 // now make a comma separated list of the photoIDs
                 $record_sep = "";
@@ -174,7 +176,7 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
         }
 
        	if (!$result = &$TNG_conn->Execute($query)  ) {
-                $photo_error .= ""._PEOPLEDBFERROR." [1] " . $TNG_conn->ErrorMsg() . " ";
+                $photo_error .= __('Error in accessing the TNG tables.', $dom)." [1] " . $TNG_conn->ErrorMsg() ;
         } else {
 
             $num_photos = $result->RecordCount();  // the number of photo links to pick from
@@ -191,7 +193,7 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
                                 AND $media_table.mediaID = $medialinks_table.mediaID ";
 
                 if (!$result2 = &$TNG_conn->Execute($query)) {
-                    $photo_error .= ""._PEOPLEDBFERROR." [2] " . $TNG_conn->ErrorMsg()  . " ";
+                    $photo_error .= __('Error in accessing the TNG tables.', $dom)." [2] " . $TNG_conn->ErrorMsg() ;
                 } else {
                     list($t_path,$t_thumbpath,$t_description,$t_notes,$t_medialinkID,$t_personID,$t_gedcom,$t_mediaID,$usecollfolder) = $result2->fields;
                     $result2->Close();
@@ -236,7 +238,7 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
         }
         if ( $need_photo ) {
             // Didn't get a photo this time
-            $photo_error  .= ""._NOPHOTOFOUND." ";
+            $photo_error  .= __('No Photo found', $dom);
         }
 
     }
@@ -254,16 +256,16 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
     // Create output object
     // Note that for a block the corresponding module must be passed.
 
-    $pnRender = pnRender::getInstance('TNGz', $zcaching);
+    $render = & pnRender::getInstance('TNGz', $zcaching);
 
     PageUtil::addVar('stylesheet', ThemeUtil::getModuleStylesheet('TNGz'));
 
-    $pnRender->assign('photo_ref'        , $photo_ref);
-    $pnRender->assign('photo_description', $photo_description);
-    $pnRender->assign('photo_error'      , $photo_error);
+    $render->assign('photo_ref'        , $photo_ref);
+    $render->assign('photo_description', $photo_description);
+    $render->assign('photo_error'      , $photo_error);
 
     // Populate block info and pass to theme
-    $blockinfo['content'] = $pnRender->fetch('TNGz_block_RandomPhoto.htm');
+    $blockinfo['content'] = $render->fetch('TNGz_block_RandomPhoto.htm');
 
     return themesideblock($blockinfo);
 }
@@ -271,6 +273,7 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
 
 function TNGz_RandomPhotoblock_modify($blockinfo)
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
 
     // Get current content
     $vars = pnBlockVarsFromContent($blockinfo['content']);
@@ -296,33 +299,33 @@ function TNGz_RandomPhotoblock_modify($blockinfo)
     }
 
     // Create output object
-	$pnRender =& new pnRender('TNGz');
+    $render = & pnRender::getInstance('TNGz', false);
 
 	// As Admin output changes often, we do not want caching.
-	$pnRender->caching = false;
+	$render->caching = false;
 
     // assign the approriate values
-    $pnRender->assign('showlivinglist', array(
-                                               Y => pnVarPrepHTMLDisplay(_SELECTLIVINGY),
-                                               D => pnVarPrepHTMLDisplay(_SELECTLIVINGD),
-                                               L => pnVarPrepHTMLDisplay(_SELECTLIVINGL),
-                                               N => pnVarPrepHTMLDisplay(_SELECTLIVINGN)
+    $render->assign('showlivinglist', array(
+                                               Y => pnVarPrepHTMLDisplay(__('Yes, show all', $dom)),
+                                               D => pnVarPrepHTMLDisplay(__('Yes, but never living people', $dom)),
+                                               L => pnVarPrepHTMLDisplay(__('Yes, but show living people only if user is logged in', $dom)),
+                                               N => pnVarPrepHTMLDisplay(__('No', $dom))
                                               ) );
-    $pnRender->assign('phototypelist', array(
-                                               T => pnVarPrepHTMLDisplay(_SELECTPHOTOT),
-                                               P => pnVarPrepHTMLDisplay(_SELECTPHOTOP)
+    $render->assign('phototypelist', array(
+                                               T => pnVarPrepHTMLDisplay(__('Thumbnail of Photo', $dom)),
+                                               P => pnVarPrepHTMLDisplay(__('Actual Photo', $dom))
                                               ) );
 
-	$pnRender->assign('showliving'   , $vars['showliving']);
-	$pnRender->assign('phototype'    , $vars['phototype']);
-	$pnRender->assign('max_height'   , $vars['max_height']);
-	$pnRender->assign('max_width'    , $vars['max_width']);
-	$pnRender->assign('usecache'     , $vars['usecache']);
-	$pnRender->assign('photolist'    , $vars['photolist']);
+	$render->assign('showliving'   , $vars['showliving']);
+	$render->assign('phototype'    , $vars['phototype']);
+	$render->assign('max_height'   , $vars['max_height']);
+	$render->assign('max_width'    , $vars['max_width']);
+	$render->assign('usecache'     , $vars['usecache']);
+	$render->assign('photolist'    , $vars['photolist']);
 
 
     // Return the output that has been generated by this function
-	return $pnRender->fetch('TNGz_block_RandomPhoto_modify.htm');
+	return $render->fetch('TNGz_block_RandomPhoto_modify.htm');
 
 }
 
@@ -344,8 +347,8 @@ function TNGz_RandomPhotoblock_update($blockinfo)
     $blockinfo['content'] = pnBlockVarsToContent($vars);
 
 	// clear the block cache
-	$pnRender =& new pnRender('TNGz');
-	$pnRender->clear_cache('TNGz_block_RandomPhoto.htm');
+    $render = & pnRender::getInstance('TNGz', false);
+	$render->clear_cache('TNGz_block_RandomPhoto.htm');
 
     return $blockinfo;
 }

@@ -21,8 +21,9 @@
  */
 function smarty_function_namesearch($params, &$smarty)
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
 
-    $params['title'] = (empty($params['title'])) ? _TNGZ_NAMESEARCH_SEARCH : DataUtil::formatForDisplay($params['title']);
+    $params['title'] = (empty($params['title'])) ? __('Search', $dom) : DataUtil::formatForDisplay($params['title']);
 
     $output  = "<div class=\"namesearch\">";
     $output .= "<h3 class=\"namesearch\">" . $params['title'] . "</h3>\n";
@@ -32,10 +33,10 @@ function smarty_function_namesearch($params, &$smarty)
     $output .= "<input type=\"hidden\" name=\"mybool\" value=\"AND\"/>\n";
     $output .= "<input type=\"hidden\" name=\"offset\" value=\"0\"/>\n";
     $output .= "<table border=\"0\" cellspacing=\"5\" cellpadding=\"0\">\n";
-    $output .= "<tr><td><span class=\"normal\">" . _TNGZ_NAMESEARCH_LASTNAME  . "</span><br/><input type=\"text\" name=\"mylastname\"  size=\"14\"/></td></tr>\n";
-    $output .= "<tr><td><span class=\"normal\">" . _TNGZ_NAMESEARCH_FIRSTNAME . "</span><br/><input type=\"text\" name=\"myfirstname\" size=\"14\"/></td></tr>\n";
-    $output .= "<tr><td><input type=\"submit\" name=\"search\" value=\"" . _TNGZ_NAMESEARCH_SEARCH . "\"/></td></tr>\n";
-    $output .= "<tr><td><span class=\"normal\"><a href=\"" . DataUtil::formatForDisplay(pnModURL('TNGz','user','main', array('show'=>'searchform'))) . "\">" . _TNGZ_NAMESEARCH_ADVANCED . "</a></span></td></tr>\n";
+    $output .= "<tr><td><span class=\"normal\">" . __('Last Name', $dom) . "</span><br/><input type=\"text\" name=\"mylastname\"  size=\"14\"/></td></tr>\n";
+    $output .= "<tr><td><span class=\"normal\">" . __('First Name', $dom). "</span><br/><input type=\"text\" name=\"myfirstname\" size=\"14\"/></td></tr>\n";
+    $output .= "<tr><td><input type=\"submit\" name=\"search\" value=\"" . __('Search', $dom) . "\"/></td></tr>\n";
+    $output .= "<tr><td><span class=\"normal\"><a href=\"" . DataUtil::formatForDisplay(pnModURL('TNGz','user','main', array('show'=>'searchform'))) . "\">" . __('Advanced Search', $dom) . "</a></span></td></tr>\n";
     $output .= "</table></form>\n";
     $output .= "</div>\n";
 

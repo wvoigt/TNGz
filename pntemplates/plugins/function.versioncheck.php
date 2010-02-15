@@ -17,6 +17,8 @@
 
 function smarty_function_versioncheck($args)
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
+    
     // check module version
     // some code based on work from Axel Guckelsberger - thanks for this inspiration
     $currentversion = $args['version'];
@@ -59,7 +61,7 @@ function smarty_function_versioncheck($args)
         // generate link if new version is available
         echo ("<a id=\"versioncheck\" href=\"$downloadsite\" style=\"color:red;\"><strong>". _TNGZVERSIONNEW  . " (".$newestversion.")</strong></a>");
     } else {
-        echo (_TNGZVERSIONLATEST);
+        echo (__('This is the latest recommended version', $dom));
     }
     return;
 }

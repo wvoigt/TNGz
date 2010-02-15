@@ -1,14 +1,14 @@
 <!--[*  $Id$  *]-->
 <!--[include file="TNGz_admin_menu.htm"]-->
-<div class="pn-admincontainer">
- <h2><!--[pnml name="_TNGZSETTINGS"]--></h2>
+<div class="z-admincontainer">
+ <h2><!--[gt text="Settings"]--></h2>
 
- <form class="pn-adminform" action="<!--[pnmodurl modname="TNGz" type="admin" func="updateconfig"]-->" method="post" enctype="application/x-www-form-urlencoded">
+ <form class="z-adminform" action="<!--[pnmodurl modname="TNGz" type="admin" func="updateconfig"]-->" method="post" enctype="application/x-www-form-urlencoded">
   <div>
     <input type="hidden" name="authid" value="<!--[pnsecgenauthkey module="TNGz"]-->" />
     <fieldset>
-        <legend><!--[pnml name="_TNGZMODULESTATUS"]--></legend>
-        <div class="pn-adminformrow"><img src="images/icons/extrasmall/<!--[$tngrootpathimage]-->" alt="" />&nbsp;<!--[$tngrootpathsay|pnvarprepfordisplay]-->
+        <legend><!--[gt text="Configuration status"]--></legend>
+        <div class="z-adminformrow"><img src="images/icons/extrasmall/<!--[$tngrootpathimage]-->" alt="" />&nbsp;<!--[$tngrootpathsay|pnvarprepfordisplay]-->
         <br />
         <img src="images/icons/extrasmall/<!--[$tngfoundimage]-->" alt="" />&nbsp;<!--[$tngfound|pnvarprepfordisplay]-->
         <br />
@@ -23,122 +23,122 @@
         <input type="hidden" name="tngversion" value="<!--[$TNG_version]-->" />
         <br />
         <!--[if $md5hash eq true]-->
-        <img src="images/icons/extrasmall/button_ok.gif" alt="" />&nbsp;<!--[pnml name="_TNGZPWHASHOK"]-->
+        <img src="images/icons/extrasmall/button_ok.gif" alt="" />&nbsp;<!--[gt text="Password hash method from Zikula is set to MD5."]-->
         <!--[else]-->
-        <img src="images/icons/extrasmall/error.gif" alt="" />&nbsp;<!--[pnml name="_TNGZPWHASHNOTOK"]-->
+        <img src="images/icons/extrasmall/error.gif" alt="" />&nbsp;<!--[gt text="Password hash method from Zikula should be set to MD5 in order to get in sync with TNG!"]-->
         <!--[/if]-->
 
         </div>
-        <div class="pn-informationmsg"><!--[pnml name=_TNGZCONFIGTIP]--></div>
+        <div class="z-informationmsg"><!--[gt text="Want all green status for a good configuration"]--></div>
     </fieldset>
 
     <fieldset>
-        <legend><!--[pnml name="_TNGZMODULE"]--></legend>
-        <div class="pn-adminformrow">
+        <legend><!--[gt text="TNG installation location"]--></legend>
+        <div class="z-adminformrow">
             <label for="tngz_tngmodule"><!--[$zikula|pnvarprepfordisplay]--></label>
             <input id="tngz_tngmodule" name="tngmodule" type="text" size="50" maxlength="250" value="<!--[$tngmodule|pnvarprepfordisplay]-->" />
         </div>
     </fieldset>
 
     <fieldset>
-        <legend><!--[pnml name="_TNGZGUESTACCESS"]--></legend>
-        <div class="pn-adminformrow">
-            <label for="tngz_guest"><!--[pnml name="_TNGZGUEST"]--></label>
+        <legend><!--[gt text="Guest Access"]--></legend>
+        <div class="z-adminformrow">
+            <label for="tngz_guest"><!--[gt text="Check to allow non-logged in Zikula user to have TNG Guest access "]--></label>
             <input id="tngz_guest" name="tngguest" type="checkbox" value="1"<!--[if $tngguest eq 1]--> checked="checked"<!--[/if]--> />
         </div>
 
-        <div class="pn-adminformrow">
-            <label for="tngz_guestname"><!--[pnml name="_TNGZGUESTNAME"]--></label>
+        <div class="z-adminformrow">
+            <label for="tngz_guestname"><!--[gt text="  - What username to use for the guest account"]--></label>
             <input id="tngz_guestname" name="tngguestname" type="text" size="10" maxlength="20" value="<!--[$tngguestname|pnvarprepfordisplay]-->" />
         </div>
-        <div class="pn-warningmsg"><!--[pnml name=_TNGZGUESTTIP]--></div>
+        <div class="z-warningmsg"><!--[gt text="If enabled, please make sure in TNG's Users administration that the TNG user specified here has the level of access you want for a guest. Anyone not logged into Zikula will apear to TNG as this user."]--></div>
     </fieldset>
 
     <fieldset>
-        <legend><!--[pnml name="_TNGZSYNCUSERS"]--></legend>
+        <legend><!--[gt text="Zikula and TNG User Synchronization"]--></legend>
 
-        <div class="pn-adminformrow">
-            <label for="tngz_users"><!--[pnml name="_TNGZUSERS"]--></label>
+        <div class="z-adminformrow">
+            <label for="tngz_users"><!--[gt text="Create TNG users from Zikula user information"]--></label>
             <input id="tngz_users" name="tngusers" type="checkbox" value="1"<!--[if $tngusers eq 1]--> checked="checked"<!--[/if]--> />
         </div>
-        <div class="pn-informationmsg"><!--[pnml name=_TNGZUSERSTIP]--></div>
+        <div class="z-informationmsg"><!--[gt text="If enabled, the first time a logged in Zikula user accesses TNG, a TNG user with the same username is created "]--></div>
 
-        <div class="pn-adminformrow">
-            <label for="tngz_living"><!--[pnml name="_TNGZLIVING"]--></label>
+        <div class="z-adminformrow">
+            <label for="tngz_living"><!--[gt text="  - Allow created user to view living"]--></label>
             <input id="tngz_living" name="tngliving" type="checkbox" value="1"<!--[if $tngliving eq 1]--> checked="checked"<!--[/if]--> />
         </div>
 
-        <div class="pn-adminformrow">
-            <label for="tngz_gedcom"><!--[pnml name="_TNGZGEDCOM"]--></label>
+        <div class="z-adminformrow">
+            <label for="tngz_gedcom"><!--[gt text="  - Allow created user to download GEDCOMs"]--></label>
             <input id="tngz_gedcom" name="tnggedcom" type="checkbox" value="1"<!--[if $tnggedcom eq 1]--> checked="checked"<!--[/if]--> />
         </div>
 
-        <div class="pn-adminformrow">
-            <label for="tngz_lds"><!--[pnml name="_TNGZLDS"]--></label>
+        <div class="z-adminformrow">
+            <label for="tngz_lds"><!--[gt text="  - Allow created user to view LDS information"]--></label>
             <input id="tngz_lds" name="tnglds" type="checkbox" value="1"<!--[if $tnglds eq 1]--> checked="checked"<!--[/if]--> />
         </div>
 
-       <div class="pn-adminformrow">
-           <label for="tngz_sync"><!--[pnml name="_TNGZSYNC"]--></label>
+       <div class="z-adminformrow">
+           <label for="tngz_sync"><!--[gt text="  - Keep TNG user information up to date with changed Zikula user information"]--></label>
            <input id="tngz_sync" name="tngsync" type="checkbox" value="1"<!--[if $tngsync eq 1]--> checked="checked"<!--[/if]--> />
        </div>
 
-       <div class="pn-adminformrow">
-           <label for="tngz_sync2"><!--[pnml name="_TNGZSYNC2"]--></label>
+       <div class="z-adminformrow">
+           <label for="tngz_sync2"><!--[gt text="    (includes changes to Real Name, website, and email address)"]--></label>
        </div>
     </fieldset>
 
     <fieldset>  
-        <legend><!--[pnml name="_TNGZ_ID_TITLE"]--></legend>
+        <legend><!--[gt text="Identify Primary Person"]--></legend>
 
-        <div class="pn-adminformrow">
-            <label for="tngz_idtree"><!--[pnml name="_TNGZ_ID_TREE"]--></label>
+        <div class="z-adminformrow">
+            <label for="tngz_idtree"><!--[gt text="Tree that includes person"]--></label>
             <select id="tngz_idtree" name="tngzidtree"><!--[html_options values=$tngzidtreevalues output=$tngzidtreeoptions selected=$tngzidtree]--></select>
         </div>
 
-        <div class="pn-adminformrow">
-            <label for="tngz_tngzid"><!--[pnml name="_TNGZ_ID"]--></label>
+        <div class="z-adminformrow">
+            <label for="tngz_tngzid"><!--[gt text="TNG ID of person (must be in the Tree)"]--></label>
             <input id="tngz_tngzid" name="tngzid" type="text" size="7" maxlength="7" value="<!--[$tngzid|pnvarprepfordisplay]-->" />
             <span id="personidname"><!--[if $tngzidname]--><!--[$tngzidname]--><!--[/if]--></span>
         </div>
 	
-        <div class="pn-informationmsg"><!--[pnml name=_TNGZ_ID_INFO]--></div>	
+        <div class="z-informationmsg"><!--[gt text="These settings are optional.  If used, they allow for more personalized links in templates. For example, the example default 'home' page will add a link to display this person's ancestors.  If you do not want to use, then just leave this field blank."]--></div>	
     </fieldset>
     
     <fieldset>
-        <legend><!--[pnml name="_TNGZOTHERSETTINGS"]--></legend>
-        <div class="pn-adminformrow">
-            <label for="tngz_homepage"><!--[pnml name="_TNGZ_HOMEPAGE"]--></label>
+        <legend><!--[gt text="Other Settings"]--></legend>
+        <div class="z-adminformrow">
+            <label for="tngz_homepage"><!--[gt text="Use TNGz's homepage instead of TNG's index page"]--></label>
             <input id="tngz_homepage" name="tngzhomepage" type="checkbox" value="1"<!--[if $tngzhomepage eq 1]--> checked="checked"<!--[/if]--> />
         </div>
 
-        <div class="pn-adminformrow">
-            <label for="tngz_tngemail"><!--[pnml name="_TNGZ_EMAIL"]--></label>
+        <div class="z-adminformrow">
+            <label for="tngz_tngemail"><!--[gt text="Enable email address hiding/encoding (if you have email addresses in your TNG files)"]--></label>
             <select id="tngz_tngemail" name="tngemail"><!--[html_options values=$tngemailvalues output=$tngemailoptions selected=$tngemail]--></select>
         </div>
     </fieldset>
 
    <fieldset>
-        <legend><!--[pnml name="_TNGZ_CACHE"]--></legend>
-        <div class="pn-informationmsg"><!--[pnml name=_TNGZ_CACHE_INFO]--></div>
+        <legend><!--[gt text="Cache"]--></legend>
+        <div class="z-informationmsg"><!--[gt text="Using the cache can speed up the time it takes to generate blocks and plugins. Instead of making multiple requests to the TNG database, data that has already been calculated and stored in the cache can be retrieved more quickly."]--></div>
 
-        <div class="pn-adminformrow">
-            <label for="tngz_tngzcachedb"><!--[pnml name="_TNGZ_CACHEDB"]--></label>
+        <div class="z-adminformrow">
+            <label for="tngz_tngzcachedb"><!--[gt text="TNG database change resets the cache"]--></label>
             <select id="tngz_tngzcachedb" name="tngzcachedb"><!--[html_options values=$tngzcachedbvalues output=$tngzcachedboptions selected=$tngzcachedb]--></select>
         </div>
-        <div class="pn-informationmsg"><!--[pnml name=_TNGZ_CACHEDB_INFO]--></div>
+        <div class="z-informationmsg"><!--[gt text="Checking the database update time does not work on all systems.  If you are having trouble with the cache, then turn this off."]--></div>
 	
-        <div class="pn-adminformrow">
-            <label for="tngz_tngzcachesec"><!--[pnml name="_TNGZ_CACHESEC"]--></label>
+        <div class="z-adminformrow">
+            <label for="tngz_tngzcachesec"><!--[gt text="Interval to refresh cache"]--></label>
             <select id="tngz_tngzcachesec" name="tngzcachesec"><!--[html_options values=$tngzcachesecvalues output=$tngzcachesecoptions selected=$tngzcachesec]--></select>
         </div>
-        <div class="pn-warningmsg"><!--[pnml name=_TNGZ_CACHE_DISABLE]--></div>
+        <div class="z-warningmsg"><!--[gt text="The cache will expire and reload when either condition occurs. Both settings must be 'off' to disable caching."]--></div>
 	
-        <div class="pn-adminformrow">
+        <div class="z-adminformrow">
 	<!--[if $tngzcacheexists eq 1]-->
-	    <img src="images/icons/extrasmall/folder_green.gif" alt="" /><a href="<!--[pnmodurl modname="TNGz" type="admin" func="cachedelete" ]-->"><!--[pnml name="_TNGZ_CACHE_DELETE"]--></a>
+	    <img src="images/icons/extrasmall/folder_green.gif" alt="" /><a href="<!--[pnmodurl modname="TNGz" type="admin" func="cachedelete"]-->"><!--[gt text="Clear the cache"]--></a>
 	<!--[else]-->
-	    <img src="images/icons/extrasmall/folder_grey.gif" alt="" /><!--[pnml name="_TNGZ_CACHE_NONE"]-->
+	    <img src="images/icons/extrasmall/folder_grey.gif" alt="" /><!--[gt text="No Cache"]-->
 	<!--[/if]-->
 	
         </div>
@@ -147,9 +147,9 @@
 
 
     <!--[pnmodcallhooks hookobject=module hookaction=modifyconfig module=Settings]-->
-    <div class="pn-adminformrow pn-adminformbuttons">
-       <!--[pnbutton src=button_ok.gif set=icons/small alt="_TNGZUPDATECONFIG" title="_TNGZUPDATECONFIG"]-->
-       <a href="<!--[pnmodurl modname=TNGz type=admin]-->"><!--[pnimg modname=core src=button_cancel.gif set=icons/small altml=true titleml=true alt="_CANCEL" title="_CANCEL"]--></a>
+    <div class="z-adminformrow z-adminformbuttons">
+       <!--[pnbutton src='button_ok.gif' set='icons/small' __alt="Update TNGz configuration" __title="Update TNGz configuration"]-->
+       <a href="<!--[pnmodurl modname=TNGz type=admin]-->"><!--[pnimg modname='core' src='button_cancel.gif' set='icons/small'   __alt="Cancel" __title="Cancel"]--></a>
     </div>
   </div>
  </form>

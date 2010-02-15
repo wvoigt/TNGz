@@ -27,6 +27,8 @@
  */
 function smarty_function_statistics($params, &$smarty)
 {
+    $dom = ZLanguage::getModuleDomain('TNGz');
+    
     // Get parameters
     $valid_no  = array( 'no',  'n', '0');  // first in list is the default
     $valid_yes = array( 'yes', 'y', '1');  // first in list is the default
@@ -69,7 +71,7 @@ function smarty_function_statistics($params, &$smarty)
         $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
         $TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
     } else {
-        return ""._PEOPLEDBFERROR."";
+        return __('Error in accessing the TNG tables.', $dom);
     }
 
     $text = pnModAPIFunc('TNGz','user','GetTNGtext', array('textpart' => 'stats'));

@@ -1,25 +1,25 @@
 <!--[* $Id$ *]-->
-<div class="pn-adminformrow">
-  <label for="tngz_showliving"><!--[pnml name="_SHOWLIVING"]--></label>
+<div class="z-adminformrow">
+  <label for="tngz_showliving"><!--[gt text="Show Pictures of People" domain="module_TNGz"]--></label>
   <select id="tngz_showliving" name="showliving"><!--[html_options options=$showlivinglist selected=$showliving]--></select>
 </div>
 
-<div class="pn-adminformrow">  
-  <label for="tngz_phototype"><!--[pnml name="_SHOWPHOTO"]--></label>
+<div class="z-adminformrow">  
+  <label for="tngz_phototype"><!--[gt text="Which type of photo to use" domain="module_TNGz"]--></label>
   <select id="tngz_phototype" name="phototype"><!--[html_options options=$phototypelist selected=$phototype]--></select>
 </div>
 
-<div class="pn-adminformrow">  
-  <label for="tngz_maxheight"><!--[pnml name="_MAXHEIGHT"]--></label>
+<div class="z-adminformrow">  
+  <label for="tngz_maxheight"><!--[gt text="Maximum Height of display image" domain="module_TNGz"]--></label>
   <input id="tngz_maxheight" type="text" name="max_height" value="<!--[$max_height|pnvarprephtmldisplay]-->" size="3" maxlength="3" />
 </div>
 
-<div class="pn-adminformrow">
-  <label for="tngz_maxwidth"><!--[pnml name="_MAXWIDTH"]--></label>
+<div class="z-adminformrow">
+  <label for="tngz_maxwidth"><!--[gt text="Maximum Width of display image" domain="module_TNGz"]--></label>
   <input id="tngz_maxwidth" type="text" name="max_width" value="<!--[$max_width|pnvarprephtmldisplay]-->" size="3" maxlength="3" />
 </div>
 
-<div class="pn-adminformrow">
-  <label for="tngz_photolist"><!--[pnml name="_TNGPHOTOLIST"]--></label>
+<div class="z-adminformrow">
+  <label for="tngz_photolist"><!--[gt text="Limit Photo selection to the following list of TNG mediaID numbers (default = blank)" domain="module_TNGz"]--></label>
   <input id="tngz_photolist" type="text" name="photolist" value="<!--[$photolist|pnvarprephtmldisplay]-->" size="100" maxlength="250" />
 </div>

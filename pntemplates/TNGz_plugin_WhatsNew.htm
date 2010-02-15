@@ -5,52 +5,51 @@
 <!--[/if]-->
 
 <div class="whatsnew">
-<!--[$maxitems]-->&nbsp;<!--[pnml name="_TNGZ_WHATSNEW_RECENT"|pnvarprephtmldisplay]-->
-<!--[$howlong]-->&nbsp;<!--[pnml name="_TNGZ_WHATSNEW_DAYS"|pnvarprephtmldisplay]-->
+<!--[gt text='%1$s newest in %2$s days' tag1=$maxitems tag2=$howlong domain="module_TNGz" comment="%1 items, %2 is days"]-->
 <br /></div>
 
 <!--[if $whatsnewerror ]-->
     <p><!--[$whatsnewerror]--></p>
 <!--[/if]-->
 
-<!--[if $showpeople ]-->
-    <h4 class="whatsnew"><!--[pnml name="_TNGZ_WHATSNEW_HEAD_PEOPLE"|pnvarprephtmldisplay]--></h4>
-    <!--[if $showpeopleitems ]-->
+<!--[if $showpeople]-->
+    <h4 class="whatsnew"><!--[gt text="Individuals" domain="module_TNGz"]--></h4>
+    <!--[if $showpeopleitems]-->
         <ul class="whatsnew">
         <!--[foreach item=item from=$showpeopleitems]-->
         <li><!--[$item]--></li>
         <!--[/foreach]-->
         </ul>
     <!--[else]-->
-        <div class="whatsnew"><!--[pnml name="_TNGZ_WHATSNEW_NOCHANGES"|pnvarprephtmldisplay]--><br /></div>
+        <div class="whatsnew"><!--[gt text="No new or updated records" domain="module_TNGz"]--><br /></div>
     <!--[/if]-->
     <br />
 <!--[/if]-->
 
-<!--[if $showfamily ]-->
-    <h4 class="whatsnew"><!--[pnml name="_TNGZ_WHATSNEW_HEAD_FAMILY"|pnvarprephtmldisplay]--></h4>
-    <!--[if $showfamilyitems ]-->
+<!--[if $showfamily]-->
+    <h4 class="whatsnew"><!--[gt text="Families" domain="module_TNGz"]--></h4>
+    <!--[if $showfamilyitems]-->
         <ul class="whatsnew">
         <!--[foreach item=item from=$showfamilyitems]-->
         <li><!--[$item]--></li>
         <!--[/foreach]-->
         </ul>
     <!--[else]-->
-        <div class="whatsnew"><!--[pnml name="_TNGZ_WHATSNEW_NOCHANGES"|pnvarprephtmldisplay]--><br /></div>
+        <div class="whatsnew"><!--[gt text="No new or updated records" domain="module_TNGz"]--><br /></div>
     <!--[/if]-->
     <br />
 <!--[/if]-->
 
-<!--[if $showphotos ]-->
-    <h4 class="whatsnew"><!--[pnml name="_TNGZ_WHATSNEW_HEAD_PHOTOS"|pnvarprephtmldisplay]--></h4>
-    <!--[if $showphotositems ]-->
+<!--[if $showphotos]-->
+    <h4 class="whatsnew"><!--[gt text="Photos" domain="module_TNGz"]--></h4>
+    <!--[if $showphotositems]-->
         <div class="whatsnew">
         <!--[foreach item=item from=$showphotositems]-->
              <!--[$item]-->
         <!--[/foreach]-->
         </div>
     <!--[else]-->
-        <div class="whatsnew"><!--[pnml name="_TNGZ_WHATSNEW_NOCHANGES"|pnvarprephtmldisplay]--><br /></div>
+        <div class="whatsnew"><!--[gt text="No new or updated records" domain="module_TNGz"]--><br /></div>
     <!--[/if]-->
     <br />
 <!--[/if]-->

@@ -1,41 +1,41 @@
 <!--[* $Id$ *]-->
-<div class="pn-informationmsg">
-  <!--[pnml name="_WANTEDINSTRUCTIONS" html="1"]-->
+<div class="z-informationmsg">
+  <!--[gt text="<strong>All Fields below are optional.</strong><br /> Fields left blank will be ommited in the output.<br />IDs which are not in the right format, are not in TNG, or contain errors will be omitted in the output." domain="module_TNGz"]-->
 </div>
 
-<div class="pn-adminformrow">
-  <label for="pntng_wantedintro"><!--[pnml name="_WANTEDTEXT"]--></label>
+<div class="z-adminformrow">
+  <label for="pntng_wantedintro"><!--[gt text="Explanation text at the top of the block (can included HTML)" domain="module_TNGz"]--></label>
   <ul style="list-style-type: none;">  
-  <!--[ foreach item=wantedtext from=$wantedintro key=lang ]-->
-      <li style="margin: 5px;" class="pn-clearfix"><span style="width: 8em; float: left;">
-      <label  for="wantedintro_<!--[ $lang ]-->"><!--[ $lang ]-->:</label></span>
-      <textarea id="pntng_wantedintro_<!--[ $lang ]-->" name="wantedintro[<!--[ $lang ]-->]" rows="2" cols="60"><!--[$wantedintro[$lang]|pnvarprephtmldisplay]--></textarea>
+  <!--[foreach item=wantedtext from=$wantedintro key=lang]-->
+      <li style="margin: 5px;" class="z-clearfix"><span style="width: 8em; float: left;">
+      <label  for="wantedintro_<!--[$lang]-->"><!--[$lang]-->:</label></span>
+      <textarea id="pntng_wantedintro_<!--[$lang]-->" name="wantedintro[<!--[$lang]-->]" rows="2" cols="60"><!--[$wantedintro[$lang]|pnvarprephtmldisplay]--></textarea>
       </li>
-  <!--[ /foreach ]-->
+  <!--[/foreach]-->
   </ul>
 </div>
 
-<div class="pn-adminformrow">
-  <label for="pntng_sortby"><!--[pnml name="_SHOWORDER"]--></label>
+<div class="z-adminformrow">
+  <label for="pntng_sortby"><!--[gt text="Sort display entries by :" domain="module_TNGz"]--></label>
   <select id="pntng_sortby" name="sortby"><!--[html_options options=$sortbylist selected=$sortby]--></select>
 </div>
 
-<div class="pn-adminformrow">
-  <label for="pntng_wantedpeoplelist"><!--[pnml name="_WANTEDPEOPLELIST"]--></label>
+<div class="z-adminformrow">
+  <label for="pntng_wantedpeoplelist"><!--[gt text="List of PersonIDs (e.g. I001, I002)" domain="module_TNGz"]--></label>
   <textarea id="pntng_wantedpeoplelist" name="wantedpeoplelist" rows="4" cols="60"><!--[$wantedpeoplelist|pnvarprepfordisplay]--></textarea>  
 </div>
 
-<div class="pn-adminformrow">
-  <label for="pntng_wantedfamilylist"><!--[pnml name="_WANTEDFAMILYLIST"]--></label>
+<div class="z-adminformrow">
+  <label for="pntng_wantedfamilylist"><!--[gt text="List of FamilyIDs (e.g. F001, F002)" domain="module_TNGz"]--></label>
   <textarea id="pntng_wantedfamilylist" name="wantedfamilylist" rows="4" cols="60"><!--[$wantedfamilylist|pnvarprepfordisplay]--></textarea>  
 </div>
 
-<div class="pn-adminformrow">
-  <label for="pntng_wantedfamilyname"><!--[pnml name="_SHOWFAMILYNAME"]--></label>
+<div class="z-adminformrow">
+  <label for="pntng_wantedfamilyname"><!--[gt text="Display Families by :" domain="module_TNGz"]--></label>
   <select id="pntng_wantedfamilyname" name="wantedfamilyname"><!--[html_options options=$wantednamelist selected=$wantedfamilyname]--></select>
 </div>
 
-<div class="pn-adminformrow">
-  <label for="pntng_wantedmenulink"><!--[pnml name="_WANTEDMENULINK"]--></label>
+<div class="z-adminformrow">
+  <label for="pntng_wantedmenulink"><!--[gt text="Show TNG Menu Link at the bottom?" domain="module_TNGz"]--></label>
   <select id="pntng_wantedmenulink" name="wantedmenulink"><!--[html_options options=$yeslist selected=$wantedmenulink]--></select>
 </div>

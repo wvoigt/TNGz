@@ -12,50 +12,50 @@
     <h4 class="thisday"><!--[$todaytime|pndate_format:"%d %b %Y"]--></h4>
 <!--[/if]-->
 
-<!--[if $showbirth ]-->
-    <h4 class="thisday"><!--[pnml name="_BIRTH"|pnvarprephtmldisplay]--></h4>
-    <!--[if $birth ]-->
+<!--[if $showbirth]-->
+    <h4 class="thisday"><!--[gt text="Birthdays" domain="module_TNGz"]--></h4>
+    <!--[if $birth]-->
         <ul class="thisday">
         <!--[foreach item=item from=$birth]-->
         <li><!--[$item]--></li>
         <!--[/foreach]-->
         </ul>
     <!--[else]-->
-    <div class="thisday"><!--[pnml name="_NONETNG"|pnvarprephtmldisplay]--><br /></div>
+    <div class="thisday"><!--[gt text="Nobody found for today" domain="module_TNGz"]--><br /></div>
     <!--[/if]-->
     <br />
 <!--[/if]-->
 
-<!--[if $showmarriage ]-->
-    <h4 class="thisday"><!--[pnml name="_MARRIAGE"|pnvarprephtmldisplay]--></h4>
-    <!--[if $marriage ]-->
+<!--[if $showmarriage]-->
+    <h4 class="thisday"><!--[gt text="Marriages" domain="module_TNGz"]--></h4>
+    <!--[if $marriage]-->
         <ul class="thisday">
         <!--[foreach item=item from=$marriage]-->
         <li><!--[$item]--></li>
         <!--[/foreach]-->
         </ul>
     <!--[else]-->
-    <div class="thisday"><!--[pnml name="_NONETNG"|pnvarprephtmldisplay]--><br /></div>
+    <div class="thisday"><!--[gt text="Nobody found for today" domain="module_TNGz"]--><br /></div>
     <!--[/if]-->
     <br />
 <!--[/if]-->
 
-<!--[if $showdeath ]-->
-    <h4 class="thisday"><!--[pnml name="_DEATH"|pnvarprephtmldisplay]--></h4>
-    <!--[if $death ]-->
+<!--[if $showdeath]-->
+    <h4 class="thisday"><!--[gt text="People Who Died" domain="module_TNGz"]--></h4>
+    <!--[if $death]-->
         <ul class="thisday">
         <!--[foreach item=item from=$death]-->
         <li><!--[$item]--></li>
         <!--[/foreach]-->
         </ul>
     <!--[else]-->
-    <div class="thisday"><!--[pnml name="_NONETNG"|pnvarprephtmldisplay]--><br /></div>
+    <div class="thisday"><!--[gt text="Nobody found for today" domain="module_TNGz"]--><br /></div>
     <!--[/if]-->
     <br />
 <!--[/if]-->
 
 <!--[if $showwiki ]-->
-     <h4 class="thisday"><a href="http://www.wikipedia.org/wiki/<!--[$todaytime|pndate_format:"%B_%d"]-->" target="_blank"><!--[pnml name="_WIKITODAY"|pnvarprephtmldisplay]--> : <!--[$todaytime|pndate_format:"%e %B"]--></a></h4>
+     <h4 class="thisday"><a href="http://www.wikipedia.org/wiki/<!--[$todaytime|pndate_format:"%B_%d"]-->" target="_blank"><!--[gt text="Go to Wikipedia" domain="module_TNGz"]--> : <!--[$todaytime|pndate_format:"%e %B"]--></a></h4>
 <!--[/if]-->
 
 <!--[if $mainmenu ]-->

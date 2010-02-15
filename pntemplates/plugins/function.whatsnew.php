@@ -29,6 +29,7 @@
  */
 function smarty_function_whatsnew($params, &$smarty)
 {  
+    $dom = ZLanguage::getModuleDomain('TNGz');
 
     if( !pnModAPILoad('TNGz','user',true) ) {
         return false;
@@ -68,10 +69,10 @@ function smarty_function_whatsnew($params, &$smarty)
     
 
     if (empty($params['max']) || !is_numeric($params['max']) ) {
-        $params['max']    = _TNGZ_WHATSNEW_HOWMANY_NUM;
+        $params['max']    = 10;
     }
     if (empty($params['days'])  || !is_numeric($params['days'])  ) {
-        $params['days']     = _TNGZ_WHATSNEW_HOWLONG_NUM;
+        $params['days']     = 30;
     }
     
     $lang = ZLanguage::getLanguageCode(); // get language used in Zikula
@@ -81,7 +82,7 @@ function smarty_function_whatsnew($params, &$smarty)
         $have_info = 1;
     } else {
         $have_info = 0;
-        $thisday_error  = ""._PEOPLEDBFERROR." " . $TNG_conn->ErrorMsg();
+        $thisday_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
     }
 
     if ($params['cache'] == "Y") {
@@ -126,7 +127,7 @@ function smarty_function_whatsnew($params, &$smarty)
                   WHERE TO_DAYS(NOW()) - TO_DAYS(changedate) <= $howlong 
                   ORDER BY changedate DESC, lastname, firstname LIMIT $maxitems";
 	    if (!$result = $TNG_conn->Execute($query)  ) {
-            $whatsnew_error = ""._TNGZ_WHATSNEW_SQLERROR . " " . $TNG_conn->ErrorMsg();
+            $whatsnew_error = __('Error in accessing the database.', $dom) . " " . $TNG_conn->ErrorMsg();
         } else {
             if ( $result->RecordCount() != 0 ){
                 for (; !$result->EOF; $result->MoveNext()) {
@@ -156,7 +157,7 @@ function smarty_function_whatsnew($params, &$smarty)
         WHERE TO_DAYS(NOW()) - TO_DAYS(f.changedate) <= $howlong AND h.personID = f.husband AND w.personID = f.wife AND h.gedcom = f.gedcom AND w.gedcom = f.gedcom
 		ORDER BY f.changedate DESC, h.lastname LIMIT $maxitems";
 	    if (!$result = $TNG_conn->Execute($query)  ) {
-            $whatsnew_error = ""._TNGZ_WHATSNEW_SQLERROR." " . $TNG_conn->ErrorMsg();
+            $whatsnew_error = __('Error in accessing the database.', $dom)." " . $TNG_conn->ErrorMsg();
         } else {
             if ( $result->RecordCount() != 0 ){
 	            for (; !$result->EOF; $result->MoveNext()) {
@@ -191,7 +192,7 @@ function smarty_function_whatsnew($params, &$smarty)
                          DESC LIMIT $maxitems";
 
 	    if (!$result = &$TNG_conn->Execute($query)  ) {
-            $whatsnew_error .= ""._TNGZ_WHATSNEW_SQLERROR." " . $TNG_conn->ErrorMsg();
+            $whatsnew_error .= __('Error in accessing the database.', $dom)." " . $TNG_conn->ErrorMsg();
         } else {
         
             $TNGpaths = pnModAPIFunc('TNGz','user','GetTNGpaths');
@@ -235,25 +236,25 @@ function smarty_function_whatsnew($params, &$smarty)
         }
     }
 
-    $pnRender = pnRender::getInstance('TNGz', false);
+    $render = & pnRender::getInstance('TNGz', false);
 
     PageUtil::addVar('stylesheet', ThemeUtil::getModuleStylesheet('TNGz'));
 
-    $pnRender->assign('whatsnewerror'   , $whatsnew_error);
-    $pnRender->assign('showpeople'      , $whatsnew_showpeople);
-    $pnRender->assign('showpeopleitems' , $whatsnew_showpeopleitems);
-    $pnRender->assign('showfamily'      , $whatsnew_showfamily);
-    $pnRender->assign('showfamilyitems' , $whatsnew_showfamilyitems);
-    $pnRender->assign('showhistory'     , $whatsnew_showhistory);
-    $pnRender->assign('showhistoryitems', $whatsnew_showhistoryitems);
-    $pnRender->assign('showphotos'      , $whatsnew_showphotos);
-    $pnRender->assign('showphotositems' , $whatsnew_showphotositems);
-    $pnRender->assign('maxitems'        , $whatsnew_maxitems);
-    $pnRender->assign('howlong'         , $whatsnew_howlong);
-    $pnRender->assign('title'           , $params['title']);
+    $render->assign('whatsnewerror'   , $whatsnew_error);
+    $render->assign('showpeople'      , $whatsnew_showpeople);
+    $render->assign('showpeopleitems' , $whatsnew_showpeopleitems);
+    $render->assign('showfamily'      , $whatsnew_showfamily);
+    $render->assign('showfamilyitems' , $whatsnew_showfamilyitems);
+    $render->assign('showhistory'     , $whatsnew_showhistory);
+    $render->assign('showhistoryitems', $whatsnew_showhistoryitems);
+    $render->assign('showphotos'      , $whatsnew_showphotos);
+    $render->assign('showphotositems' , $whatsnew_showphotositems);
+    $render->assign('maxitems'        , $whatsnew_maxitems);
+    $render->assign('howlong'         , $whatsnew_howlong);
+    $render->assign('title'           , $params['title']);
 
     // Populate block info and pass to theme
-    $output = $pnRender->fetch('TNGz_plugin_WhatsNew.htm');
+    $output = $render->fetch('TNGz_plugin_WhatsNew.htm');
 
     // now update the cache
     if ($params['cache'] == "Y") {

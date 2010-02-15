@@ -1,0 +1,785 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Zikula 1.2.x\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2010-02-15 00:38+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: pnadmin.php:29 pnadmin.php:53 pnadmin.php:283 pnadmin.php:408
+#: pnadmin.php:441 pnadmin.php:472 pnadmin.php:514 pnadmin.php:535
+#: pnadmin.php:564 pnuserapi.php:245 pnuser.php:28 pnuser.php:83
+#: pnuser.php:127 pnuser.php:179 pnuser.php:223 pnuser.php:378 pnuser.php:393
+#: pnuser.php:420
+msgid "Sorry! No authorization to access this module."
+msgstr ""
+
+#: pnadmin.php:64
+msgid "TNG files Not Found"
+msgstr ""
+
+#: pnadmin.php:69
+msgid "TNG Root Path is not correct!"
+msgstr ""
+
+#: pnadmin.php:77
+msgid "TNG files Found"
+msgstr ""
+
+#: pnadmin.php:82
+msgid "TNG Root Path is correct!"
+msgstr ""
+
+#: pnadmin.php:92 pnadmin.php:102 pnadmin.php:354
+msgid "Unknown"
+msgstr ""
+
+#: pnadmin.php:93
+msgid ""
+"TNGz is not in sync with TNG version. Please update. Found new TNG Version. "
+"Changed from"
+msgstr ""
+
+#: pnadmin.php:104
+msgid "TNGz is in sync with TNG Version"
+msgstr ""
+
+#. ! Email Filter Options
+#: pnadmin.php:175 pnadmin.php:342
+msgid "No (faster)"
+msgstr ""
+
+#: pnadmin.php:176 pnblocks/MostWanted.php:365 pnblocks/WhatsNew.php:359
+#: pnblocks/ThisDay.php:438 pnblocks/ThisDay.php:454 pnblocks/ThisDay.php:464
+msgid "Yes"
+msgstr ""
+
+#: pnadmin.php:177
+msgid "Yes, and make plain email addresses clickable"
+msgstr ""
+
+#: pnadmin.php:197 pnadmin.php:206 pnadmin.php:235
+msgid "Off"
+msgstr ""
+
+#: pnadmin.php:197
+msgid "On"
+msgstr ""
+
+#: pnadmin.php:207
+msgid "minutes"
+msgstr ""
+
+#: pnadmin.php:208
+msgid "hour"
+msgstr ""
+
+#: pnadmin.php:209 pnadmin.php:210 pnadmin.php:211
+msgid "hours"
+msgstr ""
+
+#: pnadmin.php:212
+msgid "day"
+msgstr ""
+
+#: pnadmin.php:213 pnadmin.php:214 pnadmin.php:215 pnadmin.php:216
+#: pnadmin.php:217 pnadmin.php:218
+msgid "days"
+msgstr ""
+
+#: pnadmin.php:320
+msgid ""
+"Invalid 'authkey':  this probably means that you pressed the 'Back' button, "
+"or that the page 'authkey' expired. Please refresh the page and try again."
+msgstr ""
+
+#. ! this is the default guest user name to be used with TNG
+#: pnadmin.php:333 pninit.php:27
+msgid "Guest"
+msgstr ""
+
+#: pnadmin.php:394
+msgid "Done! Module configuration updated."
+msgstr ""
+
+#: pnadmin.php:520
+msgid "Cache cleared"
+msgstr ""
+
+#: pnadmin.php:520
+msgid "Error clearing cache"
+msgstr ""
+
+#. ! module display name
+#: pnversion.php:20 pntemplates/TNGz_admin_menu.htm:4
+msgid "TNGz"
+msgstr ""
+
+#. ! module description
+#: pnversion.php:22
+msgid "TNG genealogy website integration module for Zikula"
+msgstr ""
+
+#. ! module name that appears in the URL
+#: pnversion.php:24
+msgid "tngz"
+msgstr ""
+
+#: pntemplates/plugins/function.placemap.php:63
+#: pntemplates/plugins/function.thisday.php:103
+#: pntemplates/plugins/function.thisday.php:197
+#: pntemplates/plugins/function.thisday.php:268
+#: pntemplates/plugins/function.thisday.php:328
+#: pntemplates/plugins/function.statistics.php:74
+#: pntemplates/plugins/function.whatsnew.php:85
+#: pntemplates/plugins/function.showphoto.php:104
+#: pntemplates/plugins/function.showphoto.php:136
+#: pntemplates/plugins/function.showphoto.php:163
+#: pntemplates/plugins/function.showphoto.php:180 pnblocks/MostWanted.php:133
+#: pnblocks/MostWanted.php:150 pnblocks/MostWanted.php:208
+#: pnblocks/RandomPhoto.php:115 pnblocks/RandomPhoto.php:152
+#: pnblocks/RandomPhoto.php:179 pnblocks/RandomPhoto.php:196
+#: pnblocks/WhatsNew.php:116 pnblocks/ThisDay.php:128 pnblocks/ThisDay.php:184
+#: pnblocks/ThisDay.php:253 pnblocks/ThisDay.php:310
+msgid "Error in accessing the TNG tables."
+msgstr ""
+
+#. ! ThisDay block marriage 'and'
+#: pntemplates/plugins/function.thisday.php:279 pnblocks/ThisDay.php:264
+msgid "&"
+msgstr ""
+
+#: pntemplates/plugins/function.thisday.php:293 pnblocks/ThisDay.php:278
+msgid "Divorced"
+msgstr ""
+
+#. ! Genealogy Page link name
+#: pntemplates/plugins/function.thisday.php:382 pnblocks/MostWanted.php:264
+#: pnblocks/ThisDay.php:359
+msgid "Genealogy Page"
+msgstr ""
+
+#: pntemplates/plugins/function.namesearch.php:26
+#: pntemplates/plugins/function.namesearch.php:38
+msgid "Search"
+msgstr ""
+
+#: pntemplates/plugins/function.namesearch.php:36
+msgid "Last Name"
+msgstr ""
+
+#: pntemplates/plugins/function.namesearch.php:37
+msgid "First Name"
+msgstr ""
+
+#: pntemplates/plugins/function.namesearch.php:39
+msgid "Advanced Search"
+msgstr ""
+
+#: pntemplates/plugins/function.whatsnew.php:130
+#: pntemplates/plugins/function.whatsnew.php:160
+#: pntemplates/plugins/function.whatsnew.php:195 pnblocks/WhatsNew.php:126
+#: pnblocks/WhatsNew.php:161 pnblocks/WhatsNew.php:246
+msgid "Error in accessing the database."
+msgstr ""
+
+#: pntemplates/plugins/function.showphoto.php:220 pnblocks/RandomPhoto.php:241
+msgid "No Photo found"
+msgstr ""
+
+#: pntemplates/plugins/function.surnames.php:168
+#: pntemplates/plugins/function.places.php:153
+#: pntemplates/TNGz_user_view_places.htm:19
+#: pntemplates/TNGz_user_view_surnames.htm:33
+msgid "Show top"
+msgstr ""
+
+#: pntemplates/plugins/function.surnames.php:170
+#: pntemplates/plugins/function.places.php:155
+msgid "ordered by occurrence"
+msgstr ""
+
+#. ! Submit button
+#: pntemplates/plugins/function.surnames.php:173
+#: pntemplates/plugins/function.places.php:158
+#: pntemplates/TNGz_user_view_places.htm:21
+#: pntemplates/TNGz_user_view_surnames.htm:35
+msgid "Go"
+msgstr ""
+
+#: pntemplates/plugins/function.surnames.php:176
+msgid "Show all surnames alphabetically"
+msgstr ""
+
+#: pntemplates/plugins/function.surnames.php:178
+msgid "Main surname page"
+msgstr ""
+
+#: pntemplates/plugins/function.versioncheck.php:64
+msgid "This is the latest recommended version"
+msgstr ""
+
+#: pntemplates/plugins/function.places.php:161
+msgid "Show all places alphabetically"
+msgstr ""
+
+#: pntemplates/plugins/function.places.php:163
+msgid "Main places page"
+msgstr ""
+
+#: pnsearchapi.php:73 pnsearchapi.php:124
+msgid "Error! Could not load items."
+msgstr ""
+
+#: pnsearchapi.php:193
+msgid "The following individual is flagged as living - Details withheld."
+msgstr ""
+
+#: pnblocks/Places.php:138 pnblocks/Surnames.php:138
+msgid "Table"
+msgstr ""
+
+#: pnblocks/Places.php:139 pnblocks/Surnames.php:139
+msgid "List"
+msgstr ""
+
+#: pnblocks/Places.php:141 pnblocks/Surnames.php:141
+#: pntemplates/TNGz_user_view_places.htm:20
+#: pntemplates/TNGz_user_view_surnames.htm:34
+msgid " ordered by occurrence"
+msgstr ""
+
+#: pnblocks/Places.php:142 pnblocks/Surnames.php:142
+#: pntemplates/TNGz_user_view_places.htm:26
+#: pntemplates/TNGz_user_view_surnames.htm:40
+msgid " sorted alphabetically"
+msgstr ""
+
+#: pnblocks/MostWanted.php:354 pnblocks/ThisDay.php:458
+msgid "Last Name, First Name"
+msgstr ""
+
+#: pnblocks/MostWanted.php:355 pnblocks/ThisDay.php:459
+msgid "Event date - earliest to latest"
+msgstr ""
+
+#: pnblocks/MostWanted.php:356 pnblocks/ThisDay.php:460
+msgid "Event date - latest to earliest"
+msgstr ""
+
+#: pnblocks/MostWanted.php:357
+msgid "Order entered"
+msgstr ""
+
+#: pnblocks/MostWanted.php:360
+msgid "Full names"
+msgstr ""
+
+#: pnblocks/MostWanted.php:361
+msgid "Surnames only"
+msgstr ""
+
+#: pnblocks/MostWanted.php:366 pnblocks/RandomPhoto.php:312
+#: pnblocks/WhatsNew.php:360 pnblocks/ThisDay.php:439 pnblocks/ThisDay.php:445
+#: pnblocks/ThisDay.php:451 pnblocks/ThisDay.php:455 pnblocks/ThisDay.php:465
+msgid "No"
+msgstr ""
+
+#: pnblocks/RandomPhoto.php:309 pnblocks/ThisDay.php:442
+#: pnblocks/ThisDay.php:448
+msgid "Yes, show all"
+msgstr ""
+
+#: pnblocks/RandomPhoto.php:310 pnblocks/ThisDay.php:443
+#: pnblocks/ThisDay.php:449
+msgid "Yes, but never living people"
+msgstr ""
+
+#: pnblocks/RandomPhoto.php:311 pnblocks/ThisDay.php:444
+#: pnblocks/ThisDay.php:450
+msgid "Yes, but show living people only if user is logged in"
+msgstr ""
+
+#: pnblocks/RandomPhoto.php:315
+msgid "Thumbnail of Photo"
+msgstr ""
+
+#: pnblocks/RandomPhoto.php:316
+msgid "Actual Photo"
+msgstr ""
+
+#: pnblocks/Surnames.php:137
+msgid "Surname cloud"
+msgstr ""
+
+#: pnadminapi.php:28 pntemplates/TNGz_admin_modifyconfig.htm:4
+msgid "Settings"
+msgstr ""
+
+#: pnadminapi.php:29 pntemplates/TNGz_admin_tngadmin.htm:4
+msgid "TNG Administration"
+msgstr ""
+
+#: pnadminapi.php:30 pntemplates/TNGz_admin_userlog.htm:4
+#: pntemplates/TNGz_admin_userlog.htm:7
+msgid "User Log"
+msgstr ""
+
+#: pnadminapi.php:31 pntemplates/TNGz_admin_adminlog.htm:4
+#: pntemplates/TNGz_admin_adminlog.htm:7
+msgid "Administration Log"
+msgstr ""
+
+#: pnadminapi.php:32 pntemplates/TNGz_admin_install.htm:4
+msgid "Installation Instructions"
+msgstr ""
+
+#: pnadminapi.php:33 pntemplates/TNGz_admin_info.htm:4
+msgid "Information"
+msgstr ""
+
+#: pntemplates/TNGz_block_MostWanted.htm:8
+#: pntemplates/TNGz_block_WhatsNew.htm:13
+#: pntemplates/TNGz_plugin_WhatsNew.htm:16
+msgid "Individuals"
+msgstr ""
+
+#: pntemplates/TNGz_block_MostWanted.htm:17
+#: pntemplates/TNGz_block_WhatsNew.htm:27
+#: pntemplates/TNGz_plugin_WhatsNew.htm:30
+msgid "Families"
+msgstr ""
+
+#: pntemplates/TNGz_block_MostWanted.htm:26
+#: pntemplates/TNGz_block_ThisDay.htm:21 pntemplates/TNGz_block_ThisDay.htm:35
+#: pntemplates/TNGz_block_ThisDay.htm:49
+#: pntemplates/TNGz_plugin_ThisDay.htm:24
+#: pntemplates/TNGz_plugin_ThisDay.htm:38
+#: pntemplates/TNGz_plugin_ThisDay.htm:52
+msgid "Nobody found for today"
+msgstr ""
+
+#: pntemplates/TNGz_block_MostWanted.htm:34
+msgid "Edit"
+msgstr ""
+
+#: pntemplates/TNGz_block_MostWanted.htm:34
+msgid "Edit this Block"
+msgstr ""
+
+#: pntemplates/TNGz_block_MostWanted_modify.htm:3
+msgid ""
+"<strong>All Fields below are optional.</strong><br /> Fields left blank will "
+"be ommited in the output.<br />IDs which are not in the right format, are "
+"not in TNG, or contain errors will be omitted in the output."
+msgstr ""
+
+#: pntemplates/TNGz_block_MostWanted_modify.htm:7
+msgid "Explanation text at the top of the block (can included HTML)"
+msgstr ""
+
+#: pntemplates/TNGz_block_MostWanted_modify.htm:19
+#: pntemplates/TNGz_block_ThisDay_modify.htm:23
+msgid "Sort display entries by :"
+msgstr ""
+
+#: pntemplates/TNGz_block_MostWanted_modify.htm:24
+msgid "List of PersonIDs (e.g. I001, I002)"
+msgstr ""
+
+#: pntemplates/TNGz_block_MostWanted_modify.htm:29
+msgid "List of FamilyIDs (e.g. F001, F002)"
+msgstr ""
+
+#: pntemplates/TNGz_block_MostWanted_modify.htm:34
+msgid "Display Families by :"
+msgstr ""
+
+#: pntemplates/TNGz_block_MostWanted_modify.htm:39
+msgid "Show TNG Menu Link at the bottom?"
+msgstr ""
+
+#: pntemplates/TNGz_block_WhatsNew.htm:5
+#: pntemplates/TNGz_plugin_WhatsNew.htm:8
+#, php-format
+msgid "%1$s newest in %2$s days"
+msgstr ""
+
+#: pntemplates/TNGz_block_WhatsNew.htm:21
+#: pntemplates/TNGz_block_WhatsNew.htm:35
+#: pntemplates/TNGz_block_WhatsNew.htm:49
+#: pntemplates/TNGz_block_WhatsNew.htm:62
+#: pntemplates/TNGz_plugin_WhatsNew.htm:24
+#: pntemplates/TNGz_plugin_WhatsNew.htm:38
+#: pntemplates/TNGz_plugin_WhatsNew.htm:52
+msgid "No new or updated records"
+msgstr ""
+
+#: pntemplates/TNGz_block_WhatsNew.htm:41
+#: pntemplates/TNGz_plugin_WhatsNew.htm:44
+msgid "Photos"
+msgstr ""
+
+#: pntemplates/TNGz_block_WhatsNew.htm:55
+#: pntemplates/TNGz_block_ThisDay.htm:41
+#: pntemplates/TNGz_plugin_ThisDay.htm:44
+msgid "People Who Died"
+msgstr ""
+
+#: pntemplates/TNGz_block_ThisDay_modify.htm:3
+msgid "Show Today's Date :"
+msgstr ""
+
+#: pntemplates/TNGz_block_ThisDay_modify.htm:8
+msgid "Show Birthdays :"
+msgstr ""
+
+#: pntemplates/TNGz_block_ThisDay_modify.htm:13
+msgid "Show Marriages :"
+msgstr ""
+
+#: pntemplates/TNGz_block_ThisDay_modify.htm:18
+msgid "Show Who Died :"
+msgstr ""
+
+#: pntemplates/TNGz_block_ThisDay_modify.htm:28
+msgid "Show Wikipedia link :"
+msgstr ""
+
+#: pntemplates/TNGz_admin_install.htm:7
+msgid "Detail Readme file"
+msgstr ""
+
+#: pntemplates/TNGz_user_view_places.htm:3
+msgid "Top Locations and Places"
+msgstr ""
+
+#: pntemplates/TNGz_user_view_places.htm:6
+msgid "Top Places"
+msgstr ""
+
+#: pntemplates/TNGz_user_view_places.htm:6
+msgid "Total Places"
+msgstr ""
+
+#: pntemplates/TNGz_user_view_places.htm:26
+msgid "All places"
+msgstr ""
+
+#: pntemplates/TNGz_user_view_places.htm:29
+msgid "Main place listing page"
+msgstr ""
+
+#: pntemplates/TNGz_user_view_surnames.htm:2
+msgid "Top Surnames"
+msgstr ""
+
+#: pntemplates/TNGz_user_view_surnames.htm:17
+#, php-format
+msgid "Top %1$s Surnames out of %2$s Total Unique Surnames"
+msgstr ""
+
+#: pntemplates/TNGz_user_view_surnames.htm:40
+msgid "Show all surnames"
+msgstr ""
+
+#: pntemplates/TNGz_user_view_surnames.htm:44
+msgid "Main surname listing page"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:10
+msgid "Configuration status"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:26
+msgid "Password hash method from Zikula is set to MD5."
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:28
+msgid ""
+"Password hash method from Zikula should be set to MD5 in order to get in "
+"sync with TNG!"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:32
+msgid "Want all green status for a good configuration"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:36
+msgid "TNG installation location"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:44
+msgid "Guest Access"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:46
+msgid "Check to allow non-logged in Zikula user to have TNG Guest access "
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:51
+msgid "  - What username to use for the guest account"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:54
+msgid ""
+"If enabled, please make sure in TNG's Users administration that the TNG user "
+"specified here has the level of access you want for a guest. Anyone not "
+"logged into Zikula will apear to TNG as this user."
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:58
+msgid "Zikula and TNG User Synchronization"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:61
+msgid "Create TNG users from Zikula user information"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:64
+msgid ""
+"If enabled, the first time a logged in Zikula user accesses TNG, a TNG user "
+"with the same username is created "
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:67
+msgid "  - Allow created user to view living"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:72
+msgid "  - Allow created user to download GEDCOMs"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:77
+msgid "  - Allow created user to view LDS information"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:82
+msgid ""
+"  - Keep TNG user information up to date with changed Zikula user information"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:87
+msgid "    (includes changes to Real Name, website, and email address)"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:92
+msgid "Identify Primary Person"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:95
+msgid "Tree that includes person"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:100
+msgid "TNG ID of person (must be in the Tree)"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:105
+msgid ""
+"These settings are optional.  If used, they allow for more personalized "
+"links in templates. For example, the example default 'home' page will add a "
+"link to display this person's ancestors.  If you do not want to use, then "
+"just leave this field blank."
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:109
+msgid "Other Settings"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:111
+msgid "Use TNGz's homepage instead of TNG's index page"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:116
+msgid ""
+"Enable email address hiding/encoding (if you have email addresses in your "
+"TNG files)"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:122
+msgid "Cache"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:123
+msgid ""
+"Using the cache can speed up the time it takes to generate blocks and "
+"plugins. Instead of making multiple requests to the TNG database, data that "
+"has already been calculated and stored in the cache can be retrieved more "
+"quickly."
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:126
+msgid "TNG database change resets the cache"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:129
+msgid ""
+"Checking the database update time does not work on all systems.  If you are "
+"having trouble with the cache, then turn this off."
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:132
+msgid "Interval to refresh cache"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:135
+msgid ""
+"The cache will expire and reload when either condition occurs. Both settings "
+"must be 'off' to disable caching."
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:139
+msgid "Clear the cache"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:141
+msgid "No Cache"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:151
+msgid "Update TNGz configuration"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:152
+msgid "Cancel"
+msgstr ""
+
+#: pntemplates/TNGz_block_ThisDay.htm:13
+#: pntemplates/TNGz_plugin_ThisDay.htm:16
+msgid "Birthdays"
+msgstr ""
+
+#: pntemplates/TNGz_block_ThisDay.htm:27
+#: pntemplates/TNGz_plugin_ThisDay.htm:30
+msgid "Marriages"
+msgstr ""
+
+#: pntemplates/TNGz_block_ThisDay.htm:55
+#: pntemplates/TNGz_plugin_ThisDay.htm:58
+msgid "Go to Wikipedia"
+msgstr ""
+
+#: pntemplates/TNGz_search_options.htm:4
+msgid "Genealogy People Search"
+msgstr ""
+
+#: pntemplates/TNGz_admin_info.htm:7
+msgid "Change Log"
+msgstr ""
+
+#: pntemplates/TNGz_admin_info.htm:11
+msgid "Debug Information"
+msgstr ""
+
+#: pntemplates/TNGz_admin_info.htm:12
+msgid ""
+"Information used to debug problems. This might be useful if you need to "
+"report a problem."
+msgstr ""
+
+#: pntemplates/TNGz_show_histogram.htm:2 pntemplates/TNGz_show_histogram.htm:7
+msgid "Histogram"
+msgstr ""
+
+#: pntemplates/TNGz_show_histogram.htm:6
+msgid "This histogram shows the distribution of dates in the database."
+msgstr ""
+
+#: pntemplates/TNGz_show_placemap.htm:2
+msgid "Place Map"
+msgstr ""
+
+#: pntemplates/TNGz_block_Surnames_modify.htm:3
+msgid ""
+"Select the number top Surnames to display, the type of display, and the "
+"ordering.  Ordering can be by most used (rank) or alphabetical."
+msgstr ""
+
+#: pntemplates/TNGz_block_Surnames_modify.htm:7
+#: pntemplates/TNGz_block_Places_modify.htm:7
+msgid "Top"
+msgstr ""
+
+#: pntemplates/TNGz_block_Surnames_modify.htm:12
+#: pntemplates/TNGz_block_Places_modify.htm:12
+msgid "Show items"
+msgstr ""
+
+#: pntemplates/TNGz_block_Surnames_modify.htm:17
+#: pntemplates/TNGz_block_Places_modify.htm:17
+msgid "Display as"
+msgstr ""
+
+#: pntemplates/TNGz_block_Surnames_modify.htm:22
+#: pntemplates/TNGz_block_Places_modify.htm:22
+msgid "Number of columns (used only Table)"
+msgstr ""
+
+#: pntemplates/TNGz_block_Surnames_modify.htm:27
+#: pntemplates/TNGz_block_Places_modify.htm:27
+msgid ""
+"This is optional explanation text at the top of the block (can included HTML)"
+msgstr ""
+
+#: pntemplates/TNGz_block_WhatsNew_modify.htm:2
+msgid "Show new or changed Individuals"
+msgstr ""
+
+#: pntemplates/TNGz_block_WhatsNew_modify.htm:6
+msgid "Show new or changed Families"
+msgstr ""
+
+#: pntemplates/TNGz_block_WhatsNew_modify.htm:10
+msgid "Show new or changed Photos"
+msgstr ""
+
+#: pntemplates/TNGz_block_WhatsNew_modify.htm:14
+msgid "Show new or changed Histories"
+msgstr ""
+
+#: pntemplates/TNGz_block_WhatsNew_modify.htm:18
+msgid "Maximum number of entries to display"
+msgstr ""
+
+#: pntemplates/TNGz_block_WhatsNew_modify.htm:22
+msgid "Maximum number of days to to display"
+msgstr ""
+
+#: pntemplates/TNGz_block_Places_modify.htm:3
+msgid ""
+"Select the number top Places to display, the type of display, and the "
+"ordering.  Ordering can be by most used (rank) or alphabetical."
+msgstr ""
+
+#: pntemplates/TNGz_block_RandomPhoto_modify.htm:3
+msgid "Show Pictures of People"
+msgstr ""
+
+#: pntemplates/TNGz_block_RandomPhoto_modify.htm:8
+msgid "Which type of photo to use"
+msgstr ""
+
+#: pntemplates/TNGz_block_RandomPhoto_modify.htm:13
+msgid "Maximum Height of display image"
+msgstr ""
+
+#: pntemplates/TNGz_block_RandomPhoto_modify.htm:18
+msgid "Maximum Width of display image"
+msgstr ""
+
+#: pntemplates/TNGz_block_RandomPhoto_modify.htm:23
+msgid ""
+"Limit Photo selection to the following list of TNG mediaID numbers (default "
+"= blank)"
+msgstr ""

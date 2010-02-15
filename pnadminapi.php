@@ -22,15 +22,15 @@ function TNGz_adminapi_getlinks()
 {
     $links = array();
 
-    pnModLangLoad('TNGz', 'admin');
+    $dom = ZLanguage::getModuleDomain('TNGz');
 
     if (SecurityUtil::checkPermission('TNGz::', '::', ACCESS_ADMIN)) {
-        $links[] = array('url' => pnModURL('TNGz', 'admin', 'modifyconfig'), 'text' => _TNGZSETTINGS);
-        $links[] = array('url' => pnModURL('TNGz', 'admin', 'TNGadmin'),     'text' => _TNGCONFG);
-        $links[] = array('url' => pnModURL('TNGz', 'admin', 'userlog'),      'text' => _TNGZUSERLOG);
-        $links[] = array('url' => pnModURL('TNGz', 'admin', 'adminlog'),     'text' => _TNGZADMINLOG);
-        $links[] = array('url' => pnModURL('TNGz', 'admin', 'Instruct'),     'text' => _TNGZINSTRUCT);
-        $links[] = array('url' => pnModURL('TNGz', 'admin', 'Info'),         'text' => _TNGZDEBUGINFO);
+        $links[] = array('url' => pnModURL('TNGz', 'admin', 'modifyconfig'), 'text' => __('Settings', $dom));
+        $links[] = array('url' => pnModURL('TNGz', 'admin', 'TNGadmin'),     'text' => __('TNG Administration', $dom));
+        $links[] = array('url' => pnModURL('TNGz', 'admin', 'userlog'),      'text' => __('User Log', $dom));
+        $links[] = array('url' => pnModURL('TNGz', 'admin', 'adminlog'),     'text' => __('Administration Log', $dom));
+        $links[] = array('url' => pnModURL('TNGz', 'admin', 'Instruct'),     'text' => __('Installation Instructions', $dom));
+        $links[] = array('url' => pnModURL('TNGz', 'admin', 'Info'),         'text' => __('Information', $dom));
     }
 
     return $links;

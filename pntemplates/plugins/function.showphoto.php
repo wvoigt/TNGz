@@ -31,6 +31,8 @@ function smarty_function_showphoto($params, &$smarty)
         return false;
     }
 
+    $dom = ZLanguage::getModuleDomain('TNGz');
+
     // Valid answers, default is the first in the list
     $answer_yes    = array('Y', 'yes', 'y', '1', 'on',  'all');  // Answers for Yes or All
     $answer_no     = array('N', 'no',  'n', '0', 'off', 'none'); // Answers for No or none
@@ -99,7 +101,7 @@ function smarty_function_showphoto($params, &$smarty)
         $have_info = 1;
     } else {
         $have_info = 0;
-        $photo_error  = ""._PEOPLEDBFERROR."";
+        $photo_error  = __('Error in accessing the TNG tables.', $dom);
     }
 
     if ($params['showliving'] != 'N' && $have_info == 1 ){
@@ -131,7 +133,7 @@ function smarty_function_showphoto($params, &$smarty)
                           WHERE living.personID = person.personID AND person.living = 1
                           GROUP BY living.mediaID";
                 if (!$result = &$TNG_conn->Execute($query) ) {
-                    $photo_error .= ""._PEOPLEDBFERROR." [0] " . $TNG_conn->ErrorMsg() . " ";
+                    $photo_error .= __('Error in accessing the TNG tables.', $dom)." [0] " . $TNG_conn->ErrorMsg() . " ";
                 }
                 // now make a comma separated list of the photoIDs
                 $record_sep = "";
@@ -158,7 +160,7 @@ function smarty_function_showphoto($params, &$smarty)
         }
 
        	if (!$result = &$TNG_conn->Execute($query)  ) {
-                $photo_error .= ""._PEOPLEDBFERROR." [1] " . $TNG_conn->ErrorMsg() . " ";
+                $photo_error .= __('Error in accessing the TNG tables.', $dom)." [1] " . $TNG_conn->ErrorMsg() . " ";
         } else {
 
             $num_photos = $result->RecordCount();  // the number of photo links to pick from
@@ -175,7 +177,7 @@ function smarty_function_showphoto($params, &$smarty)
                                 AND $media_table.mediaID = $medialinks_table.mediaID ";
 
                 if (!$result2 = &$TNG_conn->Execute($query)) {
-                    $photo_error .= ""._PEOPLEDBFERROR." [2] " . $TNG_conn->ErrorMsg()  . " ";
+                    $photo_error .= __('Error in accessing the TNG tables.', $dom)." [2] " . $TNG_conn->ErrorMsg()  . " ";
                 } else {
                     list($t_path,$t_thumbpath,$t_description,$t_notes,$t_medialinkID,$t_personID,$t_gedcom,$t_mediaID,$usecollfolder) = $result2->fields;
                     $result2->Close();
@@ -215,7 +217,7 @@ function smarty_function_showphoto($params, &$smarty)
         }
         if ( $need_photo ) {
             // Didn't get a photo this time
-            $photo_error  .= ""._NOPHOTOFOUND." ";
+            $photo_error  .= __('No Photo found', $dom)." ";
         }
     }
 
