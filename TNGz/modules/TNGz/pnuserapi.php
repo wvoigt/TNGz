@@ -49,12 +49,15 @@ function TNGz_userapi_GetTNGpaths()
 function TNGz_userapi_DBconnect()
 {
     static $TNG_conn;
-    if (!isset($TNG_conn)) {
+    if (!isset($TNG_conn) || !$TNG_conn->IsConnected() ) {
         $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
         if ($TNG) {
             $TNG_conn = ADONewConnection('mysql');
             $TNG_conn->NConnect($TNG['database_host'], $TNG['database_username'], $TNG['database_password'], $TNG['database_name']);
             $TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
+            if ($TNG['charset']=="UTF-8"){
+                $TNG_conn->Execute("set names 'utf8'");
+            }
         } else {
             $TNG_conn = false;
         }
@@ -264,11 +267,11 @@ function TNGz_userapi_ShowPage($args)
     // Get information for the module
     $TNGz_modinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
     
-    // Set module display name
-    $TNGz_modname = "TNGz";
-    // set the module name to the display name if this is present
-    if (isset($TNGz_modinfo['displayname']) && !empty($TNGz_modinfo['displayname'])) {
-        $TNGz_modname = rawurlencode($TNGz_modinfo['displayname']);
+    // Set module URL name for this module
+    $TNGz_modname = $TNGz_modinfo['name'];
+    // set the module name to the url name if this is present
+    if (isset($TNGz_modinfo['url']) && !empty($TNGz_modinfo['url'])) {
+        $TNGz_modname = rawurlencode($TNGz_modinfo['url']);
     } 
     
     //////////////////////////////////////////////////////
@@ -1389,12 +1392,12 @@ function TNGz_userapi_MakeRef($args)
         $args = array();  // just pass the rest of the parameters
     }
 
-    $ref = DataUtil::formatForDisplay(pnModURL('TNGz', 'user', $func, $args));
+    $ref = pnModURL('TNGz', 'user', $func, $args);
 
     if ($url) {
         return $ref;
     } else {
-        return "<a href=\"" . $ref . "\" $target >$description</a>";
+        return "<a href=\"" . DataUtil::formatForDisplay($ref) . "\" $target >$description</a>";
     }
 
 }
