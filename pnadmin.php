@@ -242,12 +242,10 @@ function TNGz_admin_modifyconfig()
         PageUtil::AddVar('javascript', 'javascript/ajax/scriptaculous.js');
         PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/net.js');
         PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/litbox.js');
-
-        $TNG_conn = &ADONewConnection('mysql');
-        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
-        $TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
+        
+        $TNG_conn = pnModAPIFunc('TNGz','user','DBconnect');
         $query = "SELECT gedcom, treename FROM $trees_table ORDER BY treename";
-        if ($result = &$TNG_conn->Execute($query) ) {
+        if ($result = $TNG_conn->Execute($query) ) {
             if ($result->RecordCount() > 0) {
                 for (; !$result->EOF; $result->MoveNext()) {
                     $row = $result->fields;

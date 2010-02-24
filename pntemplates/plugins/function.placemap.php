@@ -153,10 +153,10 @@ function smarty_function_placemap($params, &$smarty)
     $output .= "InitializeMap();\n";
 
     // Get the data and setup all the marker points
-    $TNG_conn = &ADONewConnection('mysql');
-    $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
-    $TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
-    
+    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+           return LogUtil::registerError("Error accessing TNG database.");
+    }
+       
     $query = "SELECT gedcom, place, longitude, latitude, placelevel FROM `". $places_table . "` WHERE longitude <> '' AND latitude <> '' order by place";
     if (!$result = &$TNG_conn->Execute($query) ) {
         $TNG_conn->Close();

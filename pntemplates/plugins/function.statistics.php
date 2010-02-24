@@ -64,15 +64,10 @@ function smarty_function_statistics($params, &$smarty)
     }
 
     // Check to be sure we can get to the TNG information
-    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
-    if (file_exists($TNG['configfile']) ){
-        include($TNG['configfile']);
-        $TNG_conn = &ADONewConnection('mysql');
-        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
-        $TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
-    } else {
+    $TNG = pnModAPIFunc('TNGz','user','TNGconfig'); 
+    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
         return __('Error in accessing the TNG tables.', $dom);
-    }
+    } 
 
     $text = pnModAPIFunc('TNGz','user','GetTNGtext', array('textpart' => 'stats'));
     $text = pnModAPIFunc('TNGz','user','GetTNGtext', array('textpart' => 'places'));
@@ -85,36 +80,36 @@ function smarty_function_statistics($params, &$smarty)
     $output .= "</tr>";
 
     if ($people) {
-        $query = "SELECT count(id) as pcount FROM $people_table $wherestr";
-        if (!$result = &$TNG_conn->Execute($query)  ) {
+        $query = "SELECT count(id) as pcount FROM ".$TNG['people_table']." $wherestr";
+        if (!$result = $TNG_conn->Execute($query)  ) {
             return "$text[cannotexecutequery]: $query";
         }
         $row = $result->fields;
-        $totalpeople = $row[pcount];
+        $totalpeople = $row['pcount'];
         $result->Close();
         $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[totindividuals]</span></td>\n";
         $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$totalpeople &nbsp;</span></td></tr>\n";
     }
 
     if ($family) {
-        $query = "SELECT count(id) as fcount FROM $families_table $wherestr";
-        if (!$result = &$TNG_conn->Execute($query)  ) {
+        $query = "SELECT count(id) as fcount FROM ".$TNG['families_table']." $wherestr";
+        if (!$result = $TNG_conn->Execute($query)  ) {
             return "$text[cannotexecutequery]: $query";
         }
         $row = $result->fields;
-        $totalfamilies = $row[fcount];
+        $totalfamilies = $row['fcount'];
         $result->Close();
         $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[totfamilies]</span></td>\n";
         $output .=  "<td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-data\">$totalfamilies &nbsp;</span></td></tr>\n";
     }
 
     if ($living & $people) {
-        $query = "SELECT count(id) as pcount FROM $people_table WHERE living != 0 $wherestr2";
-        if (!$result = &$TNG_conn->Execute($query)  ) {
+        $query = "SELECT count(id) as pcount FROM ".$TNG['people_table']." WHERE living != 0 $wherestr2";
+        if (!$result = $TNG_conn->Execute($query)  ) {
             return "$text[cannotexecutequery]: $query";
         }
         $row = $result->fields;
-        $numliving = $row[pcount];
+        $numliving = $row['pcount'];
         $result->Close();
         $percentliving  = $totalpeople ? round(100 * $numliving / $totalpeople, 2) : 0;
         $output .=  "<tr><td valign=\"top\" class=\"statistics-cell\"><span class=\"statistics-plugin-lable\">$text[totliving]</span></td>\n";
@@ -124,9 +119,9 @@ function smarty_function_statistics($params, &$smarty)
     
     if ($surnames) {
         $query = "SELECT ucase( lastname) as lastname, count( ucase( lastname ) ) as lncount 
-                  FROM $people_table 
+                  FROM ".$TNG['people_table']." 
                   GROUP BY lastname ORDER by lastname";
-        if (!$result = &$TNG_conn->Execute($query)  ) {
+        if (!$result = $TNG_conn->Execute($query)  ) {
             return "$text[cannotexecutequery]: $query";
         }
         $uniquesurnames = $result->RecordCount();
@@ -136,28 +131,28 @@ function smarty_function_statistics($params, &$smarty)
     }
 
     if ($sex && $people) {
-        $query = "SELECT count(id) as pcount FROM $people_table WHERE sex = 'M' $wherestr2";
-        if (!$result = &$TNG_conn->Execute($query)  ) {
+        $query = "SELECT count(id) as pcount FROM ".$TNG['people_table']." WHERE sex = 'M' $wherestr2";
+        if (!$result = $TNG_conn->Execute($query)  ) {
             return "$text[cannotexecutequery]: $query";
         }
         $row = $result->fields;
-        $males = $row[pcount];
+        $males = $row['pcount'];
         $result->Close();
 
-        $query = "SELECT count(id) as pcount FROM $people_table WHERE sex = 'F' $wherestr2";
-        if (!$result = &$TNG_conn->Execute($query)  ) {
+        $query = "SELECT count(id) as pcount FROM ".$TNG['people_table']." WHERE sex = 'F' $wherestr2";
+        if (!$result = $TNG_conn->Execute($query)  ) {
             return "$text[cannotexecutequery]: $query";
         }
         $row = $result->fields;
-        $females = $row[pcount];
+        $females = $row['pcount'];
         $result->Close();
 
-        $query = "SELECT count(id) as pcount FROM $people_table WHERE sex != 'F' AND sex != 'M' $wherestr2";
-        if (!$result = &$TNG_conn->Execute($query)  ) {
+        $query = "SELECT count(id) as pcount FROM ".$TNG['people_table']." WHERE sex != 'F' AND sex != 'M' $wherestr2";
+        if (!$result = $TNG_conn->Execute($query)  ) {
             return "$text[cannotexecutequery]: $query";
         }
         $row = $result->fields;
-        $unknownsex = $row[pcount];
+        $unknownsex = $row['pcount'];
         $result->Close();
 
         $percentmales      = $totalpeople ? round(100 * $males / $totalpeople, 2) : 0;
@@ -175,8 +170,8 @@ function smarty_function_statistics($params, &$smarty)
     }
 
     if ($places) {
-        $query = "SELECT count(id) as pcount FROM $places_table";
-        if (!$result = &$TNG_conn->Execute($query)  ) {
+        $query = "SELECT count(id) as pcount FROM ".$TNG['places_table']."";
+        if (!$result = $TNG_conn->Execute($query)  ) {
             return "$text[cannotexecutequery]: $query";
         }
         $row = $result->fields;
@@ -184,23 +179,23 @@ function smarty_function_statistics($params, &$smarty)
         $result->Close();
 
         $query = "select sum(A.used) as TheTotal from (
-                   (SELECT count(birthplace) as used, birthplace as place FROM $people_table GROUP BY place)
+                   (SELECT count(birthplace) as used, birthplace as place FROM ".$TNG['people_table']." GROUP BY place)
                      UNION ALL
-                   (SELECT count(deathplace) as used, deathplace as place FROM $people_table GROUP BY place)
+                   (SELECT count(deathplace) as used, deathplace as place FROM ".$TNG['people_table']." GROUP BY place)
                      UNION ALL
-                   (SELECT count(altbirthplace) as used, altbirthplace as place FROM $people_table GROUP BY place)
+                   (SELECT count(altbirthplace) as used, altbirthplace as place FROM ".$TNG['people_table']." GROUP BY place)
                      UNION ALL
-                   (SELECT count(baptplace) as used, baptplace as place FROM $people_table GROUP BY place)
+                   (SELECT count(baptplace) as used, baptplace as place FROM ".$TNG['people_table']." GROUP BY place)
                      UNION ALL
-                   (SELECT count(burialplace) as used, burialplace as place FROM $people_table GROUP BY place)
+                   (SELECT count(burialplace) as used, burialplace as place FROM ".$TNG['people_table']." GROUP BY place)
                      UNION ALL
-                   (SELECT count(eventplace) as used, eventplace as place FROM $events_table GROUP BY place )
+                   (SELECT count(eventplace) as used, eventplace as place FROM ".$TNG['events_table']." GROUP BY place )
                      UNION ALL
-                   (SELECT count(marrplace) as used, marrplace as place FROM $families_table GROUP BY place )
-                  ) as A, $places_table as PlaceTable
+                   (SELECT count(marrplace) as used, marrplace as place FROM ".$TNG['families_table']." GROUP BY place )
+                  ) as A, ".$TNG['places_table']." as PlaceTable
                  WHERE ( A.place <> \"\" ) AND (A.place = PlaceTable.place)";
 
-        if (!$result = &$TNG_conn->Execute($query)  ) {
+        if (!$result = $TNG_conn->Execute($query)  ) {
             return "$text[cannotexecutequery]: $query";
         }
         $row = $result->fields;
@@ -209,31 +204,31 @@ function smarty_function_statistics($params, &$smarty)
     }
 
     if ($geocode && $places) {
-        $query = "SELECT count(id) as pcount FROM $places_table WHERE latitude <> \"\" and longitude <> \"\"";
-        if (!$result = &$TNG_conn->Execute($query)  ) {
+        $query = "SELECT count(id) as pcount FROM ".$TNG['places_table']." WHERE latitude <> \"\" and longitude <> \"\"";
+        if (!$result = $TNG_conn->Execute($query)  ) {
             return "$text[cannotexecutequery]: $query";
         }
         $row = $result->fields;
         $geocoded = $row[pcount];
         $result->Close();
         $query = "select sum(A.used) as TheTotal from (
-                   (SELECT count(birthplace) as used, birthplace as place FROM $people_table GROUP BY place)
+                   (SELECT count(birthplace) as used, birthplace as place FROM ".$TNG['people_table']." GROUP BY place)
                      UNION ALL
-                   (SELECT count(deathplace) as used, deathplace as place FROM $people_table GROUP BY place)
+                   (SELECT count(deathplace) as used, deathplace as place FROM ".$TNG['people_table']." GROUP BY place)
                      UNION ALL
-                   (SELECT count(altbirthplace) as used, altbirthplace as place FROM $people_table GROUP BY place)
+                   (SELECT count(altbirthplace) as used, altbirthplace as place FROM ".$TNG['people_table']." GROUP BY place)
                      UNION ALL
-                   (SELECT count(baptplace) as used, baptplace as place FROM $people_table GROUP BY place)
+                   (SELECT count(baptplace) as used, baptplace as place FROM ".$TNG['people_table']." GROUP BY place)
                      UNION ALL
-                   (SELECT count(burialplace) as used, burialplace as place FROM $people_table GROUP BY place)
+                   (SELECT count(burialplace) as used, burialplace as place FROM ".$TNG['people_table']." GROUP BY place)
                      UNION ALL
-                   (SELECT count(eventplace) as used, eventplace as place FROM $events_table GROUP BY place )
+                   (SELECT count(eventplace) as used, eventplace as place FROM ".$TNG['events_table']." GROUP BY place )
                      UNION ALL
-                   (SELECT count(marrplace) as used, marrplace as place FROM $families_table GROUP BY place )
-                  ) as A, $places_table as PlaceTable
+                   (SELECT count(marrplace) as used, marrplace as place FROM ".$TNG['families_table']." GROUP BY place )
+                  ) as A, ".$TNG['places_table']." as PlaceTable
                  WHERE ( A.place <> \"\" ) AND (A.place = PlaceTable.place)
                  AND ( PlaceTable.latitude <> \"\" and PlaceTable.longitude <> \"\")";
-        if (!$result = &$TNG_conn->Execute($query)  ) {
+        if (!$result = $TNG_conn->Execute($query)  ) {
             return "$text[cannotexecutequery]: $query";
         }
         $row = $result->fields;
