@@ -8,6 +8,11 @@ version 1.4
   * Fixed problem with &lang= parameter now used by Zikula. Before fix, TNG would choke on it if it was used.
   * added new Zikula $modversion['url'] for module
   * changed to support new Zikula language constructs.  Including use of 2 letter language designations instead of 3 letter.
+  * converted TNGz to use Zikula's gettext for language translations
+  * fixed problem with corrupted links being returned from the search function
+  * fixed problem where some UTF-8 characters were not being displayed properly.
+  * internally, all blocks and plugins now use a common database connection point
+  * internally, fixed problem where closed database connection was not being re-opened
   
 version 1.3
   * Added WhatsNew plugin
