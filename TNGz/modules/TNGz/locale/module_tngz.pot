@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zikula 1.2.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-15 00:38+0000\n"
+"POT-Creation-Date: 2010-02-24 20:01+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,11 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pnadmin.php:29 pnadmin.php:53 pnadmin.php:283 pnadmin.php:408
-#: pnadmin.php:441 pnadmin.php:472 pnadmin.php:514 pnadmin.php:535
-#: pnadmin.php:564 pnuserapi.php:245 pnuser.php:28 pnuser.php:83
-#: pnuser.php:127 pnuser.php:179 pnuser.php:223 pnuser.php:378 pnuser.php:393
-#: pnuser.php:420
+#: pnadmin.php:29 pnadmin.php:53 pnadmin.php:281 pnadmin.php:406
+#: pnadmin.php:439 pnadmin.php:470 pnadmin.php:512 pnadmin.php:533
+#: pnadmin.php:562 pnuserapi.php:248 pnuser.php:28 pnuser.php:83
+#: pnuser.php:127 pnuser.php:179 pnuser.php:223 pnuser.php:369 pnuser.php:384
+#: pnuser.php:411
 msgid "Sorry! No authorization to access this module."
 msgstr ""
 
@@ -40,7 +40,7 @@ msgstr ""
 msgid "TNG Root Path is correct!"
 msgstr ""
 
-#: pnadmin.php:92 pnadmin.php:102 pnadmin.php:354
+#: pnadmin.php:92 pnadmin.php:102 pnadmin.php:352
 msgid "Unknown"
 msgstr ""
 
@@ -55,12 +55,12 @@ msgid "TNGz is in sync with TNG Version"
 msgstr ""
 
 #. ! Email Filter Options
-#: pnadmin.php:175 pnadmin.php:342
+#: pnadmin.php:175 pnadmin.php:340
 msgid "No (faster)"
 msgstr ""
 
-#: pnadmin.php:176 pnblocks/MostWanted.php:365 pnblocks/WhatsNew.php:359
-#: pnblocks/ThisDay.php:438 pnblocks/ThisDay.php:454 pnblocks/ThisDay.php:464
+#: pnadmin.php:176 pnblocks/MostWanted.php:358 pnblocks/WhatsNew.php:311
+#: pnblocks/ThisDay.php:420 pnblocks/ThisDay.php:436 pnblocks/ThisDay.php:446
 msgid "Yes"
 msgstr ""
 
@@ -97,32 +97,32 @@ msgstr ""
 msgid "days"
 msgstr ""
 
-#: pnadmin.php:320
+#: pnadmin.php:318
 msgid ""
 "Invalid 'authkey':  this probably means that you pressed the 'Back' button, "
 "or that the page 'authkey' expired. Please refresh the page and try again."
 msgstr ""
 
 #. ! this is the default guest user name to be used with TNG
-#: pnadmin.php:333 pninit.php:27
+#: pnadmin.php:331 pninit.php:27
 msgid "Guest"
 msgstr ""
 
-#: pnadmin.php:394
+#: pnadmin.php:392
 msgid "Done! Module configuration updated."
 msgstr ""
 
-#: pnadmin.php:520
+#: pnadmin.php:518
 msgid "Cache cleared"
 msgstr ""
 
-#: pnadmin.php:520
+#: pnadmin.php:518
 msgid "Error clearing cache"
 msgstr ""
 
 #. ! module display name
-#: pnversion.php:20 pntemplates/TNGz_admin_menu.htm:4
-msgid "TNGz"
+#: pnversion.php:20
+msgid "Genealogy"
 msgstr ""
 
 #. ! module description
@@ -132,7 +132,7 @@ msgstr ""
 
 #. ! module name that appears in the URL
 #: pnversion.php:24
-msgid "tngz"
+msgid "TNGz"
 msgstr ""
 
 #: pntemplates/plugins/function.placemap.php:63
@@ -140,32 +140,33 @@ msgstr ""
 #: pntemplates/plugins/function.thisday.php:197
 #: pntemplates/plugins/function.thisday.php:268
 #: pntemplates/plugins/function.thisday.php:328
-#: pntemplates/plugins/function.statistics.php:74
+#: pntemplates/plugins/function.statistics.php:69
 #: pntemplates/plugins/function.whatsnew.php:85
-#: pntemplates/plugins/function.showphoto.php:104
-#: pntemplates/plugins/function.showphoto.php:136
-#: pntemplates/plugins/function.showphoto.php:163
-#: pntemplates/plugins/function.showphoto.php:180 pnblocks/MostWanted.php:133
-#: pnblocks/MostWanted.php:150 pnblocks/MostWanted.php:208
-#: pnblocks/RandomPhoto.php:115 pnblocks/RandomPhoto.php:152
-#: pnblocks/RandomPhoto.php:179 pnblocks/RandomPhoto.php:196
-#: pnblocks/WhatsNew.php:116 pnblocks/ThisDay.php:128 pnblocks/ThisDay.php:184
-#: pnblocks/ThisDay.php:253 pnblocks/ThisDay.php:310
+#: pntemplates/plugins/function.showphoto.php:102
+#: pntemplates/plugins/function.showphoto.php:134
+#: pntemplates/plugins/function.showphoto.php:161
+#: pntemplates/plugins/function.showphoto.php:186 pnblocks/MostWanted.php:128
+#: pnblocks/MostWanted.php:146 pnblocks/MostWanted.php:204
+#: pnblocks/RandomPhoto.php:113 pnblocks/RandomPhoto.php:150
+#: pnblocks/RandomPhoto.php:177 pnblocks/RandomPhoto.php:202
+#: pnblocks/WhatsNew.php:113 pnblocks/ThisDay.php:125 pnblocks/ThisDay.php:182
+#: pnblocks/ThisDay.php:253 pnblocks/ThisDay.php:305
 msgid "Error in accessing the TNG tables."
 msgstr ""
 
 #. ! ThisDay block marriage 'and'
-#: pntemplates/plugins/function.thisday.php:279 pnblocks/ThisDay.php:264
+#: pntemplates/plugins/function.thisday.php:279 pnblocks/ThisDay.php:262
 msgid "&"
 msgstr ""
 
-#: pntemplates/plugins/function.thisday.php:293 pnblocks/ThisDay.php:278
+#. ! ThisDay block 'divorce' indicator
+#: pntemplates/plugins/function.thisday.php:293 pnblocks/ThisDay.php:273
 msgid "Divorced"
 msgstr ""
 
 #. ! Genealogy Page link name
-#: pntemplates/plugins/function.thisday.php:382 pnblocks/MostWanted.php:264
-#: pnblocks/ThisDay.php:359
+#: pntemplates/plugins/function.thisday.php:382 pnblocks/MostWanted.php:258
+#: pnblocks/ThisDay.php:345
 msgid "Genealogy Page"
 msgstr ""
 
@@ -188,12 +189,12 @@ msgstr ""
 
 #: pntemplates/plugins/function.whatsnew.php:130
 #: pntemplates/plugins/function.whatsnew.php:160
-#: pntemplates/plugins/function.whatsnew.php:195 pnblocks/WhatsNew.php:126
-#: pnblocks/WhatsNew.php:161 pnblocks/WhatsNew.php:246
+#: pntemplates/plugins/function.whatsnew.php:195 pnblocks/WhatsNew.php:128
+#: pnblocks/WhatsNew.php:171 pnblocks/WhatsNew.php:205
 msgid "Error in accessing the database."
 msgstr ""
 
-#: pntemplates/plugins/function.showphoto.php:220 pnblocks/RandomPhoto.php:241
+#: pntemplates/plugins/function.showphoto.php:226 pnblocks/RandomPhoto.php:248
 msgid "No Photo found"
 msgstr ""
 
@@ -237,11 +238,21 @@ msgstr ""
 msgid "Main places page"
 msgstr ""
 
-#: pnsearchapi.php:73 pnsearchapi.php:124
+#: pnsearchapi.php:67 pnsearchapi.php:114 pnsearchapi.php:196
 msgid "Error! Could not load items."
 msgstr ""
 
-#: pnsearchapi.php:193
+#. ! Search born prefix
+#: pnsearchapi.php:160
+msgid "born:"
+msgstr ""
+
+#. ! Search died prefix
+#: pnsearchapi.php:173
+msgid "died:"
+msgstr ""
+
+#: pnsearchapi.php:185
 msgid "The following individual is flagged as living - Details withheld."
 msgstr ""
 
@@ -265,56 +276,71 @@ msgstr ""
 msgid " sorted alphabetically"
 msgstr ""
 
-#: pnblocks/MostWanted.php:354 pnblocks/ThisDay.php:458
+#. !Block MostWanted marrange 'and'
+#: pnblocks/MostWanted.php:217
+msgid "and"
+msgstr ""
+
+#. !Block MostWanted marrange abbriviation
+#: pnblocks/MostWanted.php:227
+msgid "m."
+msgstr ""
+
+#. !Block MostWanted divorce abbriviation
+#: pnblocks/MostWanted.php:237
+msgid "divorced"
+msgstr ""
+
+#: pnblocks/MostWanted.php:347 pnblocks/ThisDay.php:440
 msgid "Last Name, First Name"
 msgstr ""
 
-#: pnblocks/MostWanted.php:355 pnblocks/ThisDay.php:459
+#: pnblocks/MostWanted.php:348 pnblocks/ThisDay.php:441
 msgid "Event date - earliest to latest"
 msgstr ""
 
-#: pnblocks/MostWanted.php:356 pnblocks/ThisDay.php:460
+#: pnblocks/MostWanted.php:349 pnblocks/ThisDay.php:442
 msgid "Event date - latest to earliest"
 msgstr ""
 
-#: pnblocks/MostWanted.php:357
+#: pnblocks/MostWanted.php:350
 msgid "Order entered"
 msgstr ""
 
-#: pnblocks/MostWanted.php:360
+#: pnblocks/MostWanted.php:353
 msgid "Full names"
 msgstr ""
 
-#: pnblocks/MostWanted.php:361
+#: pnblocks/MostWanted.php:354
 msgid "Surnames only"
 msgstr ""
 
-#: pnblocks/MostWanted.php:366 pnblocks/RandomPhoto.php:312
-#: pnblocks/WhatsNew.php:360 pnblocks/ThisDay.php:439 pnblocks/ThisDay.php:445
-#: pnblocks/ThisDay.php:451 pnblocks/ThisDay.php:455 pnblocks/ThisDay.php:465
+#: pnblocks/MostWanted.php:359 pnblocks/RandomPhoto.php:316
+#: pnblocks/WhatsNew.php:312 pnblocks/ThisDay.php:421 pnblocks/ThisDay.php:427
+#: pnblocks/ThisDay.php:433 pnblocks/ThisDay.php:437 pnblocks/ThisDay.php:447
 msgid "No"
 msgstr ""
 
-#: pnblocks/RandomPhoto.php:309 pnblocks/ThisDay.php:442
-#: pnblocks/ThisDay.php:448
+#: pnblocks/RandomPhoto.php:313 pnblocks/ThisDay.php:424
+#: pnblocks/ThisDay.php:430
 msgid "Yes, show all"
 msgstr ""
 
-#: pnblocks/RandomPhoto.php:310 pnblocks/ThisDay.php:443
-#: pnblocks/ThisDay.php:449
+#: pnblocks/RandomPhoto.php:314 pnblocks/ThisDay.php:425
+#: pnblocks/ThisDay.php:431
 msgid "Yes, but never living people"
 msgstr ""
 
-#: pnblocks/RandomPhoto.php:311 pnblocks/ThisDay.php:444
-#: pnblocks/ThisDay.php:450
+#: pnblocks/RandomPhoto.php:315 pnblocks/ThisDay.php:426
+#: pnblocks/ThisDay.php:432
 msgid "Yes, but show living people only if user is logged in"
 msgstr ""
 
-#: pnblocks/RandomPhoto.php:315
+#: pnblocks/RandomPhoto.php:319
 msgid "Thumbnail of Photo"
 msgstr ""
 
-#: pnblocks/RandomPhoto.php:316
+#: pnblocks/RandomPhoto.php:320
 msgid "Actual Photo"
 msgstr ""
 
@@ -670,6 +696,10 @@ msgstr ""
 msgid "Go to Wikipedia"
 msgstr ""
 
+#: pntemplates/TNGz_admin_menu.htm:4
+msgid "TNGz"
+msgstr ""
+
 #: pntemplates/TNGz_search_options.htm:4
 msgid "Genealogy People Search"
 msgstr ""
@@ -745,14 +775,10 @@ msgid "Show new or changed Photos"
 msgstr ""
 
 #: pntemplates/TNGz_block_WhatsNew_modify.htm:14
-msgid "Show new or changed Histories"
-msgstr ""
-
-#: pntemplates/TNGz_block_WhatsNew_modify.htm:18
 msgid "Maximum number of entries to display"
 msgstr ""
 
-#: pntemplates/TNGz_block_WhatsNew_modify.htm:22
+#: pntemplates/TNGz_block_WhatsNew_modify.htm:18
 msgid "Maximum number of days to to display"
 msgstr ""
 

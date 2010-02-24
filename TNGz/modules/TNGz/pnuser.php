@@ -240,33 +240,24 @@ function TNGz_user_worldmap()
     }
 
     // Not in cache or out of date, so go create it
-    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
-
-    // Check to be sure we can get to the TNG information
-    $have_info = 0;
-    if (file_exists($TNG['configfile']) ) {
-        include($TNG['configfile']);
-        $TNG_conn = &ADONewConnection('mysql');
-        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
-        $have_info = 1;
-    }
-    if (!$have_info) {
-        return(false);
+    
+    $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
+    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+       return false; // can't get to the data
     }
 
     // Now go get all the locations to plot
-    $query  = "SELECT placelevel, latitude,longitude,zoom from $places_table ";
+    $query  = "SELECT placelevel, latitude,longitude,zoom from ". $TNG['places_table'] . " ";
     $query .= "WHERE latitude <> 0 AND longitude <> 0 AND latitude is not null AND longitude is not null";
 
-    if (!$result = &$TNG_conn->Execute($query) ) {
+    if (!$result = $TNG_conn->Execute($query) ) {
+        $TNG_conn->Close();
         return(false);
     }
     $points = array();
     if($result->RecordCount()>0) {
         for (; !$result->EOF; $result->MoveNext()) {
-            $items = array();
-            list( $items['placelevel'],$items['latitude'],$items['longitude'],$items['zoom']) = $result->fields;
-            $points[] = $items;
+            $points[] = $result->fields;
         }
     }
     mysql_free_result($result);

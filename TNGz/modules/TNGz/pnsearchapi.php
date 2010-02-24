@@ -63,29 +63,20 @@ function TNGz_searchapi_search($args)
         $TNGz_modname = rawurlencode($TNGz_modinfo['displayname']);
     } 
 
-    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');  // GetTNGpaths returns an associative array of values. Fixed #1
-    // Check to be sure we can get to the TNG information
-    if (file_exists($TNG['configfile']) ) {
-        include($TNG['configfile']);
-        $TNG_conn = &ADONewConnection('mysql');
-        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
-    } else {
+    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
         return LogUtil::registerError (__('Error! Could not load items.', $dom) . " (#1)");
     }
-    
-    // Save a few TNG config variables for later use
-    $tngconfig['nonames']   = $nonames;
-    $tngconfig['nameorder'] = $nameorder;
-    
+    $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
+   
     // Check to see of this user has the permissions to see living conditionally
     $User_Can_See_Living = false;
     if (pnUserLoggedIn()) {
         // now check to make sure TNG says user can see the living
         $userid = pnUserGetVar('uname');
-        $query = "SELECT allow_living FROM $users_table WHERE username = '$userid' ";
-        if ($result = &$TNG_conn->Execute($query) ) {
-            list($TNG_living) = $result->fields;
-            if ($TNG_living == "1") {
+        $query = "SELECT allow_living FROM ". $TNG['users_table'] ." WHERE username = '$userid' ";
+        if ($result = $TNG_conn->Execute($query) ) {
+            $row = $result->fields;
+            if ($row['allow_living'] == "1") {
                 $User_Can_See_Living = true;
             }
          }
@@ -110,14 +101,13 @@ VALUES ";
                                     null);
 
     $sql ="SELECT personID, lastname, lnprefix, firstname, suffix, title, nameorder, birthdate, birthplace, deathdate, deathplace, living, gedcom
-           FROM $people_table
+           FROM ". $TNG['people_table'] ."
            WHERE $where
            ORDER BY lastname, firstname ";
 
 
     // get the result set
-    $result = &$TNG_conn->Execute($sql);
-    //LogUtil::log('TNGz query : '.$sql, 'STRICT');
+    $result = $TNG_conn->Execute($sql);
 
     if (!$result) {
         LogUtil::log('TNGz query : '.$sql, 'STRICT');
@@ -126,9 +116,9 @@ VALUES ";
 
     // Process the result set and insert into search result table
     for (; !$result->EOF; $result->MoveNext()) {
-        $item = $result->GetRowAssoc(2);
+        $item = $result->fields;
         if (    SecurityUtil::checkPermission('TNGz', "::", ACCESS_READ) 
-            && ($User_Can_See_Living || $item['living']==0  || $tngconfig['nonames']==0) ) {
+            && ($User_Can_See_Living || $item['living']==0  || $TNG['nonames']==0) ) {
             
             // The Extra Stuff for the resulting search link
             $extra = serialize(array('id'     => $item['personID'],
@@ -138,7 +128,7 @@ VALUES ";
 
             // Display name as the title, with the proper form based upon the TNG settings
             // Similar to getNameRev() in genlib.php
-	        $locnameorder = $item['nameorder'] ? $item['nameorder'] : ($tngconfig['nameorder'] ? $tngconfig['nameorder'] : 1);
+	        $locnameorder = $item['nameorder'] ? $item['nameorder'] : ($TNG['nameorder'] ? $TNG['nameorder'] : 1);
 	        $lastname = trim( $item['lnprefix']." ".$item['lastname'] );
 	        $title = trim($item['title']);
 	        $firstname = trim( $title . " " .$item['firstname'] );
@@ -166,7 +156,8 @@ VALUES ";
                 $sep2 = '';
                 $display_text = "";
                 if ( $item['birthdate'] != '' || $item['birthplace'] != '') {
-                    $display_text .= _TNGZ_SEARCH_BORN . ' ';
+                    /*! Search born prefix */
+                    $display_text .= __('born:', $dom) . ' ';
                     $sep  = '';
                     $sep2 = "; ";
                     if ( $item['birthdate'] != '') {
@@ -178,7 +169,8 @@ VALUES ";
                     }
                 }
                 if ( $item['deathdate'] != '' || $item['deathplace'] != '') {
-                    $display_text .= $sep2 . _TNGZ_SEARCH_DIED . ' ';
+                    /*! Search died prefix*/
+                    $display_text .= $sep2 . __('died:', $dom) . ' ';
                     $sep  = '';
                     if ( $item['deathdate'] != '') {
                         $display_text .= $item['deathdate'];
@@ -201,7 +193,7 @@ VALUES ";
                        . '\'' . DataUtil::formatForStore($sessionId) . '\')';
             $insertResult = DBUtil::executeSQL($sql);
             if (!$insertResult) {
-                return LogUtil::registerError (_GETFAILED . " (#3)");
+                return LogUtil::registerError ( __('Error! Could not load items.', $dom) . " (#3)");
             }
         }
     }

@@ -97,18 +97,16 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
     $photo_error = "";
 
     $window=pnModGetVar('TNGz', '_window');
-    $TNGstyle = pnModGetVar('TNGz', '_style');
 
-    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
-    $TNG_path = $TNG['SitePath'] . "/" . $TNG['directory'];
-    $TNG_ref  = $TNG['directory'];                          // a relative path
-    // $TNG_ref  = $TNG['WebRoot']   . "/" . $TNG['directory'];    // absolute path
+    $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
+    
+    $TNGpathInfo = pnModAPIFunc('TNGz','user','GetTNGpaths');
+    $TNG_path = $TNGpathInfo['SitePath'] . "/" . $TNGpathInfo['directory'];
+    $TNG_ref  = $TNGpathInfo['directory'];                                 // a relative path
+    // $TNG_ref  = $TNGpathInfo['WebRoot']   . "/" . $TNGpathInfo['directory'];    // absolute path
 
     // Check to be sure we can get to the TNG information
-    if (file_exists($TNG['configfile']) ){
-        include($TNG['configfile']);
-        $TNG_conn = &ADONewConnection('mysql');
-        $TNG_conn->NConnect($database_host, $database_username, $database_password, $database_name);
+    if ($TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
         $have_info = 1;
     } else {
         $have_info = 0;
@@ -129,10 +127,10 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
         } elseif ( $vars['showliving'] == 'L' && pnUserLoggedIn() ) {
             // now check to make sure TNG says user can see the living
             $userid = pnUserGetVar('uname');
-            $query = "SELECT allow_living FROM $users_table WHERE username = '$userid' ";
+            $query = "SELECT allow_living FROM ".$TNG['users_table']." WHERE username = '$userid' ";
             if ($result = &$TNG_conn->Execute($query) ) {
-                list($TNG_living) = $result->fields;
-                if ($TNG_living == "1") {
+                $row = $result->fields;
+                if ($row['allow_living'] == "1") {
                     $showliving = true;
                 }
             }
@@ -145,17 +143,17 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
         if (!$showliving ){
                 // get the list of photoIDs that have at least 1 living person --- don't want to show those
                 $query = "SELECT living.mediaID AS mediaID
-                          FROM $medialinks_table AS living, $people_table AS person
+                          FROM ".$TNG['medialinks_table']." AS living, ".$TNG['people_table']." AS person
                           WHERE living.personID = person.personID AND person.living = 1
                           GROUP BY living.mediaID";
-                if (!$result = &$TNG_conn->Execute($query) ) {
+                if (!$result = $TNG_conn->Execute($query) ) {
                     $photo_error .= __('Error in accessing the TNG tables.', $dom)." [0] " . $TNG_conn->ErrorMsg() ;
                 }
                 // now make a comma separated list of the photoIDs
                 $record_sep = "";
                 for (; !$result->EOF; $result->MoveNext()) {
-                    list($mediaID) = $result->fields;
-                     $photos_with_living .= $record_sep . $mediaID;
+                    $row = $result->fields;
+                     $photos_with_living .= $record_sep . $row['mediaID'];
                      $record_sep =", ";
                 }
                 $result->Close();
@@ -163,9 +161,9 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
 
         // get a list of photolist IDs --- one per person photo link --- to pick from
         $query = "SELECT photolist.mediaID as linkID
-                  FROM $media_table, $medialinks_table AS photolist
-                  WHERE photolist.mediaID = $media_table.mediaID
-                        AND $media_table.mediatypeID = \"photos\" ";
+                  FROM ".$TNG['media_table']." AS mediatable, ".$TNG['medialinks_table']." AS photolist
+                  WHERE photolist.mediaID = mediatable.mediaID
+                        AND mediatable.mediatypeID = \"photos\" ";
         if ($PhotoList != ""){
             // Only include those that are already specified
             $query .= "AND photolist.mediaID IN ( $PhotoList ) ";
@@ -175,7 +173,7 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
             $query .= "AND photolist.mediaID NOT IN ( $photos_with_living ) ";
         }
 
-       	if (!$result = &$TNG_conn->Execute($query)  ) {
+       	if (!$result = $TNG_conn->Execute($query)  ) {
                 $photo_error .= __('Error in accessing the TNG tables.', $dom)." [1] " . $TNG_conn->ErrorMsg() ;
         } else {
 
@@ -184,27 +182,37 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
             for ( $strikes = 0 ; $strikes <= $max_strikes && $need_photo; $strikes++ ) {
                 // just in case of problems, try at most max_strikes times
                 $result->Move( RAND(0,$num_photos - 1) );
-                list($linkID) = $result->fields;
+                $row = $result->fields;
 
                 // now get the actual photo link
-                $query = "SELECT $media_table.path, $media_table.thumbpath, $media_table.description, $media_table.notes, $medialinks_table.medialinkID, $medialinks_table.personID, $medialinks_table.gedcom as gedcom, $media_table.mediaID as mediaID, usecollfolder
-                          FROM $media_table, $medialinks_table
-                          WHERE $medialinks_table.mediaID = \"$linkID\"
-                                AND $media_table.mediaID = $medialinks_table.mediaID ";
+                $query = "SELECT mediatable.path             AS path,
+                                 mediatable.thumbpath        AS thumbpath,
+                                 mediatable.description      AS description,
+                                 mediatable.notes            AS notes,
+                                 mediatable.mediaID          AS mediaID,
+                                 medialinkstable.medialinkID AS medialinkID,
+                                 medialinkstable.personID    AS personID,
+                                 medialinkstable.gedcom      AS gedcom,
+                                 usecollfolder
+                          FROM ".$TNG['media_table']." AS mediatable, ".$TNG['medialinks_table']." AS medialinkstable
+                          WHERE medialinkstable.mediaID = \"".$row['linkID']."\"
+                                AND mediatable.mediaID = medialinkstable.mediaID ";
 
                 if (!$result2 = &$TNG_conn->Execute($query)) {
                     $photo_error .= __('Error in accessing the TNG tables.', $dom)." [2] " . $TNG_conn->ErrorMsg() ;
                 } else {
-                    list($t_path,$t_thumbpath,$t_description,$t_notes,$t_medialinkID,$t_personID,$t_gedcom,$t_mediaID,$usecollfolder) = $result2->fields;
+                    //list($t_path,$t_thumbpath,$t_description,$t_notes,$t_medialinkID,$t_personID,$t_gedcom,$t_mediaID,$usecollfolder) = $result2->fields;
+                    //path, thumbpath, description, notes, medialinkID, personID, gedcom, mediaID, usecollfolder
+                    $row2 = $result2->fields;
                     $result2->Close();
 
                     if ($vars['phototype']  == 'P'){
-                        $picture = $t_path;
+                        $picture = $row2['path'];
                     } else {
-                        $picture = $t_thumbpath;
+                        $picture = $row2['thumbpath'];
                     }
-                    $picture_file = "$TNG_path/$photopath/$picture";
-                    $picture_ref  = "$TNG_ref/$photopath/". str_replace("%2F","/",rawurlencode($picture));
+                    $picture_file = "$TNG_path/".$TNG['photopath']."/$picture";
+                    $picture_ref  = "$TNG_ref/" .$TNG['photopath']."/". str_replace("%2F","/",rawurlencode($picture));
 
                     // check to make sure a picture defined and the file exists
                     if ($picture != "" && file_exists($picture_file)) {
@@ -214,21 +222,20 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
                                                 'web_ref'     => $picture_ref,
                                                 'max_height'  => $vars['max_height'],
                                                 'max_width'   => $vars['max_width'],
-                                                'text'        => $t_description,
+                                                'text'        => $row2['description'],
                                                 'description' => "border='0'"));
 
                         $photo_ref     = pnModAPIFunc('TNGz','user','MakeRef',
                                                    array('func'        => "showmedia",
-                                                         'personID'    => $t_personID,
-                                                         'mediaID'     => $t_mediaID,
-                                                         'medialinkID' => $t_medialinkID,
+                                                         'personID'    => $row2['personID'],
+                                                         'mediaID'     => $row2['mediaID'],
+                                                         'medialinkID' => $row2['medialinkID'],
                                                          'description' => $temp1,
-                                                         'target'      => $target,
-                                                         'RefType'     => $TNGstyle
+                                                         'target'      => $target
                                                          ));
 
 
-                        $photo_description = $t_description;
+                        $photo_description = $row2['description'];
                         $need_photo = false;
                     }
 
@@ -241,9 +248,6 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
             $photo_error  .= __('No Photo found', $dom);
         }
 
-    }
-    if ($have_info == 1 ){
-        $TNG_conn->Close();
     }
 
     // Can turn off caching by using the following
