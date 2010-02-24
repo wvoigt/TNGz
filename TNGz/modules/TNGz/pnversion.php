@@ -15,13 +15,13 @@
 $dom = ZLanguage::getModuleDomain('TNGz');
 
 $modversion['name']           = 'TNGz';   //Module name
-$modversion['version']        = '1.4b';    //Version number
+$modversion['version']        = '1.4';    //Version number
 /*! module display name */
-$modversion['displayname']    =  __('TNGz', $dom /*! module display name */);
+$modversion['displayname']    =  __('Genealogy', $dom );
 /*! module description */
 $modversion['description']    =  __('TNG genealogy website integration module for Zikula', $dom /*! module description */);
 /*! module name that appears in the URL */
-$modversion['url']            =  __('tngz', $dom /*! module name that appears in the URL */); 
+$modversion['url']            =  __('TNGz', $dom /*! module name that appears in the URL */); 
 $modversion['credits']        = 'pndocs/credits.txt';  //Credits file
 $modversion['help']           = 'pndocs/readme.html';  //Help file
 $modversion['changelog']      = 'pndocs/changelog.txt';  //Change log file
