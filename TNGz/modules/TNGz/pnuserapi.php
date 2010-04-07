@@ -1495,9 +1495,9 @@ function TNGz_userapi_getRecords($args)
     }
     
     if ($kind == "people") {
-        $query  =  "SELECT gedcom, personID, changedate FROM ".$TNG['people_table'];
+        $query  =  "SELECT gedcom, personID as ID, changedate FROM ".$TNG['people_table'];
     } elseif ( $kind == "family") {
-        $query   =  "SELECT gedcom, familyID, changedate FROM ". $TNG['families_table'];
+        $query   =  "SELECT gedcom, familyID as ID, changedate FROM ". $TNG['families_table'];
     }
     if ($limit) {
         $query  .= " LIMIT ". $start . ", " . $count;
@@ -1512,7 +1512,7 @@ function TNGz_userapi_getRecords($args)
         for (; !$result->EOF; $result->MoveNext()) {
             $items = $result->fields;
             $items['tree'] = $items['gedcom'];
-            $items['id']   = $items['personID'];
+            $items['id']   = $items['ID'];
             $items['changedate'] = substr($items['changedate'],0,10);  // mod to handle date format change in TNGv6
             if ($items['changedate'] == "0000-00-00" || $items['changedate'] == "" ) {
                 $items['changedate'] = date("Y-m-d");
