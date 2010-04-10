@@ -11,6 +11,7 @@ version 1.4
   * converted TNGz to use Zikula's gettext for language translations
   * fixed problem with corrupted links being returned from the search function
   * fixed problem where some UTF-8 characters were not being displayed properly.
+  * fixed issue where sitemap generation did not include familyID parameter in the URL
   * internally, all blocks and plugins now use a common database connection point
   * internally, fixed problem where closed database connection was not being re-opened
   
