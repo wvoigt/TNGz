@@ -15,7 +15,7 @@
 $dom = ZLanguage::getModuleDomain('TNGz');
 
 $modversion['name']           = 'TNGz';   //Module name
-$modversion['version']        = '1.4';    //Version number
+$modversion['version']        = '1.5a';    //Version number
 /*! module display name */
 $modversion['displayname']    =  __('Genealogy', $dom );
 /*! module description */

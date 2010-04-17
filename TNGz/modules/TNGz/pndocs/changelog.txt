@@ -3,6 +3,9 @@ CHANGE LOG
 TNGz /pndoc/changelog.txt
 TNGz (C) 2009 Wendel Voigt
 ======================================================================================
+version 1.5
+
+
 version 1.4
   * This version requires Zikula 1.2.x or above
   * Fixed problem with &lang= parameter now used by Zikula. Before fix, TNG would choke on it if it was used.
