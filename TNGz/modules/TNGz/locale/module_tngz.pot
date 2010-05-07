@@ -696,10 +696,6 @@ msgstr ""
 msgid "Go to Wikipedia"
 msgstr ""
 
-#: pntemplates/TNGz_admin_menu.htm:4
-msgid "TNGz"
-msgstr ""
-
 #: pntemplates/TNGz_search_options.htm:4
 msgid "Genealogy People Search"
 msgstr ""
