@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Zikula 1.2.x\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2010-02-24 20:01+0000\n"
+"POT-Creation-Date: 2010-05-09 19:48+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,11 +16,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: pnadmin.php:29 pnadmin.php:53 pnadmin.php:281 pnadmin.php:406
-#: pnadmin.php:439 pnadmin.php:470 pnadmin.php:512 pnadmin.php:533
-#: pnadmin.php:562 pnuserapi.php:248 pnuser.php:28 pnuser.php:83
-#: pnuser.php:127 pnuser.php:179 pnuser.php:223 pnuser.php:369 pnuser.php:384
-#: pnuser.php:411
+#: pnadmin.php:29 pnadmin.php:53 pnadmin.php:274 pnadmin.php:399
+#: pnadmin.php:433 pnadmin.php:465 pnadmin.php:508 pnadmin.php:529
+#: pnadmin.php:562 pnuserapi.php:260 pnuser.php:28 pnuser.php:89
+#: pnuser.php:133 pnuser.php:185 pnuser.php:229 pnuser.php:375 pnuser.php:390
+#: pnuser.php:417
 msgid "Sorry! No authorization to access this module."
 msgstr ""
 
@@ -32,91 +32,91 @@ msgstr ""
 msgid "TNG Root Path is not correct!"
 msgstr ""
 
-#: pnadmin.php:77
+#: pnadmin.php:75
 msgid "TNG files Found"
 msgstr ""
 
-#: pnadmin.php:82
+#: pnadmin.php:80
 msgid "TNG Root Path is correct!"
 msgstr ""
 
-#: pnadmin.php:92 pnadmin.php:102 pnadmin.php:352
+#: pnadmin.php:89 pnadmin.php:94 pnadmin.php:345
 msgid "Unknown"
 msgstr ""
 
-#: pnadmin.php:93
+#: pnadmin.php:90
 msgid ""
 "TNGz is not in sync with TNG version. Please update. Found new TNG Version. "
 "Changed from"
 msgstr ""
 
-#: pnadmin.php:104
+#: pnadmin.php:96
 msgid "TNGz is in sync with TNG Version"
 msgstr ""
 
 #. ! Email Filter Options
-#: pnadmin.php:175 pnadmin.php:340
+#: pnadmin.php:168 pnadmin.php:333
 msgid "No (faster)"
 msgstr ""
 
-#: pnadmin.php:176 pnblocks/MostWanted.php:358 pnblocks/WhatsNew.php:311
+#: pnadmin.php:169 pnblocks/MostWanted.php:358 pnblocks/WhatsNew.php:311
 #: pnblocks/ThisDay.php:420 pnblocks/ThisDay.php:436 pnblocks/ThisDay.php:446
 msgid "Yes"
 msgstr ""
 
-#: pnadmin.php:177
+#: pnadmin.php:170
 msgid "Yes, and make plain email addresses clickable"
 msgstr ""
 
-#: pnadmin.php:197 pnadmin.php:206 pnadmin.php:235
+#: pnadmin.php:190 pnadmin.php:199 pnadmin.php:228
 msgid "Off"
 msgstr ""
 
-#: pnadmin.php:197
+#: pnadmin.php:190
 msgid "On"
 msgstr ""
 
-#: pnadmin.php:207
+#: pnadmin.php:200
 msgid "minutes"
 msgstr ""
 
-#: pnadmin.php:208
+#: pnadmin.php:201
 msgid "hour"
 msgstr ""
 
-#: pnadmin.php:209 pnadmin.php:210 pnadmin.php:211
+#: pnadmin.php:202 pnadmin.php:203 pnadmin.php:204
 msgid "hours"
 msgstr ""
 
-#: pnadmin.php:212
+#: pnadmin.php:205
 msgid "day"
 msgstr ""
 
-#: pnadmin.php:213 pnadmin.php:214 pnadmin.php:215 pnadmin.php:216
-#: pnadmin.php:217 pnadmin.php:218
+#: pnadmin.php:206 pnadmin.php:207 pnadmin.php:208 pnadmin.php:209
+#: pnadmin.php:210 pnadmin.php:211
 msgid "days"
 msgstr ""
 
-#: pnadmin.php:318
+#: pnadmin.php:311
 msgid ""
 "Invalid 'authkey':  this probably means that you pressed the 'Back' button, "
 "or that the page 'authkey' expired. Please refresh the page and try again."
 msgstr ""
 
 #. ! this is the default guest user name to be used with TNG
-#: pnadmin.php:331 pninit.php:27
+#: pnadmin.php:324 pninit.php:27
 msgid "Guest"
 msgstr ""
 
-#: pnadmin.php:392
+#: pnadmin.php:385
 msgid "Done! Module configuration updated."
 msgstr ""
 
-#: pnadmin.php:518
+#: pnadmin.php:514
 msgid "Cache cleared"
 msgstr ""
 
-#: pnadmin.php:518
+#: pnadmin.php:514
 msgid "Error clearing cache"
 msgstr ""
 
@@ -224,6 +224,10 @@ msgstr ""
 
 #: pntemplates/plugins/function.surnames.php:178
 msgid "Main surname page"
+msgstr ""
+
+#: pntemplates/plugins/function.versioncheck.php:62
+msgid "Get the latest recommended version"
 msgstr ""
 
 #: pntemplates/plugins/function.versioncheck.php:64
@@ -528,90 +532,106 @@ msgid "Configuration status"
 msgstr ""
 
 #: pntemplates/TNGz_admin_modifyconfig.htm:26
-msgid "Password hash method from Zikula is set to MD5."
+#, php-format
+msgid "The Password hash methods for Zikula and TNG match (%s)."
 msgstr ""
 
 #: pntemplates/TNGz_admin_modifyconfig.htm:28
+#, php-format
 msgid ""
-"Password hash method from Zikula should be set to MD5 in order to get in "
-"sync with TNG!"
+"Password hash methods should match to keep user passwrods in sync! (Zilula=%"
+"s TNG=%s)"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:30
+msgid "Change Zikula."
 msgstr ""
 
 #: pntemplates/TNGz_admin_modifyconfig.htm:32
+msgid ""
+"Change TNG: TNG Administration >> Setup >> Configuration tab >> General "
+"Settings >> Miscellaneous >> Encryption type."
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:34
+msgid "For this version of TNG, the only supported hash method is 'md5'"
+msgstr ""
+
+#: pntemplates/TNGz_admin_modifyconfig.htm:38
 msgid "Want all green status for a good configuration"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:36
+#: pntemplates/TNGz_admin_modifyconfig.htm:42
 msgid "TNG installation location"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:44
+#: pntemplates/TNGz_admin_modifyconfig.htm:50
 msgid "Guest Access"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:46
+#: pntemplates/TNGz_admin_modifyconfig.htm:52
 msgid "Check to allow non-logged in Zikula user to have TNG Guest access "
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:51
+#: pntemplates/TNGz_admin_modifyconfig.htm:57
 msgid "  - What username to use for the guest account"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:54
+#: pntemplates/TNGz_admin_modifyconfig.htm:60
 msgid ""
 "If enabled, please make sure in TNG's Users administration that the TNG user "
 "specified here has the level of access you want for a guest. Anyone not "
 "logged into Zikula will apear to TNG as this user."
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:58
+#: pntemplates/TNGz_admin_modifyconfig.htm:64
 msgid "Zikula and TNG User Synchronization"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:61
+#: pntemplates/TNGz_admin_modifyconfig.htm:67
 msgid "Create TNG users from Zikula user information"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:64
+#: pntemplates/TNGz_admin_modifyconfig.htm:70
 msgid ""
 "If enabled, the first time a logged in Zikula user accesses TNG, a TNG user "
 "with the same username is created "
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:67
+#: pntemplates/TNGz_admin_modifyconfig.htm:73
 msgid "  - Allow created user to view living"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:72
+#: pntemplates/TNGz_admin_modifyconfig.htm:78
 msgid "  - Allow created user to download GEDCOMs"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:77
+#: pntemplates/TNGz_admin_modifyconfig.htm:83
 msgid "  - Allow created user to view LDS information"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:82
+#: pntemplates/TNGz_admin_modifyconfig.htm:88
 msgid ""
 "  - Keep TNG user information up to date with changed Zikula user information"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:87
+#: pntemplates/TNGz_admin_modifyconfig.htm:93
 msgid "    (includes changes to Real Name, website, and email address)"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:92
+#: pntemplates/TNGz_admin_modifyconfig.htm:98
 msgid "Identify Primary Person"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:95
+#: pntemplates/TNGz_admin_modifyconfig.htm:101
 msgid "Tree that includes person"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:100
+#: pntemplates/TNGz_admin_modifyconfig.htm:106
 msgid "TNG ID of person (must be in the Tree)"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:105
+#: pntemplates/TNGz_admin_modifyconfig.htm:111
 msgid ""
 "These settings are optional.  If used, they allow for more personalized "
 "links in templates. For example, the example default 'home' page will add a "
@@ -619,25 +639,25 @@ msgid ""
 "just leave this field blank."
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:109
+#: pntemplates/TNGz_admin_modifyconfig.htm:115
 msgid "Other Settings"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:111
+#: pntemplates/TNGz_admin_modifyconfig.htm:117
 msgid "Use TNGz's homepage instead of TNG's index page"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:116
+#: pntemplates/TNGz_admin_modifyconfig.htm:122
 msgid ""
 "Enable email address hiding/encoding (if you have email addresses in your "
 "TNG files)"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:122
+#: pntemplates/TNGz_admin_modifyconfig.htm:128
 msgid "Cache"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:123
+#: pntemplates/TNGz_admin_modifyconfig.htm:129
 msgid ""
 "Using the cache can speed up the time it takes to generate blocks and "
 "plugins. Instead of making multiple requests to the TNG database, data that "
@@ -645,39 +665,39 @@ msgid ""
 "quickly."
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:126
+#: pntemplates/TNGz_admin_modifyconfig.htm:132
 msgid "TNG database change resets the cache"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:129
+#: pntemplates/TNGz_admin_modifyconfig.htm:135
 msgid ""
 "Checking the database update time does not work on all systems.  If you are "
 "having trouble with the cache, then turn this off."
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:132
+#: pntemplates/TNGz_admin_modifyconfig.htm:138
 msgid "Interval to refresh cache"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:135
+#: pntemplates/TNGz_admin_modifyconfig.htm:141
 msgid ""
 "The cache will expire and reload when either condition occurs. Both settings "
 "must be 'off' to disable caching."
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:139
+#: pntemplates/TNGz_admin_modifyconfig.htm:145
 msgid "Clear the cache"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:141
+#: pntemplates/TNGz_admin_modifyconfig.htm:147
 msgid "No Cache"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:151
+#: pntemplates/TNGz_admin_modifyconfig.htm:157
 msgid "Update TNGz configuration"
 msgstr ""
 
-#: pntemplates/TNGz_admin_modifyconfig.htm:152
+#: pntemplates/TNGz_admin_modifyconfig.htm:158
 msgid "Cancel"
 msgstr ""
 

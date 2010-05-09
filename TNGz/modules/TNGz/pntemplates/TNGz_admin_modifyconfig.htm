@@ -22,11 +22,17 @@
         <!--[versioncheck program=TNG version=$TNG_version]-->
         <input type="hidden" name="tngversion" value="<!--[$TNG_version]-->" />
         <br />
-        <!--[if $md5hash eq true]-->
-        <img src="images/icons/extrasmall/button_ok.gif" alt="" />&nbsp;<!--[gt text="Password hash method from Zikula is set to MD5."]-->
+        <!--[if $hashcheck eq true]-->
+        <img src="images/icons/extrasmall/button_ok.gif" alt="" />&nbsp;<!--[gt text="The Password hash methods for Zikula and TNG match (%s)." tag1=$hashZikula]-->
         <!--[else]-->
-        <img src="images/icons/extrasmall/error.gif" alt="" />&nbsp;<!--[gt text="Password hash method from Zikula should be set to MD5 in order to get in sync with TNG!"]-->
+        <img src="images/icons/extrasmall/error.gif" alt="" />&nbsp;<!--[gt text="Password hash methods should match to keep user passwrods in sync! (Zilula=%s TNG=%s)" tag1=$hashZikula tag2=$hashTNG]-->
         <!--[/if]-->
+	&nbsp;<a href="<!--[pnmodurl modname=Users type=admin func=modifyconfig]-->"><!--[gt text="Change Zikula."]--></a>
+        <!--[if $hashTNGchange eq true]-->	
+        &nbsp;<!--[gt text="Change TNG: TNG Administration >> Setup >> Configuration tab >> General Settings >> Miscellaneous >> Encryption type."]-->
+	<!--[else]-->
+        &nbsp;<!--[gt text="For this version of TNG, the only supported hash method is 'md5'"]-->
+	<!--[/if]-->
 
         </div>
         <div class="z-informationmsg"><!--[gt text="Want all green status for a good configuration"]--></div>

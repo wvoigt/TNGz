@@ -47,7 +47,7 @@ function smarty_function_versioncheck($args)
     $snoopy->fetchtext($checksite);
 
     $newestversion = $snoopy->results;
-    $newestversion = trim($newestversion);
+    $newestversion = (strlen($newestversion) < 40 ) ? trim($newestversion) : ""; // If site returns long error message, just leave it out
 
     $versionimage = "images/icons/extrasmall/button_ok.gif";
 
@@ -59,7 +59,7 @@ function smarty_function_versioncheck($args)
 
     if ($currentversion < $newestversion) {
         // generate link if new version is available
-        echo ("<a id=\"versioncheck\" href=\"$downloadsite\" style=\"color:red;\"><strong>". _TNGZVERSIONNEW  . " (".$newestversion.")</strong></a>");
+        echo ("<a id=\"versioncheck\" href=\"$downloadsite\" style=\"color:red;\"><strong>". __('Get the latest recommended version', $dom)  . " (".$newestversion.")</strong></a>");
     } else {
         echo (__('This is the latest recommended version', $dom));
     }

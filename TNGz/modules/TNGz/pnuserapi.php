@@ -79,8 +79,11 @@ function TNGz_userapi_TNGconfig()
         // Check to be sure we can get to the TNG information
         if (!file_exists($TNG['configfile']) ) {
             $TNGconfig = false;
-        } else {          
-            // config.php
+        } else {
+            // seed with path information
+            $TNGconfig = $TNG;
+            
+            //add TNG config.php
             include($TNG['configfile']);
             $TNGconfig['database_host']         = $database_host;
             $TNGconfig['database_name']         = $database_name;
@@ -168,12 +171,21 @@ function TNGz_userapi_TNGconfig()
 
             $TNGconfig = array_merge($tngconfig, $TNGconfig);
 
-            // version.php
+            // add TNG version.php
             include(dirname($TNG['configfile']) . "/version.php");
             $TNGconfig['tng_title']             = $tng_title;
             $TNGconfig['tng_version']           = $tng_version;
             $TNGconfig['tng_copyright']         = $tng_copyright;
             $TNGconfig['tng_date']              = $tng_date;
+
+            // add Calculated fields
+            // Changes started with TNG 8.0.0
+            $TNG800 = (strcmp($tng_version,'8.0.0') >= 0) ? true : false ;       // at least TNG 8.0.0
+            $TNGconfig['css_dir']               = ($TNG800) ? 'css/'      : '';       // directory for css
+            $TNGconfig['js_dir']                = ($TNG800) ? 'js/'       : '';       // directory for js
+            $TNGconfig['lang_dir']              = ($TNG800) ? 'languages/': '';       // directory for languages
+            $TNGconfig['admin_dir']             = ($TNG800) ? ''          : 'admin/'; // directory for admin
+            $TNGconfig['use_password_type']     = ($TNG800) ? true        : false;    // use of password_type
 
         }
     }
@@ -256,7 +268,7 @@ function TNGz_userapi_ShowPage($args)
     // Get information on the location of TNG
     //////////////////////////////////////////////////////
     global $TNG;
-    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
+    $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
 
     // This seems like a kluge, but it is needed to get the included TNG functions to work properly
     $global_variables = pnModGetVar('TNGz', '_globals');
@@ -281,7 +293,7 @@ function TNGz_userapi_ShowPage($args)
 
     // Now fix lang parameter in URL
     // As of Zikula 1.2.0, the lang parameter is used to pass the non-site default language
-    // But for TNG, lang had been used as by folks attacking sites, and now assumes you are bad if you use
+    // But for TNG, lang had been used by folks attacking sites, and now assumes you are bad if you use
     // So the solution is to save the value at this point, remove it from $_GET and then restore it after TNG is done.
     unset($Save_GET_lang);   // Being safe.  Should only be set if using.
     $Pass_lang = "";         // Used to pass on lang parameter in the TNG URL
@@ -543,12 +555,12 @@ function TNGz_userapi_ShowPage($args)
         $patterns[]     = "/<script(.*)net.js(.*)<\/script>/iU";
         //$replacements[] = "<!-- $0 -->\n";
         $replacements[] = "";
-        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/net.js');
+        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/'. $TNG['js_dir'].'net.js');
 
         $patterns[]     = "/<script(.*)litbox.js(.*)<\/script>/iU";
         //$replacements[] = "<!-- $0 -->\n";
         $replacements[] = "";
-        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/litbox.js');
+        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/'.$TNG['js_dir'].'litbox.js');
 
         // Question: What happens if Zikula and TNG use different versions of these libraries
         //           Could this cause odd behavior in TNG?
@@ -644,7 +656,7 @@ function TNGz_userapi_ShowPage($args)
  */
 function TNGz_userapi_GetTNGlanguage($args)
 {
-    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
+    $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
     //////////////////////////////////////////////////////
     // Language Settings
     //////////////////////////////////////////////////////
@@ -706,7 +718,7 @@ function TNGz_userapi_GetTNGlanguage($args)
         // If the Zikula language has been installed in TNG, then use it
         // NOTE: May want to add a Zikula Administration setting to turn this on/off
         // QUESTION: Is there a TNG setting that must be enabled for this to work?
-        if (file_exists($TNG['directory']. "/" . $languages3[$zikulalang3] . "/text.php") ) {
+        if (file_exists($TNG['directory']. "/" . $TNG['lang_dir'] . $languages3[$zikulalang3] . "/text.php") ) {
             $newlanguage3 = $languages3[$zikulalang3];
         } else {
             $newlanguage3 = false;
@@ -719,7 +731,7 @@ function TNGz_userapi_GetTNGlanguage($args)
         // If the Zikula language has been installed in TNG, then use it
         // NOTE: May want to add a Zikula Administration setting to turn this on/off
         // QUESTION: Is there a TNG setting that must be enabled for this to work?
-        if (file_exists($TNG['directory']. "/" . $languages2[$zikulalang2] . "/text.php") ) {
+        if (file_exists($TNG['directory']. "/" . $TNG['lang_dir'] . $languages2[$zikulalang2] . "/text.php") ) {
             $newlanguage2 = $languages2[$zikulalang2];
         } else {
             $newlanguage2 = false;
@@ -759,13 +771,13 @@ function TNGz_userapi_GetTNGtext($args)
         return $TNGz_text; // already have it, so just give it 
     }
 
-    global $text;
+    global $text, $alltextloaded;
     $text    = array();
     
     if (!isset($languagepath)){  // This should only have to run once
-        $TNG        = pnModAPIFunc('TNGz','user','GetTNGpaths');
+        $TNG        = pnModAPIFunc('TNGz','user','TNGconfig');
         $mylanguage = pnModAPIFunc('TNGz','user','GetTNGlanguage');
-        $languagepath = $TNG['directory']. "/" . $mylanguage . "/";
+        $languagepath = $TNG['directory']. "/" . $TNG['lang_dir']. $mylanguage . "/";
 
         // get language files that do not depend upon texttype
         global $dates, $admtext;
@@ -1067,11 +1079,25 @@ function TNGz_userapi_ModifyCreateUser()
     $guestname = pnModGetVar('TNGz', '_gname');
     $loggedin  = pnUserLoggedIn();
 
+    // Check to be sure we can get to the TNG information
+    if (!$TNG = pnModAPIFunc('TNGz','user','TNGconfig') ) {
+        return LogUtil::registerError("Error accessing TNG config file.");
+    }
+    // Zikula password hash method information
+    // Note: As of TNG 8.0.0, it is assumed (for now) that TNG has the same or more password hash methods than Zikula
+    //       Therefore, the Zikula hash method can always be used for TNG
+    //       Before TNG 8.0.0 only MD5 was supported
+    $z_hash_methods_txt2num = pnModAPIFunc('Users', 'user', 'gethashmethods');
+    $z_hash_methods_num2txt = pnModAPIFunc('Users', 'user', 'gethashmethods', array('reverse'=> 1));
+    $z_hash_method_txt      = ($TNG['use_password_type']) ? pnModGetVar('Users', 'hash_method', 'md5') : 'md5';
+    $z_hash_method_num      = $z_hash_methods_txt2num[$z_hash_method_txt];
+    
+
     if ( $loggedin || $guest == 1 ) {
         if ( $loggedin ) {
             $uid    = pnSessionGetVar('uid');  // find out which user #
             $u      = pnUserGetVars($uid, true);     // $u[] has all the logged in user vars
-            // Start Fix... Starting with Zikula, user values have changed.  So fix up so it looks like old
+            // Starting with Zikula, user values have changed.  So fix up so it looks like old
             // List is from \system\Profile\pnuserapi.php function Profile_userapi_aliasing
             $vars = array();
             $vars['_UREALNAME']      = 'name';
@@ -1095,11 +1121,12 @@ function TNGz_userapi_ModifyCreateUser()
                     $u[$value] = $u[$key];
                 }
             }
-            $pass_hash_number = (isset($u['hash_method'])) ? $u['hash_method'] : 1 ; // old PN used md5
-            $use_password = ($pass_hash_number == 1) ? true : false ;                // 1 = MD5, same as TNG
-            // End of fix...
-
             $userid = $u['uname'];
+            
+            // make a password_type field with the password hash method in text instead of a number
+            $pass_hash = (isset($u['hash_method']) && $TNG['use_password_type']) ? $u['hash_method'] : $z_hash_methods_txt2num['md5'];
+            $u['password_type'] = $z_hash_methods_num2txt[$pass_hash];
+
         } else {
             $guestname = ($guestname == "") ? "Guest" : $guestname;
             $userid = $guestname ;  // If not logged in, then must be a guest
@@ -1108,15 +1135,13 @@ function TNGz_userapi_ModifyCreateUser()
         $TNG_create = pnModGetVar('TNGz', '_users');
         $TNG_sync   = pnModGetVar('TNGz', '_sync');
 
-        // Check to be sure we can get to the TNG information
-        if (!$TNG = pnModAPIFunc('TNGz','user','TNGconfig') ) {
-            return LogUtil::registerError("Error accessing TNG config file.");
-        }
         if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
             return LogUtil::registerError("Error accessing TNG database.");
         }
 
-        $query     =  "SELECT userID, email, realname, website, password FROM ". $TNG['users_table'] ." WHERE username = '$userid' ";
+        $query     =  "SELECT userID, email, realname, website, password";
+        $query    .=  ($TNG['use_password_type']) ? ", password_type" : "";
+        $query    .=  " FROM ". $TNG['users_table'] ." WHERE username = '$userid' ";
         if (!$result = $TNG_conn->Execute($query) ) {
             return(false);
         }
@@ -1135,10 +1160,11 @@ function TNGz_userapi_ModifyCreateUser()
                 $TNG_lds      = pnModGetVar('TNGz', '_lds');
                 $TNG_db       = "";
                 $TNG_pwd      = pnModAPIFunc('TNGz','user','ranpass',array());
-                $TNG_pwd_safe = md5( $TNG_pwd );
+                $TNG_pwd_safe = hash($z_hash_method_txt  , $TNG_pwd);
+                $TNG_pwd_type = $z_hash_method_txt;
 
             } elseif ( $TNG_create == 1) {
-                // A registered Zikula user
+                // A registered Zikula user, but first time to TNG
                 $TNG_user     = $u['uname'] ;
                 $TNG_email    = $u['email'];
                 $TNG_name     = $u['name'];
@@ -1149,11 +1175,8 @@ function TNGz_userapi_ModifyCreateUser()
                 $TNG_lds      = pnModGetVar('TNGz', '_lds');
                 $TNG_db       = "";
                 $TNG_pwd      = "";
-                if ($use_password) {
-                    $TNG_pwd_safe = $u['pass']; // can use same md5 password
-                } else { // otherwise generate a random one just for TNG
-                    $TNG_pwd_safe  = md5(pnModAPIFunc('TNGz','user','ranpass',array()) );
-                }
+                $TNG_pwd_safe = $u['pass']; // can use same Zikula password and type
+                $TNG_pwd_type = $u['password_type'];
 
                 if ($TNG_name != "") {
                     $TNG_desc = $TNG_name;
@@ -1165,11 +1188,13 @@ function TNGz_userapi_ModifyCreateUser()
                 $adding  = "INSERT INTO " . $TNG['users_table'] . " ";
                 $adding .= "(";
                 $adding .= "description, username, realname  , email      , website      , gedcom , allow_living, allow_ged  , allow_lds, lastlogin ";
-                $adding .= ( $use_password ) ? ", password " : "";
+                $adding .= ", password";
+                $adding .= ($TNG['use_password_type']) ? ", password_type " : "";
                 $adding .=  ") VALUES ";
                 $adding .= "(";
                 $adding .= "'$TNG_desc','$TNG_user','$TNG_name','$TNG_email','$TNG_website','$TNG_db','$TNG_living' ,'$TNG_gedcom','$TNG_lds' , $TNG_conn->DBTimeStamp(NOW())";
-                $adding .=  ( $use_password ) ? ",'$TNG_pwd_safe'" : "";
+                $adding .= ",'$TNG_pwd_safe'";
+                $adding .= ($TNG['use_password_type']) ? ",'$TNG_pwd_type'" : "";
                 $adding .= ") ";
 
                 if (!$added = $TNG_conn->Execute($adding) ) {
@@ -1182,7 +1207,7 @@ function TNGz_userapi_ModifyCreateUser()
             // The user was found, so check for updates
             $TNG_changed = false;
             $theUser = $result->fields;
-            //list($TNG_uid, $TNG_email, $TNG_name, $TNG_website, $TNG_password ) = $result->fields;
+
             $adding =  "UPDATE " . $TNG['users_table'] . " SET ";
             if ( $theUser['email'] != $u['email'] ) {
                 $adding .= " email='".$u['email']."',";
@@ -1196,8 +1221,9 @@ function TNGz_userapi_ModifyCreateUser()
                 $adding .= " website='".$u['url']."',";
                 $TNG_changed = true;
             }
-            if ( $theUser['password'] != $u['pass'] && $use_password) {
-                $adding .= " password='".$u['pass']."',";
+            if ( ($theUser['password'] != $u['pass']) || ($TNG['use_password_type']&&($theUser['password_type'] != $u['password_type'])) ) {
+                $adding .= " password='"      .$u['pass']         ."',";
+                $adding .= ($TNG['use_password_type']) ? " password_type='" .$u['password_type']."'," : "";
                 $TNG_changed = true;
             }
             if ($TNG_changed == true) {
@@ -1304,20 +1330,17 @@ function TNGz_userapi_CleanEmail($args)
 */
 function TNGz_userapi_GetTNGurl($args)
 {
-    $goto = (isset($args['file'])) ? $args['file']    : 'admin/index.php';
-    
     //////////////////////////////////////////////////////
     // Get the TNG configuraiton information
     //////////////////////////////////////////////////////
-    if(!$TNGpath = pnModAPIFunc('TNGz','user','GetTNGpaths') ) {
-        return LogUtil::registerError("Error accessing TNG config file.");
-    }
     if (!$TNG = pnModAPIFunc('TNGz','user','TNGconfig') ) {
         return LogUtil::registerError("Error accessing TNG config file.");
     }
     if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
        return pnVarPrepHTMLDisplay("Failed to find TNG database");
     }
+
+    $goto = (isset($args['file'])) ? $args['file']    : $TNG['admin_dir'].'admin.php';
 
     //////////////////////////////////////////////////////
     // Get the TNG user informaiton for the person logged in Zikula
@@ -1344,7 +1367,7 @@ function TNGz_userapi_GetTNGurl($args)
     $parmcheck = implode('|', array($username,$userpass, $goto) );  // Used just to get the check value
     $check=md5($paramcheck) ;  // Add another check to make sure someone doesn't just edit a few characters.
     $parm = implode('|', array($check,$username,$userpass,$goto) );
-    $url = $TNGpath['directory'] . "/index_TNGz.php?parm=$parm";
+    $url = $TNG['directory'] . "/index_TNGz.php?parm=$parm";
 
     return $url;
 }

@@ -22,6 +22,11 @@
  */
 function smarty_function_relationship($params, &$smarty)
 {
+    // Only continue if feature is turned on
+    if (pnModGetVar('TNGz', '_persontree', '0') == '0' ) {
+        return;
+    }
+    
     // Get current person.  Only continue if there is a valid person
     $personID   = FormUtil::getPassedValue('personID',  false, 'GETPOST');
     $primaryID  = FormUtil::getPassedValue('primaryID', false, 'GETPOST');

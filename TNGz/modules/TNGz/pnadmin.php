@@ -53,8 +53,8 @@ function TNGz_admin_modifyconfig()
         return LogUtil::registerError(__('Sorry! No authorization to access this module.', $dom));
     }
 
-    // Get the TNG information based on what we currently have
-    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
+    // Get the TNG configuration information (false if there is a problem)
+    $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
 
     // *****************************************************
     // Check to be sure we can get to the TNG information
@@ -70,14 +70,12 @@ function TNGz_admin_modifyconfig()
     $TNG_rootpathimage = 'error.gif';
 
 
-    if (file_exists($TNG['configfile']) ) {
-        include($TNG['configfile']);
-        if ( $tngconfig ) {
-            $TNG_config        = true;
-            $TNG_found         = __('TNG files Found', $dom);
-            $TNG_foundimage    = 'button_ok.gif';
-        }
-        if ( $rootpath ==  $TNG_checkpath ) {
+    if ($TNG) {
+        $TNG_config        = true;
+        $TNG_found         = __('TNG files Found', $dom);
+        $TNG_foundimage    = 'button_ok.gif';
+
+        if ( $TNG['rootpath'] ==  $TNG_checkpath ) {
             $TNG_rootpath      = true;
             $TNG_rootpathsay   = __('TNG Root Path is correct!', $dom);
             $TNG_rootpathimage = 'button_ok.gif';
@@ -86,25 +84,17 @@ function TNGz_admin_modifyconfig()
 
     // *****************************************************
     // Get TNG version and make sure it is the same as last time
-    // and check to make sure the rootpath is set correctly
     // *****************************************************
     $TNG_versioncheck = false;
-    $TNG_version      = __('Unknown', $dom);
+    $TNG_version      = ($TNG['tng_version'])? $TNG['tng_version'] :__('Unknown', $dom);
     $TNG_versionsay   = __('TNGz is not in sync with TNG version. Please update. Found new TNG Version. Changed from', $dom);
     $TNG_versionimage = 'error.gif';
     $TNG_versionlast  =  pnModGetVar('TNGz', '_version');
 
-    $TNGversionfile = $TNG['TNGpath'] . "version.php";
-    if (file_exists($TNGversionfile) ) {
-        include($TNGversionfile);
-        if ( $tng_version ) {
-            $TNG_version = $tng_version ;
-        if ( ($TNG_version == $TNG_versionlast) && ($TNG_version != __('Unknown', $dom)) ) {
-                $TNG_versioncheck = true;
-                $TNG_versionsay  = __('TNGz is in sync with TNG Version', $dom);
-                $TNG_versionimage  = 'button_ok.gif';
-        }
-        }
+    if ( ($TNG_version == $TNG_versionlast) && ($TNG_version != __('Unknown', $dom)) ) {
+        $TNG_versioncheck = true;
+        $TNG_versionsay  = __('TNGz is in sync with TNG Version', $dom);
+        $TNG_versionimage  = 'button_ok.gif';
     }
     
     // Get TNGz module information
@@ -134,13 +124,14 @@ function TNGz_admin_modifyconfig()
     $render->assign('TNGzName',    $ModInfo['name']);
 
     // check password hash - TNG uses MD5 and should be used in Zikula
-    $pwhash = pnModGetVar('Users', 'hash_method');
-    if ($pwhash == 'md5') {
-      $md5hash = true;
-    } else {
-      $md5hash = false;
-    }
-    $render->assign('md5hash', $md5hash);
+    $ZikulaHash   = pnModGetVar('Users', 'hash_method');
+    $TNGhash      = ($TNG['use_password_type']) ? $TNG['password_type'] : 'md5';
+    $TNGcanChange = ($TNG['use_password_type']) ? true : false;
+    $HashCheck    = ($ZikulaHash == $TNGhash )? true : false ;
+    $render->assign('hashcheck'     , $HashCheck);
+    $render->assign('hashZikula'    , $ZikulaHash);
+    $render->assign('hashTNG'       , $TNGhash);
+    $render->assign('hashTNGchange' , $TNGcanChange);
 
     // Is the TNG setup found?
     $render->assign('tngconfig'     ,$TNG_config);
@@ -237,15 +228,15 @@ function TNGz_admin_modifyconfig()
     $treevalues[]  = "0";
         
     // Get the possible trees 
-    if ($TNG_config){
-        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/net.js');
+    if ($TNG){
+        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/'.$TNG['js_dir'].'net.js');
         PageUtil::AddVar('javascript', 'javascript/ajax/prototype.js');
         PageUtil::AddVar('javascript', 'javascript/ajax/scriptaculous.js');
-        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/net.js');
-        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/litbox.js');
+        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/'.$TNG['js_dir'].'net.js');
+        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/'.$TNG['js_dir'].'litbox.js');
         
         $TNG_conn = pnModAPIFunc('TNGz','user','DBconnect');
-        $query = "SELECT gedcom, treename FROM $trees_table ORDER BY treename";
+        $query = "SELECT gedcom, treename FROM ".$TNG['trees_table']." ORDER BY treename";
         if ($result = $TNG_conn->Execute($query) ) {
             if ($result->RecordCount() > 0) {
                 for (; !$result->EOF; $result->MoveNext()) {
@@ -493,7 +484,7 @@ function TNGz_admin_Info()
 
     $render->assign('TNGzVersion'  , $pnTNGmodinfo['version'] );
     $render->assign('TNGzName'     , $pnTNGmodinfo['name'] );
-    
+
     $render->assign('changelog'  , $changelog );
 
     foreach ($pnTNGmodinfo as $key => $value) {
@@ -537,6 +528,8 @@ function TNGz_admin_userlog()
         return LogUtil::registerError(__('Sorry! No authorization to access this module.', $dom));
     }
 
+    $pnTNGmodinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
+
     $userlog = 'genlog.txt';
 
     if (file_exists($userlog)) {
@@ -548,7 +541,9 @@ function TNGz_admin_userlog()
     // we can return it easily when required
     $render =& new pnRender('TNGz');
 
-    $render->assign('userlog'  , $userlog );
+    $render->assign('TNGzVersion'  , $pnTNGmodinfo['version'] );
+    $render->assign('TNGzName'     , $pnTNGmodinfo['name'] );
+    $render->assign('userlog'      , $userlog );
 
     // As Admin output changes often, we do not want caching.
     $render->caching = false;
@@ -566,10 +561,13 @@ function TNGz_admin_adminlog()
         return LogUtil::registerError(__('Sorry! No authorization to access this module.', $dom));
     }
 
+    $pnTNGmodinfo = pnModGetInfo(pnModGetIDFromName('TNGz'));
+    
     // Get TNGz module information
-    $TNGfolder = pnModAPIFunc('TNGz','user','GetTNGpaths');
+    $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
 
-    $adminlog = $TNGfolder[directory].'/admin/genlog.txt';
+    $adminlog = $TNG['TNGpath'].'/'.$TNG['admin_dir'].'adminlog.txt';
+
     if (file_exists($adminlog)) {
         $adminlog = "<pre>" . implode('',file($adminlog)) . "</pre>";
         $adminlog = DataUtil::formatForDisplayHTML($adminlog);
@@ -578,8 +576,10 @@ function TNGz_admin_adminlog()
     // Create output object - this object will store all of our output so that
     // we can return it easily when required
     $render =& new pnRender('TNGz');
-
-    $render->assign('adminlog'  , $adminlog );
+    
+    $render->assign('TNGzVersion'  , $pnTNGmodinfo['version'] );
+    $render->assign('TNGzName'     , $pnTNGmodinfo['name'] );
+    $render->assign('adminlog'     , $adminlog );
 
     // As Admin output changes often, we do not want caching.
     $render->caching = false;

@@ -38,7 +38,15 @@ function TNGz_user_main()
         return $render->fetch( $TNGzpage );
     }
 
-    switch ($TNGpage) {
+    // Determin if the page is to be given "as is" without any Zikula wrapped around it
+    $RenderCheck = $TNGpage;
+    if (strpos($RenderCheck, 'rpt_')!==false ){
+        $RenderCheck = 'rpt_';
+    }
+    if (strpos($RenderCheck, 'ajx_')!==false ){
+        $RenderCheck = 'ajx_';
+    }
+    switch ($RenderCheck) {
         case 'gedcom':
         case 'addbookmark':
         case 'findperson':
@@ -52,10 +60,8 @@ function TNGz_user_main()
         case 'smallimage':
         case 'timelinexml':
         case 'pdfform':
-        case 'rpt_descend':
-        case 'rpt_fam':
-        case 'rpt_ind':
-        case 'rpt_pedigree':
+        case 'rpt_':
+        case 'ajx_':
                 // for these, just give the output, with no extra stuff wrapped around it
                 $TNGrenderpage = false;
                 break;
