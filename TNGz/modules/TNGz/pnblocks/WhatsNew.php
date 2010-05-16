@@ -97,16 +97,15 @@ function TNGz_WhatsNewblock_display($blockinfo)
     }
 
     $guest  = pnModGetVar('TNGz', '_guest');
-
-    $TNGpaths = pnModAPIFunc('TNGz','user','GetTNGpaths');
-    $TNG_path = $TNGpaths['SitePath'] . "/" . $TNGpaths['directory'];
-    $TNG_ref  = $TNGpaths['directory'];                          // a relative path
-    // $TNG_ref  = $TNGpaths['WebRoot']   . "/" . $TNGpaths['directory'];    // absolute path
-
+    
     $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
+    $TNG_path = $TNG['SitePath'] . "/" . $TNG['directory'];
+    $TNG_ref  = $TNG['directory'];                          // a relative path
+    // $TNG_ref  = $TNG['WebRoot']   . "/" . $TNG['directory'];    // absolute path
+
     
     // Check to be sure we can get to the TNG information
-    if ($TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+    if (pnModAPIFunc('TNGz','user','TNGquery', array('connect'=>true) ) ) {
         $have_info = 1;
     } else {
         $have_info = 0;
@@ -124,28 +123,22 @@ function TNGz_WhatsNewblock_display($blockinfo)
                   WHERE TO_DAYS(NOW()) - TO_DAYS(changedate) <= $howlong
                   ORDER BY changedate DESC, lastname, firstname 
                   LIMIT $maxitems";
-	    if (!$result = $TNG_conn->Execute($query)  ) {
-            $whatsnew_error = __('Error in accessing the database.', $dom) . " " . $TNG_conn->ErrorMsg();
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) )  ) {
+            $whatsnew_error = __('Error in accessing the database.', $dom);
         } else {
-            $found = $result->RecordCount();
-            if ($found == 0){
-            } else{
-                for (; !$result->EOF; $result->MoveNext()) {
-                    $row = $result->fields;
-                    $title1 = $row['lastname'];
-                    $title1 .= ", " ;
-                    $title1 .= $row['firstname'];
-                    $temp = pnModAPIFunc('TNGz','user','MakeRef',
-                               array('func'        => "getperson",
-                                     'personID'    => $row['personID'],
-                                     'tree'        => $row['gedcom'],
-                                     'description' => $title1,
-                                     'target'      => $target
-                                     ));
-                    $whatsnew_showpeopleitems[] = $temp;
-                }
+            foreach($result as $row) {
+                $title1 = $row['lastname'];
+                $title1 .= ", " ;
+                $title1 .= $row['firstname'];
+                $temp = pnModAPIFunc('TNGz','user','MakeRef',
+                           array('func'        => "getperson",
+                                 'personID'    => $row['personID'],
+                                 'tree'        => $row['gedcom'],
+                                 'description' => $title1,
+                                 'target'      => $target
+                                 ));
+                $whatsnew_showpeopleitems[] = $temp;
             }
-            $result->Close();
         }
     }
     //////////// FAMILY ///////////////////////
@@ -167,27 +160,21 @@ function TNGz_WhatsNewblock_display($blockinfo)
 		          ORDER BY f.changedate DESC, h.lastname 
                   LIMIT $maxitems";
 
-	    if (!$result = $TNG_conn->Execute($query)  ) {
-            $whatsnew_error = __('Error in accessing the database.', $dom)." " . $TNG_conn->ErrorMsg();
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) )  ) {
+            $whatsnew_error = __('Error in accessing the database.', $dom);
         } else {
-            $found = $result->RecordCount();
-            if ($found == 0){
-            } else{
-	            for (; !$result->EOF; $result->MoveNext()) {
-                    $row = $result->fields;
-                    $title1 = $row['Hlast'] . " - " . $row['Wlast'];
-                    $temp = pnModAPIFunc('TNGz','user','MakeRef',
+            foreach ($result as $row) {
+                $title1 = $row['Hlast'] . " - " . $row['Wlast'];
+                $temp = pnModAPIFunc('TNGz','user','MakeRef',
                                array('func'        => "familygroup",
                                      'familyID'    => $row['familyID'],
                                      'tree'        => $row['gedcom'],
                                      'description' => $title1,
                                      'target'      => $target
                                     ));
-                    $whatsnew_showfamilyitems[] = $temp;
-                }
+                $whatsnew_showfamilyitems[] = $temp;
             }
         }
-        $result->Close();
     }
 
     //////////// PHOTOS ///////////////////////
@@ -201,11 +188,10 @@ function TNGz_WhatsNewblock_display($blockinfo)
                   ORDER BY changedate DESC
                   LIMIT $maxitems";
 
-	    if (!$result = $TNG_conn->Execute($query)  ) {
-            $whatsnew_error .= __('Error in accessing the database.', $dom)." " . $query . " ". $TNG_conn->ErrorMsg();
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) )  ) {
+            $whatsnew_error .= __('Error in accessing the database.', $dom);
         } else {
-            for (; !$result->EOF; $result->MoveNext()) {
-                $row = $result->fields;
+            foreach ($result as $row) {
                 // First try to use thumbnail
 		        $photo_file = "$TNG_path/".$TNG['photopath']."/". $row['thumbpath'];
                 $photo_ref  = "$TNG_ref/" .$TNG['photopath']."/". str_replace("%2F","/",rawurlencode($row['thumbpath']));
@@ -234,7 +220,6 @@ function TNGz_WhatsNewblock_display($blockinfo)
                     $whatsnew_showphotositems[] = $temp;
                 }
             }
-            $result->Close();
         }
     }
 

@@ -235,19 +235,17 @@ function TNGz_admin_modifyconfig()
         PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/'.$TNG['js_dir'].'net.js');
         PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/'.$TNG['js_dir'].'litbox.js');
         
-        $TNG_conn = pnModAPIFunc('TNGz','user','DBconnect');
         $query = "SELECT gedcom, treename FROM ".$TNG['trees_table']." ORDER BY treename";
-        if ($result = $TNG_conn->Execute($query) ) {
-            if ($result->RecordCount() > 0) {
-                for (; !$result->EOF; $result->MoveNext()) {
-                    $row = $result->fields;
+        if (false !== ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+            if (count($result) > 0) {
+                foreach($result as $row) {
                     $treeoptions[] = $row['treename'];
                     $treevalues[]  = $row['gedcom'];
                 }
             }
-            $result->Close();
         }       
     }
+    
     $person = pnModAPIFunc('TNGz','user','getperson', array('id'=> $personID, 'tree'=> $person_tree));
     $personmsg = (!$person) ? "" : $personID . " = " . $person['fullname'];
     $render->assign('tngzid',            $personID    );
@@ -374,7 +372,7 @@ function TNGz_admin_updateconfig()
     /////////////////////////////////////////////////////////////////
     // Note: the TNG location informaiton was saved above, so we can use it now
     // Also, we do this every time to make sure we have the latest, just in case files are changed
-    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
+    $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
 
     if ($TNGglobals = pnModAPIFunc('TNGz','user','GetTNGglobals', array('dir' => $TNG['SitePath']."/".$TNG['directory']))) {
         pnModSetVar('TNGz', '_globals'     , $TNGglobals);

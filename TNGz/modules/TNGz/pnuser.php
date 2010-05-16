@@ -40,12 +40,10 @@ function TNGz_user_main()
 
     // Determin if the page is to be given "as is" without any Zikula wrapped around it
     $RenderCheck = $TNGpage;
-    if (strpos($RenderCheck, 'rpt_')!==false ){
-        $RenderCheck = 'rpt_';
-    }
-    if (strpos($RenderCheck, 'ajx_')!==false ){
-        $RenderCheck = 'ajx_';
-    }
+    $RenderCheck = (strpos($RenderCheck, 'rpt_')!==false )? 'rpt_' : $RenderCheck;
+    $RenderCheck = (strpos($RenderCheck, 'ajx_')!==false )? 'ajx_' : $RenderCheck;
+    $RenderCheck = (strpos($RenderCheck, 'img_')!==false )? 'img_' : $RenderCheck;
+
     switch ($RenderCheck) {
         case 'gedcom':
         case 'addbookmark':
@@ -61,6 +59,7 @@ function TNGz_user_main()
         case 'timelinexml':
         case 'pdfform':
         case 'rpt_':
+        case 'img_':
         case 'ajx_':
                 // for these, just give the output, with no extra stuff wrapped around it
                 $TNGrenderpage = false;
@@ -248,26 +247,19 @@ function TNGz_user_worldmap()
     // Not in cache or out of date, so go create it
     
     $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
-    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
-       return false; // can't get to the data
-    }
 
     // Now go get all the locations to plot
     $query  = "SELECT placelevel, latitude,longitude,zoom from ". $TNG['places_table'] . " ";
     $query .= "WHERE latitude <> 0 AND longitude <> 0 AND latitude is not null AND longitude is not null";
-
-    if (!$result = $TNG_conn->Execute($query) ) {
-        $TNG_conn->Close();
-        return(false);
+    if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+        return false;
     }
     $points = array();
-    if($result->RecordCount()>0) {
-        for (; !$result->EOF; $result->MoveNext()) {
-            $points[] = $result->fields;
+    if(count($result)>0) {
+        foreach ($result as $row) {
+            $points[] = $row;
         }
     }
-    mysql_free_result($result);
-    $TNG_conn->Close();
 
     switch ($size) {
         case 'tiny':
@@ -464,11 +456,6 @@ function TNGz_user_histogram()
     $year_max  = 0000;    // latest year (start low and work higher)
     $count_max = 0000;    // greatest number of events
 
-
-    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
-       return false; // can't get to the data
-    }
-    
     if (!$TNG = pnModAPIFunc('TNGz','user','TNGconfig') ) {
        return false; // can't get to the data
     }
@@ -491,18 +478,16 @@ function TNGz_user_histogram()
                  GROUP BY year
                  ORDER BY year " ;
                  
-    if (!$result = $TNG_conn->Execute($query)  ) {
+    if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
         return false;
     }
 
     // Get the raw data
-    for (; !$result->EOF; $result->MoveNext()) {
-        $row = $result->fields;
+    foreach ($result as $row) {
         $data[ $row['year'] ] = $row['yearcount'];
         $year_min = ($row['year'] < $year_min)? $row['year'] : $year_min;
         $year_max = ($row['year'] > $year_max)? $row['year'] : $year_max;
     }
-    $result->Close();
 
     // Now lump into the right buckets for display
     for ( $i=$year_min; $i<=$year_max; $i++) {

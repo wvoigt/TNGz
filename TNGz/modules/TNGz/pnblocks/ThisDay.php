@@ -118,7 +118,7 @@ function TNGz_ThisDayblock_display($blockinfo)
     $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
 
     // Check to be sure we can get to the TNG information
-    if ($TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+    if (pnModAPIFunc('TNGz','user','TNGquery', array('connect'=>true) ) ) {
         $have_info = 1;
     } else {
         $have_info = 0;
@@ -133,19 +133,7 @@ function TNGz_ThisDayblock_display($blockinfo)
     $month         = strtoupper($month) ;
 
     // Check to see of this user has the permissions to see living conditionally
-    $User_Can_See_Living = false;
-    if ( pnUserLoggedIn() ){
-        // now check to make sure TNG says user can see the living
-        $userid = pnUserGetVar('uname');
-        $query = "SELECT allow_living FROM ".$TNG['users_table']." WHERE username = '$userid' ";
-        if ($result = $TNG_conn->Execute($query) ) {
-            $row = $result->fields;
-            if ($row['allow_living'] == "1") {
-                $User_Can_See_Living = true;
-            }
-            $result->Close();
-         }
-    }
+    $User_Can_See_Living = pnModAPIFunc('TNGz','user','CanUserSeeLiving');
 
     //////////// SHOW DATE ///////////////////////
     if ($vars['showdate'] == "Y") {
@@ -178,14 +166,13 @@ function TNGz_ThisDayblock_display($blockinfo)
         } else {
             $query .= " order by birthdate ASC";
         }
-        if (!$result = $TNG_conn->Execute($query)  ) {
-            $thisday_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) )  ) {
+            $thisday_error  = __('Error in accessing the TNG tables.', $dom);
         } else {
-            $found = $result->RecordCount();
+            $found = count($result);
             if ($found == 0){
             } else{
-                for (; !$result->EOF; $result->MoveNext()) {
-                    $row = $result->fields;
+                foreach ($result as $row){
                     $title1 = $row['lastname'];
                     $title1 .= ", " ;
                     $title1 .= $row['firstname'];
@@ -208,7 +195,6 @@ function TNGz_ThisDayblock_display($blockinfo)
                     $thisday_birthitems[] = $temp;
                 }
             }
-            $result->Close();
         }
     }
     //////////// MARRIAGE ///////////////////////
@@ -249,14 +235,13 @@ function TNGz_ThisDayblock_display($blockinfo)
         } else {
             $query .= " order by marrdatetr ASC";
         }
-        if (!$result = $TNG_conn->Execute($query) ) {
-            $thisday_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) )  ) {
+            $thisday_error  = __('Error in accessing the TNG tables.', $dom);
         } else {
-            $found = $result->RecordCount();
+            $found = count($result);
             if ($found == 0){
 	        } else {
-                for (; !$result->EOF; $result->MoveNext()) {
-                    $row = $result->fields;
+            foreach ($result as $row) {
 	    		    $title1 = $row['HLast'] . ", " . $row['HFirst'];
                     /*! ThisDay block marriage 'and' */
                     $title1 .= " " . __('&', $dom /*! ThisDay block marriage 'and' */) . " ";
@@ -282,7 +267,6 @@ function TNGz_ThisDayblock_display($blockinfo)
                     $thisday_marriageitems[] = $temp;
 	    	    }
 	        }
-            $result->Close();
         }
     }
 
@@ -301,14 +285,13 @@ function TNGz_ThisDayblock_display($blockinfo)
         } else {
             $query .= " order by deathdate ASC";
         }
-        if (!$result = $TNG_conn->Execute($query) ) {
-            $thisday_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) )  ) {
+            $thisday_error  = __('Error in accessing the TNG tables.', $dom);
         } else {
-            $found = $result->RecordCount();
+            $found = count($result);
             if ($found == 0){
 	        } else{
-                for (; !$result->EOF; $result->MoveNext()) {
-                    $row = $result->fields;
+                foreach ($result as $row) {
 	    		    $title1 = $row['lastname'];
                     $title1 .= ", " ;
                     $title1 .= $row['firstname'];
@@ -329,7 +312,6 @@ function TNGz_ThisDayblock_display($blockinfo)
                     $thisday_deathitems[] = $temp;
 	    	    }
 	        }
-            $result->Close();
         }
     }
 

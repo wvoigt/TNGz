@@ -45,17 +45,20 @@ function smarty_function_showphoto($params, &$smarty)
     $answer_YNLD   = array_merge($answer_yes, $answer_no, $answer_living, $answer_dead );
     $answer_TP     = array_merge($answer_thumb, $answer_photo);
 
+    $params['showliving'] = (isset($params['showliving'])) ? $params['showliving'] : "";
     $params['showliving'] = (in_array($params['showliving'], $answer_YNLD  ))? $params['showliving'] : $answer_living[0];
     $params['showliving'] = (in_array($params['showliving'], $answer_no    ))? $answer_no[0]         : $params['showliving'];    
     $params['showliving'] = (in_array($params['showliving'], $answer_yes   ))? $answer_yes[0]        : $params['showliving']; 
     $params['showliving'] = (in_array($params['showliving'], $answer_living))? $answer_living[0]     : $params['showliving'];    
     $params['showliving'] = (in_array($params['showliving'], $answer_dead  ))? $answer_dead[0]       : $params['showliving'];
 
+    $params['newwindow'] = (isset($params['newwindow'])) ? $params['newwindow'] : "";
     $params['newwindow'] = (in_array($params['newwindow'], $answer_YN  ))? $params['newwindow']: $answer_no[0];
     $params['newwindow'] = (in_array($params['newwindow'], $answer_no  ))? $answer_no[0]       : $params['newwindow'];    
     $params['newwindow'] = (in_array($params['newwindow'], $answer_yes ))? $answer_yes[0]      : $params['newwindow']; 
     $target = ($params['newwindow'] == 'Y' )? "target=_blank" :"" ;
 
+    $params['phototype'] = (isset($params['phototype'])) ? $params['phototype'] : "";
     $params['phototype'] = (in_array($params['phototype'], $answer_TP    ))? $params['phototype']  : $answer_thumb[0];
     $params['phototype'] = (in_array($params['phototype'], $answer_thumb ))? $answer_thumb[0]  : $params['phototype'];
     $params['phototype'] = (in_array($params['phototype'], $answer_photo ))? $answer_photo[0]  : $params['phototype']; 
@@ -89,58 +92,40 @@ function smarty_function_showphoto($params, &$smarty)
     $photo_description = "";
     $photo_error = "";
 
-    $TNGpaths = pnModAPIFunc('TNGz','user','GetTNGpaths');
-    $TNG_path = $TNGpaths['SitePath'] . "/" . $TNGpaths['directory'];
-    $TNG_ref  = $TNGpaths['directory'];  // a relative path
-
-    // Check to be sure we can get to the TNG information
     $TNG = pnModAPIFunc('TNGz','user','TNGconfig'); 
-    if ($TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+    $TNG_path = $TNG['SitePath'] . "/" . $TNG['directory'];
+    $TNG_ref  = $TNG['directory'];  // a relative path
+
+    if (pnModAPIFunc('TNGz','user','TNGquery', array('connect'=>true) ) ) {
         $have_info = 1;
     } else {
         $have_info = 0;
-        $thisday_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
+        $thisday_error  = __('Error in accessing the TNG tables.', $dom);
     }
 
     if ($params['showliving'] != 'N' && $have_info == 1 ){
 
         // determine if we show living information
-        $showliving = false;  // default to no
-        if ($params['showliving'] == 'Y') {
-            $showliving = true;
-        } elseif ( $params['showliving'] == 'L' && pnUserLoggedIn() ) {
-            // now check to make sure TNG says user can see the living
-            $userid = pnUserGetVar('uname');
-            $query = "SELECT allow_living FROM ".$TNG['users_table']." WHERE username = '$userid' ";
-            if ($result = $TNG_conn->Execute($query) ) {
-                $row = $result->fields;
-                if ($row['allow_living'] == "1") {
-                    $showliving = true;
-                }
-            }
-            $result->Close();
-        }
+        $showliving = pnModAPIFunc('TNGz','user','CanUserSeeLiving');
 
         $need_photo = true;
         $photos_with_living = "";   // comma separated list of photoIDs we don't want to display because linked to a living person
 
         if (!$showliving ){
-                // get the list of photoIDs that have at least 1 living person --- don't want to show those
-                $query = "SELECT living.mediaID AS mediaID
-                          FROM ".$TNG['medialinks_table']." AS living, ".$TNG['people_table']." AS person
-                          WHERE living.personID = person.personID AND person.living = 1
-                          GROUP BY living.mediaID";
-                if (!$result = $TNG_conn->Execute($query) ) {
-                    $photo_error .= __('Error in accessing the TNG tables.', $dom)." [0] " . $TNG_conn->ErrorMsg() . " ";
-                }
-                // now make a comma separated list of the photoIDs
-                $record_sep = "";
-                for (; !$result->EOF; $result->MoveNext()) {
-                    $row = $result->fields;
-                    $photos_with_living .= $record_sep . $row['mediaID'];
-                    $record_sep =", ";
-                }
-                $result->Close();
+            // get the list of photoIDs that have at least 1 living person --- don't want to show those
+            $query = "SELECT living.mediaID AS mediaID
+                      FROM ".$TNG['medialinks_table']." AS living, ".$TNG['people_table']." AS person
+                      WHERE living.personID = person.personID AND person.living = 1
+                      GROUP BY living.mediaID";
+            if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+                $photo_error .= __('Error in accessing the TNG tables.', $dom)." [0] ";
+            }
+            // now make a comma separated list of the photoIDs
+            $record_sep = "";
+            foreach($result as $row) {
+                $photos_with_living .= $record_sep . $row['mediaID'];
+                $record_sep =", ";
+            }
         }
 
         // get a list of photolist IDs --- one per person photo link --- to pick from
@@ -157,16 +142,15 @@ function smarty_function_showphoto($params, &$smarty)
             $query .= "AND photolist.mediaID NOT IN ( $photos_with_living ) ";
         }
 
-       	if (!$result = &$TNG_conn->Execute($query)  ) {
-                $photo_error .= __('Error in accessing the TNG tables.', $dom)." [1] " . $TNG_conn->ErrorMsg() . " ";
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+                $photo_error .= __('Error in accessing the TNG tables.', $dom)." [1] ";
         } else {
-
-            $num_photos = $result->RecordCount();  // the number of photo links to pick from
+            $num_photos = count($result);  // the number of photo links to pick from
 
             for ( $strikes = 0 ; $strikes <= $max_strikes && $need_photo; $strikes++ ) {
                 // just in case of problems, try at most max_strikes times
-                $result->Move( RAND(0,$num_photos - 1) );
-                $row = $result->fields;
+                $rand = RAND(0,$num_photos - 1);
+                $row = $result[$rand];
 
                 // now get the actual photo link
                 $query = "SELECT ".$TNG['media_table'].".path              AS t_path, 
@@ -182,12 +166,10 @@ function smarty_function_showphoto($params, &$smarty)
                           WHERE ".$TNG['medialinks_table'].".mediaID = \"".$row['linkID']."\"
                                 AND ".$TNG['media_table'].".mediaID = ".$TNG['medialinks_table'].".mediaID ";
 
-                if (!$result2 = &$TNG_conn->Execute($query)) {
-                    $photo_error .= __('Error in accessing the TNG tables.', $dom)." [2] " . $TNG_conn->ErrorMsg()  . " ";
+                if (false === ($result2 = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+                    $photo_error .= __('Error in accessing the TNG tables.', $dom)." [2] ";
                 } else {
-                    $row2 = $result2->fields;
-                    $result2->Close();
-
+                    $row2 = $result2[0];
                     if ($params['phototype']  == 'P'){
                         $picture = $row2['t_path'];
                     } else {
@@ -219,7 +201,6 @@ function smarty_function_showphoto($params, &$smarty)
                     }
                 }
             }
-            $result->Close();
         }
         if ( $need_photo ) {
             // Didn't get a photo this time

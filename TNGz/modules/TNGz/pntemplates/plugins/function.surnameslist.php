@@ -42,17 +42,16 @@ function smarty_function_surnameslist($params, &$smarty)
 
         // First get all unique surnames
         $query = "SELECT ucase( $binary TRIM(CONCAT_WS(' ',lnprefix,lastname) ) ) as surnameuc, TRIM(CONCAT_WS(' ',lnprefix,lastname) ) as surname, count( ucase($binary lastname ) ) as count FROM $people_table WHERE lastname<>'' GROUP BY surname ORDER by count DESC ";
-        $saved_fetch_mode = &$TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
-        if (!$result = &$TNG_conn->Execute($query) ) {
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
             return pnVarPrepHTMLDisplay("Failed the TNG query");
         }
 
-        $SurnameCount = $result->RecordCount();
-        $name         = $result->fields;       // Look at first record, since already sorted by Surname Count
-        $SurnameMax   = $name['count'];        // First record should have the most
+        $SurnameCount = count($result);
+        $name         = $result[0];       // Look at first record, since already sorted by Surname Count
+        $SurnameMax   = $name['count'];   // First record should have the most
         $SurnameRank  = array();
-        for ($rank=1; !$result->EOF && $rank<=$top; $result->MoveNext(), $rank++) {
-            $name = $result->fields;
+        for ($rank=1; !empty($result) && $rank<=$top; $rank++) {
+            $name = array_shift($result);
             // removed urlencode in order to show names correctly (problem with german umlauts)
             //$name['surname']   = urlencode($name['surname']);
             $name['surname']   = $name['surname'];
@@ -92,11 +91,7 @@ function smarty_function_surnameslist($params, &$smarty)
             $surname[$key]  = $row['surnameuc'];
         }
         array_multisort($surname, SORT_ASC, $SurnameAlpha);
-
-        // Clean up
-        $saved_fetch_mode= &$TNG_conn->SetFetchMode($saved_fetch_mode);
-        $TNG_conn->Close();
-        
+       
         $output = '';
        
         if ($cloud) {

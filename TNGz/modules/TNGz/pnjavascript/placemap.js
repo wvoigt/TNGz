@@ -31,6 +31,7 @@ function InitializeMap() {
     if(typeof(placemap.id_sidebar)           == "undefined"){ placemap.id_sidebar           = 'side_bar'; }
     if(typeof(placemap.id_sidebar_li_prefix) == "undefined"){ placemap.id_sidebar_li_prefix = 'placeID_'; }
     if(typeof(placemap.id_placelevel_prefix) == "undefined"){ placemap.id_placelevel_prefix = 'placelevelID_'; }
+    if(typeof(placemap.pin_dir)              == "undefined"){ placemap.pin_dir              = 'googlemaps/'; }
     if(typeof(placemap.pinplacelevelfile)    == "undefined"){ placemap.pinplacelevelfile    = []; }
     if(typeof(placemap.center_lat)           == "undefined"){ placemap.center_lat           = 0; }
     if(typeof(placemap.center_lng)           == "undefined"){ placemap.center_lng           = 0; }
@@ -43,8 +44,8 @@ function InitializeMap() {
     for ( var i in placemap.PlaceLevels ) {        // Initialize
         placemap.PlaceLevelShow[i] = true;
         placemap.baseIcon[i] = new GIcon();
-        placemap.baseIcon[i].image  = placemap.cmspath + 'googlemaps/' + placemap.pinplacelevelfile[i];
-        placemap.baseIcon[i].shadow = placemap.cmspath + 'googlemaps/' + 'shadow50.png';
+        placemap.baseIcon[i].image  = placemap.cmspath + placemap.pin_dir + placemap.pinplacelevelfile[i];
+        placemap.baseIcon[i].shadow = placemap.cmspath + placemap.pin_dir + 'shadow50.png';
         placemap.baseIcon[i].iconSize = new GSize(20, 34);
         placemap.baseIcon[i].shadowSize = new GSize(37, 34);
         placemap.baseIcon[i].iconAnchor = new GPoint(9, 34);

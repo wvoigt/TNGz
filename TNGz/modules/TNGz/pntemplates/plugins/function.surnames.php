@@ -35,33 +35,38 @@ function smarty_function_surnames($params, &$smarty)
     $answer_no     = array('N', 'no',  'n', '0', 'off','none'); // Answers for No or none
     $answer_YN     = array_merge($answer_yes, $answer_no);
     
-    $top = $params['top'];  
+    $top = (isset($params['top'])) ? $params['top'] : "";
     $top  = (is_numeric($top) && $top > 0)? intval($top) : 50;  // Get valid value or set default
 
     $validtypes = array('list', 'cloud', 'table');  // first in list is the default
+    $type = (isset($params['type'])) ? $params['type'] : "";
     $type = (in_array($params['type'], $validtypes))? $params['type'] : $validtypes[0];
     
     $validsorts = array('alpha', 'rank');  // first in list is the default
+    $params['sort'] = (isset($params['sort'])) ? $params['sort'] : "";
     $sort = (in_array($params['sort'], $validsorts))? $params['sort'] : $validsorts[0];
 
-    $cols = $params['col'];
+    $cols = (isset($params['col'])) ? $params['col'] : "";
     $cols  = (is_numeric($cols) && $cols > 0)? intval($cols) : 2;  // Get valid value or set default
 
+    $params['links'] = (isset($params['links']))? $params['links'] : "";
     $params['links'] = (in_array($params['links'], $answer_YN  ))? $params['links'] : $answer_yes[0];
     $params['links'] = (in_array($params['links'], $answer_no  ))? $answer_no[0]    : $params['links'];
     $params['links'] = (in_array($params['links'], $answer_yes ))? $answer_yes[0]   : $params['links'];
     
+    $params['menu'] = (isset($params['menu']))? $params['menu'] : "";
     $params['menu'] = (in_array($params['menu'], $answer_YN  ))? $params['menu']  : $answer_no[0];
     $params['menu'] = (in_array($params['menu'], $answer_no  ))? $answer_no[0]    : $params['menu'];
     $params['menu'] = (in_array($params['menu'], $answer_yes ))? $answer_yes[0]   : $params['menu'];
 
+    $params['title'] = (isset($params['title'])) ? $params['title'] : "";
     $params['title'] = (empty($params['title'])) ? "" : DataUtil::formatForDisplay($params['title']);
 
     $lang = ZLanguage::getLanguageCode(); // get language used in Zikula
     
     // See if already in the cache
     $title_hash = ($params['title'])? md5($params['title']) : "x";
-    $cachefile    = sprintf("surnames_%s_%s_%s_%s_%s_%s_%s_%s_%s.html",$lang,$type,$sort,$top,$cols,$links,$params['menu'],$params['links'],$title_hash);
+    $cachefile    = sprintf("surnames_%s_%s_%s_%s_%s_%s_%s_%s.html",$lang,$type,$sort,$top,$cols,$params['menu'],$params['links'],$title_hash);
     $cacheresults = pnModAPIFunc('TNGz','user','Cache', array( 'item'=> $cachefile ));
     if ($cacheresults) {
         return $cacheresults;

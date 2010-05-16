@@ -96,27 +96,15 @@ function smarty_function_thisday($params, &$smarty)
     $UserLoggedIn = ( pnUserLoggedIn() ) ? true : false ;
 
     $TNG = pnModAPIFunc('TNGz','user','TNGconfig'); 
-    if ($TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+    if (pnModAPIFunc('TNGz','user','TNGquery', array('connect'=>true) ) ) {
         $have_info = 1;
     } else {
         $have_info = 0;
-        $thisday_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
+        $thisday_error  = __('Error in accessing the TNG tables.', $dom);
     }
 
     // Check to see of this user has the permissions to see living conditionally
-    $User_Can_See_Living = false;
-    if ( $UserLoggedIn ){
-        // now check to make sure TNG says user can see the living
-        $userid = pnUserGetVar('uname');
-        $query = "SELECT allow_living FROM ".$TNG['users_table']." WHERE username = '$userid' ";
-        if ($result = $TNG_conn->Execute($query) ) {
-            $row = $result->fields;
-            if ($row['allow_living'] == "1") {
-                $User_Can_See_Living = true;
-            }
-         }
-        $result->Close();
-    }
+    $User_Can_See_Living = pnModAPIFunc('TNGz','user','CanUserSeeLiving');
 
     // Get the date and time values we will need
     $thisday_time  = GetUserTime(time()) ;
@@ -193,14 +181,12 @@ function smarty_function_thisday($params, &$smarty)
         } else {
             $query .= " order by birthdate ASC";
         }
-        if (!$result = $TNG_conn->Execute($query)  ) {
-            $thisday_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+            $thisday_error  = __('Error in accessing the TNG tables.', $dom);
         } else {
-            $found = $result->RecordCount();
-            if ($found == 0){
-            } else{
-                for (; !$result->EOF; $result->MoveNext()) {
-                    $row = $result->fields;
+            $found = count($result);
+            if ($found > 0){
+                foreach ($result as $row) {
                     $title1 = $row['lastname'] ;
                     $title1 .= ", " ;
                     $title1 .= $row['firstname'];
@@ -235,7 +221,6 @@ function smarty_function_thisday($params, &$smarty)
                     $thisday_birthitems[] = $temp;
                 }
             }
-            $result->Close();
         }
     }
     //////////// MARRIAGE ///////////////////////
@@ -264,14 +249,12 @@ function smarty_function_thisday($params, &$smarty)
         } else {
             $query .= " order by marrdatetr ASC";
         }
-        if (!$result = &$TNG_conn->Execute($query) ) {
-            $thisday_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+            $thisday_error  = __('Error in accessing the TNG tables.', $dom);
         } else {
-            $found = $result->RecordCount();
-            if ($found == 0){
-	        } else {
-                for (; !$result->EOF; $result->MoveNext()) {
-                    $row = $result->fields;
+            $found = count($result);
+            if ($found > 0){
+                foreach($result as $row) {
  	    		    $title1 = $row['HLast'];
                     $title1 .= ", " ;
                     $title1 .= $row['HFirst'];
@@ -306,7 +289,6 @@ function smarty_function_thisday($params, &$smarty)
                     $thisday_marriageitems[] = $temp;
 	    	    }
 	        }
-            $result->Close();
         }
     }
 
@@ -324,15 +306,12 @@ function smarty_function_thisday($params, &$smarty)
         } else {
             $query .= " order by deathdate ASC";
         }
-        if (!$result = &$TNG_conn->Execute($query) ) {
-            $thisday_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+            $thisday_error  = __('Error in accessing the TNG tables.', $dom);
         } else {
-            $found = $result->RecordCount();
-            if ($found == 0){
-	        } else{
-                for (; !$result->EOF; $result->MoveNext()) {
-                    $row = $result->fields;
-                    //list($id,$first,$last,$start,$end,$stat,$gedcom) = $result->fields;
+            $found = count($result);
+            if ($found > 0){
+                foreach($result as $row) {
 	    		    $title1 = $row['lastname'];
                     $title1 .= ", " ;
                     $title1 .= $row['firstname'];
@@ -365,7 +344,6 @@ function smarty_function_thisday($params, &$smarty)
                     $thisday_deathitems[] = $temp;
 	    	    }
 	        }
-            $result->Close();
         }
     }
 

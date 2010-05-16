@@ -98,15 +98,13 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
 
     $window=pnModGetVar('TNGz', '_window');
 
-    $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
-    
-    $TNGpathInfo = pnModAPIFunc('TNGz','user','GetTNGpaths');
-    $TNG_path = $TNGpathInfo['SitePath'] . "/" . $TNGpathInfo['directory'];
-    $TNG_ref  = $TNGpathInfo['directory'];                                 // a relative path
-    // $TNG_ref  = $TNGpathInfo['WebRoot']   . "/" . $TNGpathInfo['directory'];    // absolute path
+    $TNG = pnModAPIFunc('TNGz','user','TNGconfig');   
+
+    $TNG_path = $TNG['SitePath'] . "/" . $TNG['directory'];
+    $TNG_ref  = $TNG['directory'];                                 // a relative path
 
     // Check to be sure we can get to the TNG information
-    if ($TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+    if (pnModAPIFunc('TNGz','user','TNGquery', array('connect'=>true) ) ) {
         $have_info = 1;
     } else {
         $have_info = 0;
@@ -124,17 +122,8 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
         $showliving = false;  // default to no
         if ($vars['showliving'] == 'Y') {
             $showliving = true;
-        } elseif ( $vars['showliving'] == 'L' && pnUserLoggedIn() ) {
-            // now check to make sure TNG says user can see the living
-            $userid = pnUserGetVar('uname');
-            $query = "SELECT allow_living FROM ".$TNG['users_table']." WHERE username = '$userid' ";
-            if ($result = &$TNG_conn->Execute($query) ) {
-                $row = $result->fields;
-                if ($row['allow_living'] == "1") {
-                    $showliving = true;
-                }
-            }
-            $result->Close();
+        } elseif ( $vars['showliving'] == 'L' ) {
+            $showliving = pnModAPIFunc('TNGz','user','CanUserSeeLiving');
         }
 
         $need_photo = true;
@@ -146,17 +135,15 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
                           FROM ".$TNG['medialinks_table']." AS living, ".$TNG['people_table']." AS person
                           WHERE living.personID = person.personID AND person.living = 1
                           GROUP BY living.mediaID";
-                if (!$result = $TNG_conn->Execute($query) ) {
-                    $photo_error .= __('Error in accessing the TNG tables.', $dom)." [0] " . $TNG_conn->ErrorMsg() ;
+                if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) )  ) {
+                    $photo_error .= __('Error in accessing the TNG tables.', $dom);
                 }
                 // now make a comma separated list of the photoIDs
                 $record_sep = "";
-                for (; !$result->EOF; $result->MoveNext()) {
-                    $row = $result->fields;
+                foreach ($result as $row) {
                      $photos_with_living .= $record_sep . $row['mediaID'];
                      $record_sep =", ";
                 }
-                $result->Close();
         }
 
         // get a list of photolist IDs --- one per person photo link --- to pick from
@@ -173,16 +160,16 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
             $query .= "AND photolist.mediaID NOT IN ( $photos_with_living ) ";
         }
 
-       	if (!$result = $TNG_conn->Execute($query)  ) {
-                $photo_error .= __('Error in accessing the TNG tables.', $dom)." [1] " . $TNG_conn->ErrorMsg() ;
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) )  ) {
+                $photo_error .= __('Error in accessing the TNG tables.', $dom)." [1] ";
         } else {
 
-            $num_photos = $result->RecordCount();  // the number of photo links to pick from
+            $num_photos = count($result);  // the number of photo links to pick from
 
             for ( $strikes = 0 ; $strikes <= $max_strikes && $need_photo; $strikes++ ) {
                 // just in case of problems, try at most max_strikes times
-                $result->Move( RAND(0,$num_photos - 1) );
-                $row = $result->fields;
+                $rand = RAND(0,$num_photos - 1);
+                $row  = $result[$rand];
 
                 // now get the actual photo link
                 $query = "SELECT mediatable.path             AS path,
@@ -198,19 +185,11 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
                           WHERE medialinkstable.mediaID = \"".$row['linkID']."\"
                                 AND mediatable.mediaID = medialinkstable.mediaID ";
 
-                if (!$result2 = &$TNG_conn->Execute($query)) {
-                    $photo_error .= __('Error in accessing the TNG tables.', $dom)." [2] " . $TNG_conn->ErrorMsg() ;
+                if (false === ($result2 = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) )  ) {
+                    $photo_error .= __('Error in accessing the TNG tables.', $dom)." [2] ";
                 } else {
-                    //list($t_path,$t_thumbpath,$t_description,$t_notes,$t_medialinkID,$t_personID,$t_gedcom,$t_mediaID,$usecollfolder) = $result2->fields;
-                    //path, thumbpath, description, notes, medialinkID, personID, gedcom, mediaID, usecollfolder
-                    $row2 = $result2->fields;
-                    $result2->Close();
-
-                    if ($vars['phototype']  == 'P'){
-                        $picture = $row2['path'];
-                    } else {
-                        $picture = $row2['thumbpath'];
-                    }
+                    $row2 = $result2[0];
+                    $picture      = ($vars['phototype']  == 'P')? $row2['path'] : $row2['thumbpath'];
                     $picture_file = "$TNG_path/".$TNG['photopath']."/$picture";
                     $picture_ref  = "$TNG_ref/" .$TNG['photopath']."/". str_replace("%2F","/",rawurlencode($picture));
 
@@ -233,15 +212,11 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
                                                          'description' => $temp1,
                                                          'target'      => $target
                                                          ));
-
-
                         $photo_description = $row2['description'];
                         $need_photo = false;
                     }
-
                 }
             }
-            $result->Close();
         }
         if ( $need_photo ) {
             // Didn't get a photo this time

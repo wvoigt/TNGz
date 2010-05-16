@@ -30,32 +30,36 @@ function smarty_function_placemap($params, &$smarty)
     $dom = ZLanguage::getModuleDomain('TNGz');
     
     // Get parameters
-    $width = $params['width'];  
-    $width  = (is_numeric($width) && $width > 0)? intval($width) : 600;  // Get valid value or set default
+    $width = (isset($params['width']))          ? $params['width'] : "";  
+    $width  = (is_numeric($width) && $width > 0)? intval($width)   : 600;     // Get valid value or set default
 
-    $height = $params['height'];  
-    $height  = (is_numeric($height) && $height > 0)? intval($height) : 450;  // Get valid value or set default
+    $height = (isset($params['height']))          ? $params['height'] : "";  
+    $height = (is_numeric($height) && $height > 0)? intval($height)   : 450;  // Get valid value or set default
 
     $validcluster = array("no", "yes");  // first in list is the default
-    $cluster = (in_array($params['cluster'], $validcluster))? $params['cluster'] : $validcluster[0];
+    $cluster    = (isset($params['cluster']))? $params['cluster'] : "";  
+    $cluster    = (in_array($cluster, $validcluster))? $cluster : $validcluster[0];
     $usecluster = ($cluster == "yes") ? "true" : "false";
 
-    $zoom  = (is_numeric($params['zoom'])) ? intval($params['zoom']) : 1 ;  // 1 is the default
-    $zoom  = ( $zoom <  0) ?  0 : $zoom ; // check min
-    $zoom  = ( $zoom > 19) ? 19 : $zoom ; // check max
-    
-    $lat   = (is_numeric($params['lat'])) ? $params['lat'] : 0 ;  // 0 is default
-    $lat   = ($lat >  180 ) ?  180 : $lat ; // check max
-    $lat   = ($lat < -180 ) ? -180 : $lat ; // check min
+    $zoom = (isset($params['zoom']))? $params['zoom'] : "";
+    $zoom = (is_numeric($zoom))     ? intval($zoom)   : 1 ;     // 1 is the default
+    $zoom = ( $zoom <  0)           ?  0              : $zoom ; // check min
+    $zoom = ( $zoom > 19)           ? 19              : $zoom ; // check max
 
-    $lng   = (is_numeric($params['lng'])) ? $params['lng'] : 0 ;  // 0 is default
-    $lng   = ($lng >  180 ) ?  180 : $lng ;   // check max
-    $lng   = ($lng < -180 ) ? -180 : $lng ;   // check min
+    $lat = (isset($params['lat']))? $params['lat'] : "";
+    $lat = (is_numeric($lat))     ? $lat           : 0 ;    // 0 is default
+    $lat = ($lat >  180 )         ?  180           : $lat ; // check max
+    $lat = ($lat < -180 )         ? -180           : $lat ; // check min
+
+    $lng = (isset($params['lng']))? $params['lng'] : "";
+    $lng = (is_numeric($lng))     ? $lng           : 0 ;      // 0 is default
+    $lng = ($lng >  180 )         ?  180           : $lng ;   // check max
+    $lng = ($lng < -180 )         ? -180           : $lng ;   // check min
 
     $lang = ZLanguage::getLanguageCode(); // get language used in Zikula
 
     // Check to be sure we can get to the TNG information
-    $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
+    $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
     if (file_exists($TNG['configfile']) ){
         include($TNG['configfile']);
         include($TNG['configpath'] . 'mapconfig.php');
@@ -116,7 +120,7 @@ function smarty_function_placemap($params, &$smarty)
     $output .=  "</td>\n";
     foreach (array(1,2,3,4,5,6,0) as $i) {
         $output .=  "<td align=\"center\">\n";
-        $output .=  "<img src=\"$cmspath" . "googlemaps/" . ${"pinplacelevel" .$i} . ".png\" alt=\"\" height=\"34\" width=\"20\" /><br /><input type=\"checkbox\" name=\"LegendPlaceLevelList\" id=\"".$id_placelevel_prefix.$i."\" onclick=\"showhide('".$i."')\" checked=\"checked\" />" . "<br />".$text["level$i"]."\n";
+        $output .=  "<img src=\"$cmspath" . $TNG['pin_dir'] . ${"pinplacelevel" .$i} . ".png\" alt=\"\" height=\"34\" width=\"20\" /><br /><input type=\"checkbox\" name=\"LegendPlaceLevelList\" id=\"".$id_placelevel_prefix.$i."\" onclick=\"showhide('".$i."')\" checked=\"checked\" />" . "<br />".$text["level$i"]."\n";
         $output .=  "</td>\n";                
     }
     $output .= "</tr></table>\n";
@@ -135,6 +139,7 @@ function smarty_function_placemap($params, &$smarty)
     $output .= "} else {\n";
     $output .= "var placemap                  = {}; //Holds all the variables\n";   
     $output .= "placemap.cmspath              = '".$cmspath."'; \n";
+    $output .= "placemap.pin_dir              = '".$TNG['pin_dir']."'; \n";
     $output .= "placemap.id_placelevel_prefix = '$id_placelevel_prefix';\n";
     $output .= "placemap.placesearch_url      = '$placesearch_url';\n";
     $output .= "placemap.id_sidebar           = '$id_sidebar';\n";
@@ -147,24 +152,18 @@ function smarty_function_placemap($params, &$smarty)
     
     $validplacelevels = array(0,1,2,3,4,5,6);  // Valid place levels, first is default   
     foreach ($validplacelevels as $i) {
-        $output .= "placemap.pinplacelevelfile[$i]=\"". ${"pinplacelevel" .$i} . ".png\";\n";
+        $output .= "placemap.pinplacelevelfile[$i]=\"".${"pinplacelevel" .$i} . ".png\";\n";
     }
 
     $output .= "InitializeMap();\n";
 
-    // Get the data and setup all the marker points
-    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
-           return LogUtil::registerError("Error accessing TNG database.");
-    }
-       
+      
     $query = "SELECT gedcom, place, longitude, latitude, placelevel FROM `". $places_table . "` WHERE longitude <> '' AND latitude <> '' order by place";
-    if (!$result = &$TNG_conn->Execute($query) ) {
-        $TNG_conn->Close();
+    if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
         return pnVarPrepHTMLDisplay("Failed TNG query");
     }
-    if ($result->RecordCount() > 0) {
-        for (; !$result->EOF; $result->MoveNext()) {
-            $row = $result->fields;
+    if (count($result) > 0) {
+        foreach($result as $row) {
             // Make sure placelevel is valid
             $placelevel = (in_array($row['placelevel'], $validplacelevels))? $row['placelevel'] : $validplacelevels[0];
             //add points to javascript
@@ -174,9 +173,6 @@ function smarty_function_placemap($params, &$smarty)
         // no, print status message
         $output .= "alert('Sorry, No places found.');";
     }
-
-    // Database cleanup
-    $TNG_conn->Close();
 
     $output .= "}\n";
     $output .= "//]]>\n";

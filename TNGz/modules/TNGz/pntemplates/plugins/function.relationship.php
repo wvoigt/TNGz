@@ -43,7 +43,7 @@ function smarty_function_relationship($params, &$smarty)
         }
     }
 
-    $output .= "\n<!-- --- Start Relationship --- -->\n";
+    $output  = "\n<!-- --- Start Relationship --- -->\n";
     $output .= "<div id=\"relationship-plugin\">\n";
     $output .= "&nbsp;\n";
     $output .= "<ul>\n";

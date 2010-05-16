@@ -43,9 +43,9 @@ function TNGz_searchapi_search($args)
     
     pnModDBInfoLoad('Search');
        
-    $pntable = pnDBGetTables();
-    $searchTable   =  $pntable['search_result'];
-    $searchColumn  =  $pntable['search_result_column'];
+    $pntable       = pnDBGetTables();
+    $searchTable   = $pntable['search_result'];
+    $searchColumn  = $pntable['search_result_column'];
 
     $sessionId = session_id();
 
@@ -63,7 +63,7 @@ function TNGz_searchapi_search($args)
         $TNGz_modname = rawurlencode($TNGz_modinfo['displayname']);
     } 
 
-    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+    if (!pnModAPIFunc('TNGz','user','TNGquery', array('connect'=>true) ) ) {
         return LogUtil::registerError (__('Error! Could not load items.', $dom) . " (#1)");
     }
     $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
@@ -74,13 +74,14 @@ function TNGz_searchapi_search($args)
         // now check to make sure TNG says user can see the living
         $userid = pnUserGetVar('uname');
         $query = "SELECT allow_living FROM ". $TNG['users_table'] ." WHERE username = '$userid' ";
-        if ($result = $TNG_conn->Execute($query) ) {
-            $row = $result->fields;
-            if ($row['allow_living'] == "1") {
-                $User_Can_See_Living = true;
+        if (false !== ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+            if (count($result) > 0) {
+                $row = $result[0];
+                if ($row['allow_living'] == "1") {
+                    $User_Can_See_Living = true;
+                }
             }
-         }
-        $result->Close();
+        }
     }
 
 
@@ -100,106 +101,99 @@ VALUES ";
                                           'firstname'),
                                     null);
 
-    $sql ="SELECT personID, lastname, lnprefix, firstname, suffix, title, nameorder, birthdate, birthplace, deathdate, deathplace, living, gedcom
-           FROM ". $TNG['people_table'] ."
-           WHERE $where
-           ORDER BY lastname, firstname ";
+    $query="SELECT personID, lastname, lnprefix, firstname, suffix, title, nameorder, birthdate, birthplace, deathdate, deathplace, living, gedcom
+            FROM ". $TNG['people_table'] ."
+            WHERE $where
+            ORDER BY lastname ASC, firstname ASC";
 
-
-    // get the result set
-    $result = $TNG_conn->Execute($sql);
-
-    if (!$result) {
-        LogUtil::log('TNGz query : '.$sql, 'STRICT');
+    if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
         return LogUtil::registerError (__('Error! Could not load items.', $dom). " (#2)");
     }
 
     // Process the result set and insert into search result table
-    for (; !$result->EOF; $result->MoveNext()) {
-        $item = $result->fields;
-        if (    SecurityUtil::checkPermission('TNGz', "::", ACCESS_READ) 
-            && ($User_Can_See_Living || $item['living']==0  || $TNG['nonames']==0) ) {
+    if (count($result)>0){
+        foreach($result as $item) {
+            if (    SecurityUtil::checkPermission('TNGz', "::", ACCESS_READ) 
+                && ($User_Can_See_Living || $item['living']==0  || $TNG['nonames']==0) ) {
             
-            // The Extra Stuff for the resulting search link
-            $extra = serialize(array('id'     => $item['personID'],
-                                     'gedcom' => $item['gedcom']
-                                     )
-                               );
+                // The Extra Stuff for the resulting search link
+                $extra = serialize(array('id'     => $item['personID'],
+                                         'gedcom' => $item['gedcom']
+                                         )
+                                   );
 
-            // Display name as the title, with the proper form based upon the TNG settings
-            // Similar to getNameRev() in genlib.php
-	        $locnameorder = $item['nameorder'] ? $item['nameorder'] : ($TNG['nameorder'] ? $TNG['nameorder'] : 1);
-	        $lastname = trim( $item['lnprefix']." ".$item['lastname'] );
-	        $title = trim($item['title']);
-	        $firstname = trim( $title . " " .$item['firstname'] );
-	        if( $locnameorder == 1 ) {
-		        $namestr = $lastname;
-		        if($firstname) {
-			        if($lastname) {
-                        $namestr .= ", ";
+                // Display name as the title, with the proper form based upon the TNG settings
+                // Similar to getNameRev() in genlib.php
+	            $locnameorder = $item['nameorder'] ? $item['nameorder'] : ($TNG['nameorder'] ? $TNG['nameorder'] : 1);
+	            $lastname = trim( $item['lnprefix']." ".$item['lastname'] );
+	            $title = trim($item['title']);
+	            $firstname = trim( $title . " " .$item['firstname'] );
+	            if( $locnameorder == 1 ) {
+		            $namestr = $lastname;
+		            if($firstname) {
+    			        if($lastname) {
+                            $namestr .= ", ";
+                        }
+			            $namestr .= $firstname;
+		            }
+		            if($item['suffix']) {
+                        $namestr .= " ".$item['suffix'];
                     }
-			        $namestr .= $firstname;
-		        }
-		        if($item['suffix']) {
-                    $namestr .= " ".$item['suffix'];
-                }
-	        } else {
-		        $namestr = trim( "$lastname $firstname" );
-		        if( $item['suffix'] ) {
-                    $namestr .= ", ".$item['suffix'];
-                }
-	        }
-	        $display_title = $namestr;
+	            } else {
+		            $namestr = trim( "$lastname $firstname" );
+		            if( $item['suffix'] ) {
+                        $namestr .= ", ".$item['suffix'];
+                    }
+	            }
+	            $display_title = $namestr;
 
-            // Display other information
-            if ($User_Can_See_Living || $item['living']==0 ) {
-                $sep2 = '';
-                $display_text = "";
-                if ( $item['birthdate'] != '' || $item['birthplace'] != '') {
-                    /*! Search born prefix */
-                    $display_text .= __('born:', $dom) . ' ';
-                    $sep  = '';
-                    $sep2 = "; ";
-                    if ( $item['birthdate'] != '') {
-                        $display_text .= $item['birthdate'];
-                        $sep = ', ';
+                // Display other information
+                if ($User_Can_See_Living || $item['living']==0 ) {
+                    $sep2 = '';
+                    $display_text = "";
+                    if ( $item['birthdate'] != '' || $item['birthplace'] != '') {
+                        /*! Search born prefix */
+                        $display_text .= __('born:', $dom) . ' ';
+                        $sep  = '';
+                        $sep2 = "; ";
+                        if ( $item['birthdate'] != '') {
+                            $display_text .= $item['birthdate'];
+                            $sep = ', ';
+                        }
+                        if ( $item['birthplace'] != '') {
+                            $display_text .= $sep . $item['birthplace'];
+                        }
                     }
-                    if ( $item['birthplace'] != '') {
-                        $display_text .= $sep . $item['birthplace'];
+                    if ( $item['deathdate'] != '' || $item['deathplace'] != '') {
+                        /*! Search died prefix*/
+                        $display_text .= $sep2 . __('died:', $dom) . ' ';
+                        $sep  = '';
+                        if ( $item['deathdate'] != '') {
+                            $display_text .= $item['deathdate'];
+                            $sep = ', ';
+                        }
+                        if ( $item['deathplace'] != '') {
+                            $display_text .= $sep . $item['deathplace'];
+                        }
                     }
+                    $display_text = preg_replace('/(\s)*,(\s|,)+/',', ',$display_text);
+                } else {
+                    $display_text = __('The following individual is flagged as living - Details withheld.', $dom);
                 }
-                if ( $item['deathdate'] != '' || $item['deathplace'] != '') {
-                    /*! Search died prefix*/
-                    $display_text .= $sep2 . __('died:', $dom) . ' ';
-                    $sep  = '';
-                    if ( $item['deathdate'] != '') {
-                        $display_text .= $item['deathdate'];
-                        $sep = ', ';
-                    }
-                    if ( $item['deathplace'] != '') {
-                        $display_text .= $sep . $item['deathplace'];
-                    }
-                }
-                $display_text = preg_replace('/(\s)*,(\s|,)+/',', ',$display_text);
-            } else {
-                $display_text = __('The following individual is flagged as living - Details withheld.', $dom);
-            }
 
-            $sql = $insertSql . '('
+                $sql = $insertSql . '('
                        . '\'' . DataUtil::formatForStore($display_title) . '\', '
                        . '\'' . DataUtil::formatForStore($display_text) . '\', '
                        . '\'' . DataUtil::formatForStore($extra) . '\', '
                        . '\'' . $TNGz_modname . '\', '
                        . '\'' . DataUtil::formatForStore($sessionId) . '\')';
-            $insertResult = DBUtil::executeSQL($sql);
-            if (!$insertResult) {
-                return LogUtil::registerError ( __('Error! Could not load items.', $dom) . " (#3)");
+                $insertResult = DBUtil::executeSQL($sql);
+                if (!$insertResult) {
+                    return LogUtil::registerError ( __('Error! Could not load items.', $dom) . " (#3)");
+                }
             }
         }
     }
-    $result->Close();
-    $TNG_conn->Close();
-
     return true;
 }
 

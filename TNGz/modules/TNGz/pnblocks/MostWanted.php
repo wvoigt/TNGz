@@ -121,7 +121,7 @@ function TNGz_MostWantedblock_display($blockinfo)
     }
 
     // Check to be sure we can get to the TNG information
-    if ( $TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+    if (pnModAPIFunc('TNGz','user','TNGquery', array('connect'=>true) ) ) {
         $have_info = 1;
     } else {
         $have_info = 0;
@@ -142,35 +142,20 @@ function TNGz_MostWantedblock_display($blockinfo)
         } else  {
             $query .= ""; // use the order given
         }
-        if (!$result = $TNG_conn->Execute($query)  ) {
-            $MostWanted_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) )  ) {
+            $MostWanted_error  = __('Error in accessing the TNG tables.', $dom);
         } else {
-            $found = $result->RecordCount();
-            if ($found == 0) {
-
-            } else {
-                for (; !$result->EOF; $result->MoveNext()) {
-                    $row = $result->fields;
-                    
-                    $title1 = $row['lastname'];
-                    $title1 .= ", " ;
-                    $title1 .= $row['firstname'];
-                    $title1 .= " [" ;
-                    $TNGzyear = substr($row['birth'],0,4);
-                    if ($TNGzyear == "0000" ) {
-                        $title1 .= " ? ";
-                    } else {
-                        $title1 .= $TNGzyear;
-                    }
-                    if ($row['living'] == 0) {
-                        $title1 .= "-" ;
-                        $TNGzyear = substr($row['death'],0,4);
-                        if ($TNGzyear == "0000" ) {
-                            $title1 .= " ? ";
-                        } else {
-                            $title1 .= $TNGzyear;
-                        }
-                    }
+            foreach ($result as $row ) {                   
+                $title1 = $row['lastname'];
+                $title1 .= ", " ;
+                $title1 .= $row['firstname'];
+                $title1 .= " [" ;
+                $TNGzyear = substr($row['birth'],0,4);
+                $title1 .=  ($TNGzyear == "0000" )? " ? " : $TNGzyear;
+                if ($row['living'] == 0) {
+                    $title1 .= "-" ;
+                    $TNGzyear = substr($row['death'],0,4);
+                    $title1 .= ($TNGzyear == "0000" )? " ? " : $TNGzyear;
                     $title1 .= "]" ;
                     $temp = pnModAPIFunc('TNGz','user','MakeRef',
                             array('func'        => "getperson",
@@ -182,7 +167,6 @@ function TNGz_MostWantedblock_display($blockinfo)
                     $Mostwantedpeoplelist[] = $temp;
                 }
             }
-            $result->Close();
         }
     }
 
@@ -200,53 +184,42 @@ function TNGz_MostWantedblock_display($blockinfo)
         } else {
             $query .= " order by marrdatetr ASC";
         }
-        if (!$result = &$TNG_conn->Execute($query) ) {
-            $thisday_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) )  ) {
+            $thisday_error  = __('Error in accessing the TNG tables.', $dom);
         } else {
-            $found = $result->RecordCount();
-            if ($found == 0) {
-
-            } else  {
-                for (; !$result->EOF; $result->MoveNext()) {
-                    $row = $result->fields;
-                    $title1 = $row['HLast'];
-                    if ($vars['wantedfamilyname'] == "F") {
-                        $title1 .= ", ". $row['HFirst'] ;
-                    }
-                    /*!Block MostWanted marrange 'and' */
-                    $title1 .= " " . __('and', $dom) . " ";
-                    if ($vars['wantedfamilyname'] == "F") {
-                        $title1 .= $row['WFirst'] . " ";
-                    }
-                    if ($row['WLast'] != "") {
-                        $title1 .= $row['WLast'] ;
-                    } else {
-                        $title1 .= "?";
-                    }
-                    /*!Block MostWanted marrange abbriviation */
-                    $title1 .= " [" . __('m.', $dom)  . "" ;
-                    $TNGzyear = substr($row['marrdatetr'],0,4);
-                    if ($TNGzyear == "0000" ) {
-                        $title1 .= " ? ";
-                    } else {
-                        $title1 .= $TNGzyear;
-                    }
-                    $title1 .= "]" ;
-                    if ($row['divdate'] !="" ) {
-                    /*!Block MostWanted divorce abbriviation */                    
-                        $title1 .= "(" . __('divorced', $dom) . ")" ;
-                    }
-                    $temp = pnModAPIFunc('TNGz','user','MakeRef',
-                            array('func'        => "familygroup",
-                                    'familyID'    => $row['familyID'],
-                                    'tree'        => $row['gedcom'],
-                                    'description' => $title1,
-                                    'target'      => $target
-                                    ));
-                    $Mostwantedfamilylist[] = $temp;
+            foreach ($result as $row ) {
+                $title1 = $row['HLast'];
+                if ($vars['wantedfamilyname'] == "F") {
+                    $title1 .= ", ". $row['HFirst'] ;
                 }
+                /*!Block MostWanted marrange 'and' */
+                $title1 .= " " . __('and', $dom) . " ";
+                if ($vars['wantedfamilyname'] == "F") {
+                    $title1 .= $row['WFirst'] . " ";
+                }
+                if ($row['WLast'] != "") {
+                    $title1 .= $row['WLast'] ;
+                } else {
+                    $title1 .= "?";
+                }
+                /*!Block MostWanted marriage abbriviation */
+                $title1  .= " [" . __('m.', $dom)  . "" ;
+                $TNGzyear = substr($row['marrdatetr'],0,4);
+                $title1  .= ($TNGzyear == "0000" )? " ? " : $TNGzyear;
+                $title1  .= "]" ;
+                if ($row['divdate'] !="" ) {
+                    /*!Block MostWanted divorce abbriviation */                    
+                    $title1 .= "(" . __('divorced', $dom) . ")" ;
+                }
+                $temp = pnModAPIFunc('TNGz','user','MakeRef',
+                        array('func'        => "familygroup",
+                              'familyID'    => $row['familyID'],
+                              'tree'        => $row['gedcom'],
+                              'description' => $title1,
+                              'target'      => $target
+                               ));
+                $Mostwantedfamilylist[] = $temp;
             }
-            $result->Close();
         }
     }
 

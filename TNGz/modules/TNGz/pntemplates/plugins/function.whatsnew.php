@@ -78,11 +78,11 @@ function smarty_function_whatsnew($params, &$smarty)
     $lang = ZLanguage::getLanguageCode(); // get language used in Zikula
 
     $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
-    if ($TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+    if (pnModAPIFunc('TNGz','user','TNGquery', array('connect'=>true) ) ) {
         $have_info = 1;
     } else {
         $have_info = 0;
-        $thisday_error  = __('Error in accessing the TNG tables.', $dom)." " . $TNG_conn->ErrorMsg();
+        $thisday_error  = __('Error in accessing the TNG tables.', $dom);
     }
 
     if ($params['cache'] == "Y") {
@@ -126,12 +126,11 @@ function smarty_function_whatsnew($params, &$smarty)
                   FROM ". $TNG['people_table'] ." 
                   WHERE TO_DAYS(NOW()) - TO_DAYS(changedate) <= $howlong 
                   ORDER BY changedate DESC, lastname, firstname LIMIT $maxitems";
-	    if (!$result = $TNG_conn->Execute($query)  ) {
-            $whatsnew_error = __('Error in accessing the database.', $dom) . " " . $TNG_conn->ErrorMsg();
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+            $whatsnew_error = __('Error in accessing the database.', $dom);
         } else {
-            if ( $result->RecordCount() != 0 ){
-                for (; !$result->EOF; $result->MoveNext()) {
-                    $row = $result->fields;
+            if ( count($result) > 0 ){
+                foreach ($result as $row) {
                     $title = $row['lastname'] . ", " . $row['firstname'];
                     if ($params['link'] == 'Y') {
                         $whatsnew_showpeopleitems[] = pnModAPIFunc('TNGz','user','MakeRef',
@@ -146,7 +145,6 @@ function smarty_function_whatsnew($params, &$smarty)
                     }
                 }
             }
-            $result->Close();
         }
     }
     //////////// FAMILY ///////////////////////
@@ -156,12 +154,11 @@ function smarty_function_whatsnew($params, &$smarty)
 		FROM ".$TNG['families_table']." f, ".$TNG['people_table']." h, ".$TNG['people_table']." w 
         WHERE TO_DAYS(NOW()) - TO_DAYS(f.changedate) <= $howlong AND h.personID = f.husband AND w.personID = f.wife AND h.gedcom = f.gedcom AND w.gedcom = f.gedcom
 		ORDER BY f.changedate DESC, h.lastname LIMIT $maxitems";
-	    if (!$result = $TNG_conn->Execute($query)  ) {
-            $whatsnew_error = __('Error in accessing the database.', $dom)." " . $TNG_conn->ErrorMsg();
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+            $whatsnew_error = __('Error in accessing the database.', $dom);
         } else {
-            if ( $result->RecordCount() != 0 ){
-	            for (; !$result->EOF; $result->MoveNext()) {
-                    $row = $result->fields;
+            if ( count($result) > 0 ){
+	            foreach ($result as $row) {
                     $title = $row['hlast'] . " - " . $row['wlast'];
                     if ($params['link'] == 'Y') {
                         $whatsnew_showfamilyitems[] = pnModAPIFunc('TNGz','user','MakeRef',
@@ -176,7 +173,6 @@ function smarty_function_whatsnew($params, &$smarty)
                     }
                 }
             }
-            $result->Close();
         }
     }
 
@@ -191,17 +187,13 @@ function smarty_function_whatsnew($params, &$smarty)
                          ORDER BY changedate
                          DESC LIMIT $maxitems";
 
-	    if (!$result = &$TNG_conn->Execute($query)  ) {
-            $whatsnew_error .= __('Error in accessing the database.', $dom)." " . $TNG_conn->ErrorMsg();
-        } else {
-        
-            $TNGpaths = pnModAPIFunc('TNGz','user','GetTNGpaths');
-            $TNG_path = $TNGpaths['SitePath'] . "/" . $TNGpaths['directory'];
-            $TNG_ref  = $TNGpaths['directory'];  // a relative path
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+            $whatsnew_error .= __('Error in accessing the database.', $dom);
+        } else {       
+            $TNG_path = $TNG['SitePath'] . "/" . $TNG['directory'];
+            $TNG_ref  = $TNG['directory'];  // a relative path
             
-            for (; !$result->EOF; $result->MoveNext()) {
-                $row = $result->fields;
-
+            foreach ($result as $row) {
                 // First try to use thumbnail
 		        $photo_file = "$TNG_path" . "/" .$TNG['photopath']."/". $row['thumbpath'];
                 $photo_ref  = "$TNG_ref"  . "/" .$TNG['photopath']."/". str_replace("%2F","/",rawurlencode($row['thumbpath']));
@@ -212,8 +204,7 @@ function smarty_function_whatsnew($params, &$smarty)
                     $photo_ref  = "$TNG_ref"  ."/" .$TNG['photopath']."/". str_replace("%2F","/",rawurlencode($row['path']));
                     $photo_path = $row['path'];
                 }
-
-               if( $photo_path != "" && file_exists($photo_file) ) {
+                if( $photo_path != "" && file_exists($photo_file) ) {
                     $temp1 = pnModAPIFunc('TNGz','user','PhotoRef',
                                     array('photo_file'  => $photo_file,
                                           'web_ref'     => $photo_ref,
@@ -232,7 +223,6 @@ function smarty_function_whatsnew($params, &$smarty)
                     }
                 }
             }
-            $result->Close();
         }
     }
 

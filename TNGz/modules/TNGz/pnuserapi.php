@@ -12,184 +12,271 @@
  * @subpackage TNGz
  */
 
- /**
- * Get the common files from user settings
+/*
+ * TNGconfig
  * @param  none
- * @return array with TNG location information
+ * @return array of TNG configuration information, false on failure
  */
-function TNGz_userapi_GetTNGpaths()
+function TNGz_userapi_TNGconfig()
 {
     static $TNG;
+    
     if (!isset($TNG)) { // just do this once
         $TNG = array();
-
         $TNG['directory']  = trim(trim( pnModGetVar('TNGz', '_loc'     ) ), "/") ;    // given directory name/path for TNG
         $TNG['SitePath']   = dirname(dirname(dirname(realpath(__FILE__))));           // as of TNGz 1.01 this is the Zikula base directory
         $TNG['WebRoot']    = rtrim(pnGetBaseURL(), "/");
         $TNG['TNGpath']    = $TNG['SitePath'] . ($TNG['directory']  != "" ? "/".$TNG['directory'] : "") . "/"; // main TNG directory
 
+        // find the path to the configuration files
         $TNG['configpath'] = $TNG['TNGpath']; // Start in the main TNG directory
         $subrootfile = $TNG['configpath'] . "subroot.php";
         if (file_exists($subrootfile) ) { // Versions before TNG 7.0 did not have this file
             include($subrootfile);        // Sets $tngconfig['subroot'] to be "" or the full path to all the config files
             if ( $tngconfig['subroot'] ) {
-                $TNG['configpath'] = $tngconfig['subroot']; // If it is set, use the subroot path for all config files
+                $TNG['configpath'] = $TNG['subroot']; // If it is set, use the subroot path for all config files
             }
         }
         $TNG['configfile']  = $TNG['configpath'] . "config.php" ;
+
+        // Check to be sure we can get to the TNG information
+        if (!file_exists($TNG['configfile']) ) {
+            $TNG = false;
+        } else {           
+            //add TNG config.php
+            include($TNG['configfile']);
+            $TNG['database_host']         = $database_host;
+            $TNG['database_name']         = $database_name;
+            $TNG['database_username']     = $database_username;
+            $TNG['database_password']     = $database_password;
+            $TNG['people_table']          = $people_table;
+            $TNG['families_table']        = $families_table;
+            $TNG['children_table']        = $children_table;
+            $TNG['albums_table']          = $albums_table;
+            $TNG['album2entities_table']  = $album2entities_table;
+            $TNG['albumlinks_table']      = $albumlinks_table;
+            $TNG['media_table']           = $media_table;
+            $TNG['medialinks_table']      = $medialinks_table;
+            $TNG['mediatypes_table']      = $mediatypes_table;
+            $TNG['address_table']         = $address_table;
+            $TNG['languages_table']       = $languages_table;
+            $TNG['cemeteries_table']      = $cemeteries_table;
+            $TNG['states_table']          = $states_table;
+            $TNG['countries_table']       = $countries_table;
+            $TNG['places_table']          = $places_table;
+            $TNG['sources_table']         = $sources_table;
+            $TNG['repositories_table']    = $repositories_table;
+            $TNG['citations_table']       = $citations_table;
+            $TNG['events_table']          = $events_table;
+            $TNG['eventtypes_table']      = $eventtypes_table;
+            $TNG['reports_table']         = $reports_table;
+            $TNG['trees_table']           = $trees_table;
+            $TNG['notelinks_table']       = $notelinks_table;
+            $TNG['xnotes_table']          = $xnotes_table;
+            $TNG['saveimport_table']      = $saveimport_table;
+            $TNG['users_table']           = $users_table;
+            $TNG['temp_events_table']     = $temp_events_table;
+            $TNG['tlevents_table']        = $tlevents_table;
+            $TNG['branches_table']        = $branches_table;
+            $TNG['branchlinks_table']     = $branchlinks_table;
+            $TNG['assoc_table']           = $assoc_table;
+            $TNG['mostwanted_table']      = $mostwanted_table;
+            $TNG['rootpath']              = $rootpath;
+            $TNG['homepage']              = $homepage;
+            $TNG['tngdomain']             = $tngdomain;
+            $TNG['sitename']              = $sitename;
+            $TNG['site_desc']             = $site_desc;
+            $TNG['target']                = $target;
+            $TNG['language']              = $language;
+            $TNG['charset']               = $charset;
+            $TNG['maxsearchresults']      = $maxsearchresults;
+            $TNG['lineendingdisplay']     = $lineendingdisplay;
+            $TNG['lineending']            = $lineending;
+            $TNG['mediapath']             = $mediapath;
+            $TNG['photopath']             = $photopath;
+            $TNG['documentpath']          = $documentpath;
+            $TNG['emailaddr']             = $emailaddr;
+            $TNG['dbowner']               = $dbowner;
+            $TNG['time_offset']           = $time_offset;
+            $TNG['requirelogin']          = $requirelogin;
+            $TNG['treerestrict']          = $treerestrict;
+            $TNG['livedefault']           = $livedefault;
+            $TNG['ldsdefault']            = $ldsdefault;
+            $TNG['chooselang']            = $chooselang;
+            $TNG['photosext']             = $photosext;
+            $TNG['showextended']          = $showextended;
+            $TNG['thumbprefix']           = $thumbprefix;
+            $TNG['thumbsuffix']           = $thumbsuffix;
+            $TNG['thumbmaxh']             = $thumbmaxh;
+            $TNG['thumbmaxw']             = $thumbmaxw;
+            $TNG['customheader']          = $customheader;
+            $TNG['customfooter']          = $customfooter;
+            $TNG['custommeta']            = $custommeta;
+            $TNG['gendexfile']            = $gendexfile;
+            $TNG['headstonepath']         = $headstonepath;
+            $TNG['historypath']           = $historypath;
+            $TNG['backuppath']            = $backuppath;
+            $TNG['maxgedcom']             = $maxgedcom;
+            $TNG['change_cutoff']         = $change_cutoff;
+            $TNG['change_limit']          = $change_limit;
+            $TNG['time_offset']           = $time_offset;
+            $TNG['defaulttree']           = $defaulttree;
+            $TNG['nonames']               = $nonames;
+            $TNG['notestogether']         = $notestogether;
+            $TNG['lnprefixes']            = $lnprefixes;
+            $TNG['lnpfxnum']              = $lnpfxnum;
+            $TNG['specpfx']               = $specpfx;
+            $TNG['nameorder']             = $nameorder;
+
+            $TNG = array_merge($tngconfig, $TNG);
+
+            // add TNG version.php
+            include(dirname($TNG['configfile']) . "/version.php");
+            $TNG['tng_title']             = $tng_title;
+            $TNG['tng_version']           = $tng_version;
+            $TNG['tng_copyright']         = $tng_copyright;
+            $TNG['tng_date']              = $tng_date;
+
+            // add Calculated fields
+            // Changes started with TNG 8.0.0
+            $TNG800 = (strcmp($tng_version,'8.0.0') >= 0) ? true : false ;                 // at least TNG 8.0.0
+            $TNG['css_dir']               = ($TNG800) ? 'css/'      : '';            // directory for css
+            $TNG['js_dir']                = ($TNG800) ? 'js/'       : '';            // directory for javascript
+            $TNG['img_dir']               = ($TNG800) ? 'img/'      : '';            // directory for images
+            $TNG['lang_dir']              = ($TNG800) ? 'languages/': '';            // directory for languages
+            $TNG['pin_dir']               = ($TNG800) ? 'img/'      : 'googlemaps/'; // directory for pin images
+            $TNG['admin_dir']             = ($TNG800) ? ''          : 'admin/';      // directory for admin
+            $TNG['use_password_type']     = ($TNG800) ? true        : false;         // use of password_type
+
+        }
     }
     return $TNG;
 }
 
 /*
-* DBconnect
-* @param  none
-* @return mixed ADO connection to TNG data, or false if connection failed.
-*/
-function TNGz_userapi_DBconnect()
+ * TNGquery
+ * @param  query   the MySQL query for the TNG database
+ * @param  assoc   if true (default), return query results as an array of associative arrays. If false, returns result as an array of indexed arrays
+ * @param  single  if set and the query result has only one item, then the value of thet item directly. Default to not being set.
+ * @param  connect if set, return true if a database connection exists, false otherwise.  Default to not being set.
+ * @return mixed   depends upon the parameters.  False on any error.
+ * 
+ */
+function TNGz_userapi_TNGquery($args)
 {
-    static $TNG_conn;
-    if (!isset($TNG_conn) || !$TNG_conn->IsConnected() ) {
-        $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
+    // arguments 
+    $query   = (isset($args['query']   ) ) ? trim($args['query'])  : false; //the query
+    $assoc   = (isset($args['assoc']   ) ) ? (bool) $args['assoc'] : true;  //return associate array (vs numeric order)
+    $single  = (isset($args['single']  ) ) ? true                  : false; //return value of a single entry
+    $connect = (isset($args['connect'] ) ) ? true                  : false; //no query, just do a connection and return status
+    
+    static $TNG_link; // keep from call to call
+    
+    // Database connection - should only have to do this once
+    if (!isset($TNG_link) || empty($TNG_link) ) {
+        $TNG = pnModAPIFunc('TNGz','user','TNGconfig'); // Get TNG configuration information
         if ($TNG) {
-            $TNG_conn = ADONewConnection('mysql');
-            $TNG_conn->NConnect($TNG['database_host'], $TNG['database_username'], $TNG['database_password'], $TNG['database_name']);
-            $TNG_conn->SetFetchMode(ADODB_FETCH_ASSOC);
-            if ($TNG['charset']=="UTF-8"){
-                $TNG_conn->Execute("set names 'utf8'");
+            // Get a fresh new link, especially if using the same DB as Zikula.  That way DB accesses are kept separate.
+            $TNG_link = mysql_connect($TNG['database_host'], $TNG['database_username'], $TNG['database_password'], true);
+            // Should look into using mysql_pconnect
+            if ($TNG_link && $TNG['charset']=="UTF-8"){
+                mysql_query("SET NAMES 'utf8'", $TNG_link);
             }
-        } else {
-            $TNG_conn = false;
+            if( !$TNG_link || !mysql_select_db($TNG['database_name'], $TNG_link  ) ) {
+                $TNG_link = false;
+            }
         }
     }
-    return $TNG_conn;
+
+    if (!$TNG_link ) {
+        return LogUtil::registerError("TNGz: Error accessing TNG database.");
+    } elseif ($connect) {
+        return true;   // Say we can get to the database
+    }
+    
+    if (!$query) {
+        return LogUtil::registerError("TNGz: missing query.");
+    }
+            
+    $result = mysql_query($query, $TNG_link);
+    
+    // Check for errors
+    if( mysql_errno($TNG_link) ) {
+        $errorcode = 'TNGz: MySQL Error #'.mysql_errno($TNG_link).' : <small>' . mysql_error($TNG_link). '</small><br />'. $query;
+        return LogUtil::registerError($errorcode);
+    }
+    
+    // Now process each query type
+    $query_type = strtoupper(preg_replace("/\W.*/",'',$query));
+    
+    switch ($query_type) {
+
+    case "SELECT":
+    case "SHOW":
+            $count = mysql_num_rows($result);
+            if( $count === false ) {
+                $output = false;   // something wrong
+            } elseif ( $count == 0 ) {
+                $output = array(); // No data, give empty
+            } elseif ( $count == 1 ) {
+                // Only one row of results
+                $fields = ( $assoc ) ? mysql_fetch_assoc($result) : mysql_fetch_row($result);
+                if( count($fields) == 1 && $single ) {
+                    // just return the value of the one field
+                    list($key) = array_keys($fields);   
+                    $output = $fields[$key];
+                } else {
+                    // return all the fields
+                    $output = array();
+                    $output[] = $fields;
+                }
+            } else {
+                // More than one rows of result
+                $output = array();
+                for( $i = 0; $i < $count; $i++ ) {
+                    $output[] = ( $assoc ) ? mysql_fetch_assoc($result) : mysql_fetch_row($result);
+                }
+            }
+            mysql_free_result($result);
+            break;
+            
+    case "INSERT":
+    case "UPDATE":
+            $output = array ( 'affected' => mysql_affected_rows( $TNG_link),
+                              'id'       => mysql_insert_id( $TNG_link)
+                            );
+            break;
+    default:
+            $output = LogUtil::registerError("TNGz: unknown query type.");
+    }
+
+    return $output;
 }
 
 /*
-* TNGconfig
-* @param  none
-* @return array of TNG configuration information, false on failure
-*/
-function TNGz_userapi_TNGconfig()
+ * CanUserSeeLiving
+ * @param  none
+ * @return true if this user can see TNG living people.  False otherwise.
+ */
+function TNGz_userapi_CanUserSeeLiving()
 {
-    static $TNGconfig;
-    if (!isset($TNGconfig)) { // just do this once
-        $TNG = pnModAPIFunc('TNGz','user','GetTNGpaths');
-
-        // Check to be sure we can get to the TNG information
-        if (!file_exists($TNG['configfile']) ) {
-            $TNGconfig = false;
-        } else {
-            // seed with path information
-            $TNGconfig = $TNG;
-            
-            //add TNG config.php
-            include($TNG['configfile']);
-            $TNGconfig['database_host']         = $database_host;
-            $TNGconfig['database_name']         = $database_name;
-            $TNGconfig['database_username']     = $database_username;
-            $TNGconfig['database_password']     = $database_password;
-            $TNGconfig['people_table']          = $people_table;
-            $TNGconfig['families_table']        = $families_table;
-            $TNGconfig['children_table']        = $children_table;
-            $TNGconfig['albums_table']          = $albums_table;
-            $TNGconfig['album2entities_table']  = $album2entities_table;
-            $TNGconfig['albumlinks_table']      = $albumlinks_table;
-            $TNGconfig['media_table']           = $media_table;
-            $TNGconfig['medialinks_table']      = $medialinks_table;
-            $TNGconfig['mediatypes_table']      = $mediatypes_table;
-            $TNGconfig['address_table']         = $address_table;
-            $TNGconfig['languages_table']       = $languages_table;
-            $TNGconfig['cemeteries_table']      = $cemeteries_table;
-            $TNGconfig['states_table']          = $states_table;
-            $TNGconfig['countries_table']       = $countries_table;
-            $TNGconfig['places_table']          = $places_table;
-            $TNGconfig['sources_table']         = $sources_table;
-            $TNGconfig['repositories_table']    = $repositories_table;
-            $TNGconfig['citations_table']       = $citations_table;
-            $TNGconfig['events_table']          = $events_table;
-            $TNGconfig['eventtypes_table']      = $eventtypes_table;
-            $TNGconfig['reports_table']         = $reports_table;
-            $TNGconfig['trees_table']           = $trees_table;
-            $TNGconfig['notelinks_table']       = $notelinks_table;
-            $TNGconfig['xnotes_table']          = $xnotes_table;
-            $TNGconfig['saveimport_table']      = $saveimport_table;
-            $TNGconfig['users_table']           = $users_table;
-            $TNGconfig['temp_events_table']     = $temp_events_table;
-            $TNGconfig['tlevents_table']        = $tlevents_table;
-            $TNGconfig['branches_table']        = $branches_table;
-            $TNGconfig['branchlinks_table']     = $branchlinks_table;
-            $TNGconfig['assoc_table']           = $assoc_table;
-            $TNGconfig['mostwanted_table']      = $mostwanted_table;
-            $TNGconfig['rootpath']              = $rootpath;
-            $TNGconfig['homepage']              = $homepage;
-            $TNGconfig['tngdomain']             = $tngdomain;
-            $TNGconfig['sitename']              = $sitename;
-            $TNGconfig['site_desc']             = $site_desc;
-            $TNGconfig['target']                = $target;
-            $TNGconfig['language']              = $language;
-            $TNGconfig['charset']               = $charset;
-            $TNGconfig['maxsearchresults']      = $maxsearchresults;
-            $TNGconfig['lineendingdisplay']     = $lineendingdisplay;
-            $TNGconfig['lineending']            = $lineending;
-            $TNGconfig['mediapath']             = $mediapath;
-            $TNGconfig['photopath']             = $photopath;
-            $TNGconfig['documentpath']          = $documentpath;
-            $TNGconfig['emailaddr']             = $emailaddr;
-            $TNGconfig['dbowner']               = $dbowner;
-            $TNGconfig['time_offset']           = $time_offset;
-            $TNGconfig['requirelogin']          = $requirelogin;
-            $TNGconfig['treerestrict']          = $treerestrict;
-            $TNGconfig['livedefault']           = $livedefault;
-            $TNGconfig['ldsdefault']            = $ldsdefault;
-            $TNGconfig['chooselang']            = $chooselang;
-            $TNGconfig['photosext']             = $photosext;
-            $TNGconfig['showextended']          = $showextended;
-            $TNGconfig['thumbprefix']           = $thumbprefix;
-            $TNGconfig['thumbsuffix']           = $thumbsuffix;
-            $TNGconfig['thumbmaxh']             = $thumbmaxh;
-            $TNGconfig['thumbmaxw']             = $thumbmaxw;
-            $TNGconfig['newmedialinks']         = $newmedialinks;
-            $TNGconfig['customheader']          = $customheader;
-            $TNGconfig['customfooter']          = $customfooter;
-            $TNGconfig['custommeta']            = $custommeta;
-            $TNGconfig['gendexfile']            = $gendexfile;
-            $TNGconfig['headstonepath']         = $headstonepath;
-            $TNGconfig['historypath']           = $historypath;
-            $TNGconfig['backuppath']            = $backuppath;
-            $TNGconfig['maxgedcom']             = $maxgedcom;
-            $TNGconfig['change_cutoff']         = $change_cutoff;
-            $TNGconfig['change_limit']          = $change_limit;
-            $TNGconfig['time_offset']           = $time_offset;
-            $TNGconfig['defaulttree']           = $defaulttree;
-            $TNGconfig['nonames']               = $nonames;
-            $TNGconfig['notestogether']         = $notestogether;
-            $TNGconfig['lnprefixes']            = $lnprefixes;
-            $TNGconfig['lnpfxnum']              = $lnpfxnum;
-            $TNGconfig['specpfx']               = $specpfx;
-            $TNGconfig['nameorder']             = $nameorder;
-
-            $TNGconfig = array_merge($tngconfig, $TNGconfig);
-
-            // add TNG version.php
-            include(dirname($TNG['configfile']) . "/version.php");
-            $TNGconfig['tng_title']             = $tng_title;
-            $TNGconfig['tng_version']           = $tng_version;
-            $TNGconfig['tng_copyright']         = $tng_copyright;
-            $TNGconfig['tng_date']              = $tng_date;
-
-            // add Calculated fields
-            // Changes started with TNG 8.0.0
-            $TNG800 = (strcmp($tng_version,'8.0.0') >= 0) ? true : false ;       // at least TNG 8.0.0
-            $TNGconfig['css_dir']               = ($TNG800) ? 'css/'      : '';       // directory for css
-            $TNGconfig['js_dir']                = ($TNG800) ? 'js/'       : '';       // directory for js
-            $TNGconfig['lang_dir']              = ($TNG800) ? 'languages/': '';       // directory for languages
-            $TNGconfig['admin_dir']             = ($TNG800) ? ''          : 'admin/'; // directory for admin
-            $TNGconfig['use_password_type']     = ($TNG800) ? true        : false;    // use of password_type
-
+    static $User_Can_See_Living;
+    
+    if (!isset($User_Can_See_Living)) { // just need to do this once
+        $User_Can_See_Living = false;   // default no
+        if ( pnUserLoggedIn() ){
+            $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
+            // now check to make sure TNG says user can see the living
+            $userid = pnUserGetVar('uname');
+            $query = "SELECT allow_living FROM ".$TNG['users_table']." WHERE username = '$userid' ";
+            if ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) )  ) {
+                if ($result[0]['allow_living'] == "1") {
+                    $User_Can_See_Living = true;
+                }
+            }
         }
     }
-    return $TNGconfig;
+    return $User_Can_See_Living;
 }
 
 /*
@@ -210,27 +297,23 @@ function TNGz_userapi_getperson($args)
         return false;
     }
     
-    if (!$TNGconn = pnModAPIFunc('TNGz','user','DBconnect') ) {
-       return false; // can't get to the data
-    }
     
     if (!$TNG = pnModAPIFunc('TNGz','user','TNGconfig') ) {
        return false; // can't get to the data
     }
     
     $query = "SELECT * FROM ". $TNG['people_table'] . " WHERE personID = '".$args['id']. "' AND gedcom = '".$args['tree'] ."'";
-
-    if (!$result = $TNGconn->Execute($query) ) {
+    if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
         return false; 
     }
 
-    if($result->RecordCount()>0) {
-        $row = $result->fields;
+    if(count($result)>0) {
+        $row = $result[0]; // just use the first one
     } else {
        return false;
     }
 
-    $locnameorder = $row['nameorder'] ? $row['nameorder'] : ($TNGconfig['nameorder']  ? $TNGconfig['nameorder']  : 1);
+    $locnameorder = $row['nameorder'] ? $row['nameorder'] : ($TNG['nameorder']  ? $TNG['nameorder']  : 1);
     $lastname = trim( $row['lnprefix']." ".$row['lastname'] );
     $title = $row['title'];
 
@@ -241,7 +324,7 @@ function TNGz_userapi_getperson($args)
     } else {
         $namestr = trim("$lastname $firstname");
     }
-    if( $row[suffix] ) {
+    if( $row['suffix'] ) {
         $namestr .= ", $row[suffix]";
     }
     $row['fullname'] = $namestr;
@@ -252,6 +335,13 @@ function TNGz_userapi_getperson($args)
     return $row;
 }
 
+/*
+ * ShowPage
+ * Get the requested TNG page and display
+ * @param  showpage The TNG page to display (without the .php)
+ * @param  render   If true (default) wrap the TNG page in Zikula's rendering engine.  Otherwise, just return the page as is.
+ * @return the HTML for the page
+*/
 function TNGz_userapi_ShowPage($args)
 {
     $dom = ZLanguage::getModuleDomain('TNGz');
@@ -307,39 +397,35 @@ function TNGz_userapi_ShowPage($args)
     // Get the TNG configuration information
     //////////////////////////////////////////////////////
     // NOTE: This normally is done for TNG in the begin.php file.  We are doing it here
-    //       Can't just use TNGz_userapi_TNGconfig()
-    //       TNG files need config file loaded so all the variables are available to it
-    $cms[tngpath] = $TNG['TNGpath'];
+
+    $cms['tngpath'] = $TNG['TNGpath'];
+    $TNGhomepage    = $TNG['homepage'];  
+
+    // update the cms parameters (which at one time was in customconfig.php)
+    $cms['auto']       = true;
+    $cms['TNGz']       = 1;
+    $cms['support']    = "zikula";
+    $cms['module']     = "TNGz";
+    $cms['tngpath']    = $TNG['directory']. "/";
+    $cms['adminurl']   = DataUtil::formatForDisplay(pnModURL('TNGz','admin','TNGadmin'));
+    $cms['noend']      = true; // Tell TNG to not include end.php file
+    $cms['cloaklogin'] = "Yes";
+    $cms['credits']    = "<!-- TNGz --><br />";
+    $cms['url']        = "index.php?module=$TNGz_modname".$Pass_lang."&show";    
+                        // TODO: Need to figure out the best way to do this
+    //$cms['url']        = rtrim(pnModURL('TNGz','user','main', array('show'=>'')),"=");
+                         // these are not as good
+    //$cms['url']        = index.php?module=TNGz&func=main&show;
+    //$cms['url']        = pnModURL('TNGz','user','main')."&amp;show"; //Some part of TNG does not work with short URLs enabled
+
+    //Load the whole TNG config file
+    //  Can't just use $TNG from TNGz_userapi_TNGconfig() which only has some config variables
+    //  Going to run TNG now, so need ALL the config variables
     if (file_exists($TNG['configfile']) ) {
-        include $TNG['configfile'];  
-        $TNGhomepage = $homepage;
+        include $TNG['configfile'];
     } else {
         return LogUtil::registerError("Error accessing TNG config file.");
     }
-
-    // Now that TNG config file is loaded, update the cms parameters (which at one time was in customconfig.php)
-    $cms[auto]       = true;
-    $cms[TNGz]       = 1;
-    $cms[support]    = "zikula";
-    $cms[module]     = "TNGz";
-    
-                        // TODO: Need to figure out the best way to do this
-    //$cms[url]        = "index.php?module=$TNGz_modname&func=main&show";
-    //$cms[url]        = "index.php?module=$TNGz_modname&amp;func=main&amp;show";
-    $cms[url]          = "index.php?module=$TNGz_modname".$Pass_lang."&show";
-    //$cms[url]        = rtrim(pnModURL('TNGz','user','main', array('show'=>'')),"=");
-                         // these are not as good
-    //$cms[url]        = index.php?module=TNGz&func=main&show;
-    //$cms[url]        = pnModURL('TNGz','user','main')."&amp;show"; //Some part of TNG does not work with short URLs enabled
-
-    
-    $cms[tngpath]    = $TNG['directory']. "/";
-    //$cms[adminurl]   = "index.php?module=TNGz&func=admin";
-    // using pnModURL
-    $cms[adminurl]      = DataUtil::formatForDisplay(pnModURL('TNGz','admin','TNGadmin'));
-    $cms[noend]      = true; // Tell TNG to not include end.php file
-    $cms[cloaklogin] = "Yes";
-    $cms[credits]    = "<!-- TNGz --><br />";
 
     // Fix up file paths to look in the right place
     $homepage = ($dot = strrchr($homepage, '.')) ? substr($homepage, 0, -strlen($dot)): $homepage;// strip .php or .html
@@ -348,17 +434,16 @@ function TNGz_userapi_ShowPage($args)
     if ($TNGrenderpage) {
         $custommeta = dirname(realpath(__FILE__)) . "/meta.php";  // Overwrite setting from TNG configuration
     } else {
-        $custommeta  = $cms[tngpath] . $custommeta ;
+        $custommeta  = $cms['tngpath'] . $custommeta ;
     }
 
-    $gendexfile      = $cms[tngpath] . $gendexfile ;
-    $mediapath       = $cms[tngpath] . $mediapath ;
-    $headstonepath   = $cms[tngpath] . $headstonepath ;
-    $historypath     = $cms[tngpath] . $historypath ;
-    $backuppath      = $cms[tngpath] . $backuppath ;
-    $documentpath    = $cms[tngpath] . $documentpath ;
-    $photopath       = $cms[tngpath] . $photopath ;
-    $logname         = $cms[tngpath] . $logname ;
+    $gendexfile      = $cms['tngpath'] . $gendexfile ;
+    $mediapath       = $cms['tngpath'] . $mediapath ;
+    $headstonepath   = $cms['tngpath'] . $headstonepath ;
+    $historypath     = $cms['tngpath'] . $historypath ;
+    $backuppath      = $cms['tngpath'] . $backuppath ;
+    $documentpath    = $cms['tngpath'] . $documentpath ;
+    $photopath       = $cms['tngpath'] . $photopath ;
 
     // Now fix Zikula's $register_globals=off code for TNG
     // NOTE: Is this still needed?
@@ -416,25 +501,22 @@ function TNGz_userapi_ShowPage($args)
     //////////////////////////////////////////////////////
     // Get User Information from TNG database
     //////////////////////////////////////////////////////
-    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
-           return LogUtil::registerError("Error accessing TNG database.");
+    $query = "SELECT * FROM ".$TNG['users_table']." WHERE username = '$TNGusername' ";
+    if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+        return false;
     }
-    $query = "SELECT * FROM $users_table WHERE username = '$TNGusername' ";
-    if (!$result = &$TNG_conn->Execute($query) ) {
-        return(false);
-    }
-    $found = $result->RecordCount();
+    $found = count($result);
     if( $found == 1 ) {
-        $row = $result->fields;
-        $check = ( $row[allow_living] == -1 );
+        $row = $result[0];
+        $check = ( $row['allow_living'] == -1 );
     }
 
     if( $found == 1 && !$check ) {
         // Update time of last login/use
-        $newdate = date ("Y-m-d H:i:s", time() + ( 3600 * $time_offset ) );
-        $query = "UPDATE $users_table SET lastlogin=\"$newdate\" WHERE userID=\"$row[userID]\"";
-        if (!$result = $TNG_conn->Execute($query) ) {
-            return LogUtil::registerError("$admtext[cannotexecutequery]: $query");
+        $newdate = date ("Y-m-d H:i:s", time() + ( 3600 * $TNG['time_offset'] ) );
+        $query = "UPDATE ".$TNG['users_table']." SET lastlogin=\"$newdate\" WHERE userID=\"".$row['userID']."\"";
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+            return false;
         }
 
         // setup session information for the user
@@ -454,36 +536,36 @@ function TNGz_userapi_ShowPage($args)
         session_register('session_rp');
         if ($newlanguage) {
             session_register('session_language');
-            $session_language = $_SESSION[session_language] = $newlanguage;
+            $session_language = $_SESSION['session_language'] = $newlanguage;
         }
         session_register('lastpage');
-        $logged_in           = $_SESSION[logged_in]         = 1;
-        $allow_edit_db       = $_SESSION[allow_edit_db]     = $row[allow_edit];
-        $allow_add_db        = $_SESSION[allow_add_db]      = $row[allow_add];
-        $tentative_edit_db   = $_SESSION[tentative_edit_db] = $row[tentative_edit];
-        $allow_delete_db     = $_SESSION[allow_delete_db]   = $row[allow_delete];
+        $logged_in           = $_SESSION['logged_in']         = 1;
+        $allow_edit_db       = $_SESSION['allow_edit_db']     = $row['allow_edit'];
+        $allow_add_db        = $_SESSION['allow_add_db']      = $row['allow_add'];
+        $tentative_edit_db   = $_SESSION['tentative_edit_db'] = $row['tentative_edit'];
+        $allow_delete_db     = $_SESSION['allow_delete_db']   = $row['allow_delete'];
         if( $allow_edit_db || $allow_add_db || $allow_delete_db )
-            $allow_admin_db  = $_SESSION[allow_admin_db]    = 1;
+            $allow_admin_db  = $_SESSION['allow_admin_db']    = 1;
         else
-            $allow_admin_db  = $_SESSION[allow_admin_db]    = 0;
+            $allow_admin_db  = $_SESSION['allow_admin_db']    = 0;
         if ( !$livedefault ) //depends on permissions
-            $allow_living_db = $_SESSION[allow_living_db]   = $row[allow_living];
+            $allow_living_db = $_SESSION['allow_living_db']   = $row['allow_living'];
         elseif ( $livedefault == 2 ) //always do living
-            $allow_living_db = $_SESSION[allow_living_db]   = 1;
+            $allow_living_db = $_SESSION['allow_living_db']   = 1;
         else //never do living
-            $allow_living_db = $_SESSION[allow_living_db]   = 0;
-        $allow_ged_db        = $_SESSION[allow_ged_db]      = $row[allow_ged];
+            $allow_living_db = $_SESSION['allow_living_db']   = 0;
+        $allow_ged_db        = $_SESSION['allow_ged_db']      = $row['allow_ged'];
         if( !$ldsdefault ) //always do lds
-            $allow_lds_db    = $_SESSION[allow_lds_db]      = 1;
+            $allow_lds_db    = $_SESSION['allow_lds_db']      = 1;
         elseif( $ldsdefault == 2 )  //depends on permissions
-            $allow_lds_db    = $_SESSION[allow_lds_db]      = $row[allow_lds];
+            $allow_lds_db    = $_SESSION['allow_lds_db']      = $row['allow_lds'];
         else  //never do lds
-            $allow_lds_db    = $_SESSION[allow_lds_db]      = 0;
-        $assignedtree        = $_SESSION[assignedtree]      = $row[gedcom];
-        $assignedbranch      = $_SESSION[assignedbranch]    = $row[branch];
-        $currentuser         = $_SESSION[currentuser]       = $row[username];
-        $currentuserdesc     = $_SESSION[currentuserdesc]   = $row[description];
-        $session_rp          = $_SESSION[session_rp]        = $rootpath;
+            $allow_lds_db    = $_SESSION['allow_lds_db']      = 0;
+        $assignedtree        = $_SESSION['assignedtree']      = $row['gedcom'];
+        $assignedbranch      = $_SESSION['assignedbranch']    = $row['branch'];
+        $currentuser         = $_SESSION['currentuser']       = $row['username'];
+        $currentuserdesc     = $_SESSION['currentuserdesc']   = $row['description'];
+        $session_rp          = $_SESSION['session_rp']        = $rootpath;
     }
 
     //////////////////////////////////////////////////////
@@ -650,7 +732,8 @@ function TNGz_userapi_ShowPage($args)
 
 }
 
- /**
+/*
+ * GetTNGlanguage
  * Get the language to be used for TNG
  * @return false on error or the name of the TNG language
  */
@@ -750,7 +833,7 @@ function TNGz_userapi_GetTNGlanguage($args)
 }
 
 
- /**
+/* GetTNGtext
  * Get the text strings defined by TNG
  * @param  str args['textpart'] The type of text to retrieve from TNG
  * @return false on error or an array with the TNG text elements
@@ -760,6 +843,8 @@ function TNGz_userapi_GetTNGtext($args)
     static $TNGz_text         = array(); // holds the text values
     static $TNGz_text_fetched = array(); // keeps track of the texttypes visited
     static $languagepath;
+    
+    $args['textpart'] = (isset($args['textpart']))? $args['textpart'] : "";
     
    // Get parameter
     $valid     = array( 'common', 'sources', 'language', 'gedcom', 'getperson', 'relate', 'familygroup','pedigree',
@@ -771,9 +856,11 @@ function TNGz_userapi_GetTNGtext($args)
         return $TNGz_text; // already have it, so just give it 
     }
 
-    global $text, $alltextloaded;
+    global $text, $alltextloaded, $textpart;
     $text    = array();
-    
+    $rootpath = ""; // kludge for text.php 
+    $textpart  = ($texttype == 'common') ? '' : $texttype; 
+ 
     if (!isset($languagepath)){  // This should only have to run once
         $TNG        = pnModAPIFunc('TNGz','user','TNGconfig');
         $mylanguage = pnModAPIFunc('TNGz','user','GetTNGlanguage');
@@ -789,9 +876,6 @@ function TNGz_userapi_GetTNGtext($args)
         $TNGz_text = array_merge($dates, $admtext, $text);
     }
 
-    $rootpath = ""; // kludge for text.php 
-    global $textpart;
-    $textpart  = ($texttype == 'common') ? '' : $texttype;
     include($languagepath . "text.php");
 
     $TNGz_text = array_merge($text, $TNGz_text); // now add to the list we already have
@@ -905,21 +989,18 @@ function TNGz_userapi_Cache($args)
         */
 
         // Now actually go find the last update time stamp on various TNG tables
-        if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
-           return false; // can't get to the data
-        }
         foreach($TNG_tables as $table){
             // now get the update time for the table
             $query = "SHOW TABLE STATUS LIKE '$table'";
             
-            if (!$result = $TNG_conn->Execute($query) ) {
-                return false;
+            if ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) )  ) {
+                if (count($result)>0) {
+                    foreach ($result as $row) {
+                        $table_updated  = $row['Update_time'];
+                        $TNG_updated    =  ($table_updated > $TNG_updated) ? $table_updated : $TNG_updated;
+                    }
+                }
             }
-            for (; !$result->EOF; $result->MoveNext()) {
-                $table_updated  = $result->fields['Update_time'];
-                $TNG_updated =  ($table_updated > $TNG_updated) ? $table_updated : $TNG_updated;
-            }
-            $result->Close();
         }
     }
 
@@ -1134,18 +1215,14 @@ function TNGz_userapi_ModifyCreateUser()
 
         $TNG_create = pnModGetVar('TNGz', '_users');
         $TNG_sync   = pnModGetVar('TNGz', '_sync');
-
-        if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
-            return LogUtil::registerError("Error accessing TNG database.");
-        }
-
+    
         $query     =  "SELECT userID, email, realname, website, password";
         $query    .=  ($TNG['use_password_type']) ? ", password_type" : "";
         $query    .=  " FROM ". $TNG['users_table'] ." WHERE username = '$userid' ";
-        if (!$result = $TNG_conn->Execute($query) ) {
-            return(false);
+        if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+            return false;
         }
-        $found = $result->RecordCount();
+        $found = count($result);
         if ( $found == 0 ) {
             // username not found, prepare to create it in TNG
             if ( !$loggedin && $guest == 1) {
@@ -1185,6 +1262,7 @@ function TNGz_userapi_ModifyCreateUser()
                 }
             }
             if ( ($loggedin && $TNG_create == 1) || (!$loggedin && $guest == 1)) {
+                $newdate = date ("Y-m-d H:i:s", time() + ( 3600 * $TNG['time_offset'] ) );
                 $adding  = "INSERT INTO " . $TNG['users_table'] . " ";
                 $adding .= "(";
                 $adding .= "description, username, realname  , email      , website      , gedcom , allow_living, allow_ged  , allow_lds, lastlogin ";
@@ -1192,21 +1270,20 @@ function TNGz_userapi_ModifyCreateUser()
                 $adding .= ($TNG['use_password_type']) ? ", password_type " : "";
                 $adding .=  ") VALUES ";
                 $adding .= "(";
-                $adding .= "'$TNG_desc','$TNG_user','$TNG_name','$TNG_email','$TNG_website','$TNG_db','$TNG_living' ,'$TNG_gedcom','$TNG_lds' , $TNG_conn->DBTimeStamp(NOW())";
+                $adding .= "'$TNG_desc','$TNG_user','$TNG_name','$TNG_email','$TNG_website','$TNG_db','$TNG_living' ,'$TNG_gedcom','$TNG_lds' , '$newdate'";
                 $adding .= ",'$TNG_pwd_safe'";
                 $adding .= ($TNG['use_password_type']) ? ",'$TNG_pwd_type'" : "";
                 $adding .= ") ";
 
-                if (!$added = $TNG_conn->Execute($adding) ) {
-                        return(false);
+                if (false === ($added = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$adding) )  ) ){
+                    return false;
                 }
-                $added->Close();
                 $return_code = 2;
             }
         } elseif ($TNG_sync == 1 && $loggedin ) {
             // The user was found, so check for updates
             $TNG_changed = false;
-            $theUser = $result->fields;
+            $theUser = $result[0];
 
             $adding =  "UPDATE " . $TNG['users_table'] . " SET ";
             if ( $theUser['email'] != $u['email'] ) {
@@ -1229,16 +1306,15 @@ function TNGz_userapi_ModifyCreateUser()
             if ($TNG_changed == true) {
                 $adding = rtrim($adding, " ,"); // take off last comma and spaces
                 $adding .=  " WHERE userID='".$theUser['userID']."'";
-                if (!$added = $TNG_conn->Execute($adding) ) {
-                    return(false);
+                if (false === ($added = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$adding) ) ) ) {
+                    return false;
                 } else {
                     $return_code = 1;
                 }
-                $added->Close();
             }
         }
     }
-    return ($return_code);
+    return $return_code;
 }
 
 //-----------------------------------------------------------------------
@@ -1336,9 +1412,6 @@ function TNGz_userapi_GetTNGurl($args)
     if (!$TNG = pnModAPIFunc('TNGz','user','TNGconfig') ) {
         return LogUtil::registerError("Error accessing TNG config file.");
     }
-    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
-       return pnVarPrepHTMLDisplay("Failed to find TNG database");
-    }
 
     $goto = (isset($args['file'])) ? $args['file']    : $TNG['admin_dir'].'admin.php';
 
@@ -1349,17 +1422,16 @@ function TNGz_userapi_GetTNGurl($args)
     $username = pnUserGetVar('uname');
 
     $query = "SELECT * FROM ".$TNG['users_table']." WHERE username = '$username' ";
-    if (!$result = $TNG_conn->Execute($query) ) {
-            return LogUtil::registerError("Error accessing TNG database.");
+    if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) { 
+        return false; 
     }
-    $found = $result->RecordCount();
+    $found = count($result);
     if( $found == 1 ) {
-        $row = $result->fields;
+        $row = $result[0];
         $userpass = $row['password'];
     } else {
         $userpass = "";
     }
-    $result->Close();
 
     //////////////////////////////////////////////////////
     // Now encode everything to pass on,
@@ -1509,7 +1581,7 @@ function TNGz_userapi_getRecords($args)
     }
     // $limit is still true only if $start and $count are valid
 
-    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+    if (!pnModAPIFunc('TNGz','user','TNGquery', array('connect'=>true) ) ) {
        return false; // can't get to the data
     }
     
@@ -1527,13 +1599,12 @@ function TNGz_userapi_getRecords($args)
 
     }
 
-    if (!$result = $TNG_conn->Execute($query) ) {
-        return(false);
+    if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+        return false;
     }
     $thelist = array();
-    if($result->RecordCount()>0) {
-        for (; !$result->EOF; $result->MoveNext()) {
-            $items = $result->fields;
+    if(count($result)>0) {
+        foreach ($result as $items) {
             $items['tree'] = $items['gedcom'];
             $items['id']   = $items['ID'];
             $items['changedate'] = substr($items['changedate'],0,10);  // mod to handle date format change in TNGv6
@@ -1564,7 +1635,7 @@ function TNGz_userapi_getRecordsCount($args)
 
     $facts = array();
 
-    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+    if (!pnModAPIFunc('TNGz','user','TNGquery', array('connect'=>true) ) ) {
        return false; // can't get to the data
     }
     
@@ -1573,19 +1644,19 @@ function TNGz_userapi_getRecordsCount($args)
     }
 
     $query  =  "SELECT count(id) as pcount FROM ". $TNG['people_table'];
-    if (!$result = &$TNG_conn->Execute($query) ) {
-        return(false);
+    if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+        return false;
     }
-    if($result->RecordCount()>0) {
-        list( $facts['people'] ) = $result->fields;
+    if(count($result)>0) {
+        $facts['people'] = $result[0]['pcount'];
     }
 
-    $query  =  "SELECT count(id) as pcount FROM ".$TNG['families_table'];
-    if (!$result = &$TNG_conn->Execute($query) ) {
-        return(false);
+    $query  =  "SELECT count(id) as fcount FROM ".$TNG['families_table'];
+    if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
+        return false;
     }
-    if($result->RecordCount()>0) {
-        list( $facts['family'] ) = $result->fields;
+    if(count($result)>0) {
+        $facts['family'] = $result[0]['fcount'];
     }
 
     $facts['total'] = $facts['people'] + $facts['family'];
@@ -1616,9 +1687,7 @@ function TNGz_userapi_GetSurnames($args)
     $top = $args['top'];
     $top  = (is_numeric($top) && $top > 0)? intval($top) : 50;  // Get valid value or set default
 
-    $TNGz = pnModAPIFunc('TNGz','user','GetTNGpaths');
-
-    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+    if (!pnModAPIFunc('TNGz','user','TNGquery', array('connect'=>true) ) ) {
        return false; // can't get to the data
     }
     
@@ -1626,22 +1695,22 @@ function TNGz_userapi_GetSurnames($args)
        return false; // can't get to the data
     }
 
-    $cms['tngpath']    = $TNGz['directory']. "/";
+    $cms['tngpath']    = $TNG['directory']. "/";
 
     // First get all unique surnames
-    $query = "SELECT ucase( $binary TRIM(CONCAT_WS(' ',lnprefix,lastname) ) ) as surnameuc, TRIM(CONCAT_WS(' ',lnprefix,lastname) ) as surname, count( ucase($binary lastname ) ) as count FROM ".$TNG['people_table']." WHERE lastname<>'' GROUP BY surname ORDER by count DESC ";
-    if (!$result = $TNG_conn->Execute($query) ) {
+    $query = "SELECT ucase(TRIM(CONCAT_WS(' ',lnprefix,lastname) ) ) as surnameuc, TRIM(CONCAT_WS(' ',lnprefix,lastname) ) as surname, count( ucase($binary lastname ) ) as count FROM ".$TNG['people_table']." WHERE lastname<>'' GROUP BY surname ORDER by count DESC ";
+    if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
         return pnVarPrepHTMLDisplay("Failed the TNG query");
     }
 
-    $SurnameCount = $result->RecordCount();
-    $name         = $result->fields;       // Look at first record, since already sorted by Surname Count
+    $SurnameCount = count($result);
+    $name         = $result[0];            // Look at first record, since already sorted by Surname Count
     $SurnameMax   = $name['count'];        // First record should have the most
 
     $SurnameRank  = array();
 
-    for ($rank=1; !$result->EOF && $rank<=$top; $result->MoveNext(), $rank++) {
-        $name = $result->fields;
+    for ($rank=1; !empty($result) && $rank<=$top; $rank++) {
+        $name = array_shift($result);
         $name['surname']   = $name['surname'];
         $name['surnameuc'] = urlencode($name['surnameuc']);
         $name['rank']      = $rank;
@@ -1699,9 +1768,7 @@ function TNGz_userapi_GetPlaces($args)
     $validsorts = array('rank', 'alpha');  // first in list is the default
     $sort = (in_array($args['sort'], $validsorts))? $args['sort'] : $validsorts[0];
 
-    $TNGz = pnModAPIFunc('TNGz','user','GetTNGpaths');
-
-    if (!$TNG_conn = pnModAPIFunc('TNGz','user','DBconnect') ) {
+    if (!pnModAPIFunc('TNGz','user','TNGquery', array('connect'=>true) ) ) {
        return pnVarPrepHTMLDisplay("Failed to find TNG database");
     }
     
@@ -1709,24 +1776,23 @@ function TNGz_userapi_GetPlaces($args)
        return pnVarPrepHTMLDisplay("Failed to find TNG database");
     }
 
-    $cms['tngpath']    = $TNGz['directory']. "/";
+    $cms['tngpath']    = $TNG['directory']. "/";
 
     $thePlaces = array();
 
     $query = "SELECT distinct trim(substring_index(place,',',-1)) as myplace, count(distinct place) as placecount FROM ".$TNG['places_table']." WHERE trim(substring_index(place,',',-1)) != \"\" GROUP BY myplace ORDER by placecount DESC LIMIT $top";
-    if (!$result = $TNG_conn->Execute($query) ) {
+    if (false === ($result = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
         return pnVarPrepHTMLDisplay("Failed the TNG query");
     }
     $count = 1;
-    for (; !$result->EOF; $result->MoveNext()) {
-        $place = $result->fields;
+    foreach ($result as $place){
         $place2 = urlencode($place['myplace']);
         if( $place2 != "" ) {
-            $query = "SELECT count(distinct place) as placecount FROM ".$TNG['places_table']." WHERE place = \"$place[myplace]\"";
-            if (!$result2 = &$TNG_conn->Execute($query) ) {
+            $query = "SELECT count(distinct place) as placecount FROM ".$TNG['places_table']." WHERE place = \"".$place['myplace']."\"";
+            if (false === ($result2 = pnModAPIFunc('TNGz','user','TNGquery', array('query'=>$query) ) ) ) {
                 return pnVarPrepHTMLDisplay("Failed to TNG query");
             }
-            $countrow = $result2->fields;
+            $countrow = $result2[0];
             $specificcount = $countrow['placecount'];
 
             $searchlink = ($specificcount) ? " <a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array('show'=>'placesearch', 'psearch'=>$place2))). "\"><img src=\"". $cms['tngpath']. "tng_search_small.gif\" border=\"0\" alt=\"\" width=\"9\" height=\"9\" /></a>" : "";
