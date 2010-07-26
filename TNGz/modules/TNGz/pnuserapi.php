@@ -139,14 +139,14 @@ function TNGz_userapi_TNGconfig()
 
             // add Calculated fields
             // Changes started with TNG 8.0.0
-            $TNG800 = (strcmp($tng_version,'8.0.0') >= 0) ? true : false ;                 // at least TNG 8.0.0
-            $TNG['css_dir']               = ($TNG800) ? 'css/'      : '';            // directory for css
-            $TNG['js_dir']                = ($TNG800) ? 'js/'       : '';            // directory for javascript
-            $TNG['img_dir']               = ($TNG800) ? 'img/'      : '';            // directory for images
-            $TNG['lang_dir']              = ($TNG800) ? 'languages/': '';            // directory for languages
-            $TNG['pin_dir']               = ($TNG800) ? 'img/'      : 'googlemaps/'; // directory for pin images
-            $TNG['admin_dir']             = ($TNG800) ? ''          : 'admin/';      // directory for admin
-            $TNG['use_password_type']     = ($TNG800) ? true        : false;         // use of password_type
+            $TNG800 = (strcmp($tng_version,'8.0.0') >= 0) ? true : false ;               // at least TNG 8.0.0 ?
+            $TNG['css_dir']               = ($TNG800) ? 'css/'      : '';                // directory for css
+            $TNG['js_dir']                = ($TNG800) ? 'js/'       : '';                // directory for javascript
+            $TNG['img_dir']               = ($TNG800) ? 'img/'      : '';                // directory for images
+            $TNG['lang_dir']              = ($TNG800) ? 'languages/': '';                // directory for languages
+            $TNG['pin_dir']               = ($TNG800) ? 'img/'      : 'googlemaps/';     // directory for map pin images
+            $TNG['admin_file']            = ($TNG800) ? 'admin.php' : 'admin/index.php'; // main file for admin
+            $TNG['use_password_type']     = ($TNG800) ? true        : false;             // use of password_type
 
         }
     }
@@ -1413,7 +1413,7 @@ function TNGz_userapi_GetTNGurl($args)
         return LogUtil::registerError("Error accessing TNG config file.");
     }
 
-    $goto = (isset($args['file'])) ? $args['file']    : $TNG['admin_dir'].'admin.php';
+    $goto = (isset($args['file'])) ? $args['file']    : $TNG['admin_file'];
 
     //////////////////////////////////////////////////////
     // Get the TNG user informaiton for the person logged in Zikula
