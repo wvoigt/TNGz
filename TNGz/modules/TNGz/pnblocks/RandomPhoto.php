@@ -155,7 +155,7 @@ function TNGz_RandomPhotoblock_display($blockinfo) {
             // Only include those that are already specified
             $query .= "AND photolist.mediaID IN ( $PhotoList ) ";
         }
-        if (!$showliving ){
+        if (!$showliving && $photos_with_living !=""){
             // but don't include photo's of living people
             $query .= "AND photolist.mediaID NOT IN ( $photos_with_living ) ";
         }
