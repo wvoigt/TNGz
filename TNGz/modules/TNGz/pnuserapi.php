@@ -95,6 +95,7 @@ function TNGz_userapi_TNGconfig()
             $TNG['mediapath']             = $mediapath;
             $TNG['photopath']             = $photopath;
             $TNG['documentpath']          = $documentpath;
+            $TNG['extspath']              = $extspath;
             $TNG['emailaddr']             = $emailaddr;
             $TNG['dbowner']               = $dbowner;
             $TNG['time_offset']           = $time_offset;
@@ -136,6 +137,23 @@ function TNGz_userapi_TNGconfig()
             $TNG['tng_version']           = $tng_version;
             $TNG['tng_copyright']         = $tng_copyright;
             $TNG['tng_date']              = $tng_date;
+
+            // add template informaiton (if it exists)
+            $TNG['templateconfig']  = dirname($TNG['configfile']) . "/templateconfig.php";
+            if (file_exists($TNG['templateconfig']) ) {
+                include($TNG['templateconfig']);
+                $TNG['templatenum']       = $templatenum;
+                $TNG['templateswitching'] = $templateswitching;
+                $TNG['templatepath']      = $templateswitching && $templatenum ? "templates/template$templatenum/" : "";
+                $TNG['tmp']               = $tmp;
+                
+            } else {
+                $TNG['templatenum']       = "";
+                $TNG['templateswitching'] = "";
+                $TNG['templatepath']      = "";
+                $TNG['tmp']               = "";
+                $TNG['templateconfig']    = "";
+            }
 
             // add Calculated fields
             // Changes started with TNG 8.0.0
@@ -399,7 +417,6 @@ function TNGz_userapi_ShowPage($args)
     // NOTE: This normally is done for TNG in the begin.php file.  We are doing it here
 
     $cms['tngpath'] = $TNG['TNGpath'];
-    $TNGhomepage    = $TNG['homepage'];  
 
     // update the cms parameters (which at one time was in customconfig.php)
     $cms['auto']       = true;
@@ -444,11 +461,12 @@ function TNGz_userapi_ShowPage($args)
     $backuppath      = $cms['tngpath'] . $backuppath ;
     $documentpath    = $cms['tngpath'] . $documentpath ;
     $photopath       = $cms['tngpath'] . $photopath ;
+    $templatepath    = $TNG['templatepath'];
 
     // Now fix Zikula's $register_globals=off code for TNG
     // NOTE: Is this still needed?
     $register_globals = (bool) ini_get('register_globals');
-    if( $register_globals ) {
+    if( !$register_globals ) {
         $the_globals = $_SERVER + $_ENV + $_GET +$_POST;
         if( $the_globals && is_array( $the_globals ) ) {
             foreach ( $the_globals as $key=>$value ) {
@@ -463,18 +481,13 @@ function TNGz_userapi_ShowPage($args)
         unset($the_globals);
         if( $_FILES && is_array( $_FILES ) ) {
             foreach( $_FILES as $key=>$value ) {
-                ${$key} = $value[tmp_name];
+                ${$key} = $value['tmp_name'];
             }
         }
     }
 
-    //////////////////////////////////////////////////////
-    // Check Arguments
-    //////////////////////////////////////////////////////
-    $TNGshowpage   = (isset($args['showpage'])) ? $args['showpage'] : $TNGhomepage;
-    if ( !strpos( $TNGshowpage, ".php") ) {
-        $TNGshowpage .= ".php";
-    }
+
+
 
     //////////////////////////////////////////////////////
     // Get User Login information
@@ -569,6 +582,31 @@ function TNGz_userapi_ShowPage($args)
     }
 
     //////////////////////////////////////////////////////
+    // Set up what TNG file to show
+    //////////////////////////////////////////////////////
+   
+    if (isset($args['showpage']) ) {
+        $TNGshowpage = $args['showpage'];
+    } else {
+        $TNGshowpage = $TNG['homepage'];
+    }
+    
+    if ( !strpos( $TNGshowpage, ".php") ) {
+        $TNGshowpage .= ".php";
+    }
+
+    $TNGusingTemplateIndex = false;
+    if ( $TNGshowpage == "index.php" && $TNG['templateswitching'] && $TNG['templatenum']) {
+        include($TNG['templateconfig']);
+        include($cms['tngpath'] . "genlib.php");
+        include($cms['tngpath'] . "getlang.php");
+        include($cms['tngpath'] . "$mylanguage/text.php");
+        $TNGshowpage = "templates/template" . $TNG['templatenum'] . "/index.php";
+        $TNGusingTemplateIndex = true;
+    }
+
+
+    //////////////////////////////////////////////////////
     // Capture the TNG output
     //////////////////////////////////////////////////////
     ob_start();
@@ -622,17 +660,27 @@ function TNGz_userapi_ShowPage($args)
         $patterns[]     = "|<!DOCTYPE[^\"]+\"([^\"]+)\"[^\"]+\"([^\"]+)/([^/]+)\.dtd\">|i";
         //$replacements[] = "<!-- $0 -->\n";
         $replacements[] = "";
-    
+        
+        // Fix up bad href calls that don't have the cms['url'] in front
+        if ($TNGusingTemplateIndex) {
+            // First, the simple links with no arguments
+            $patterns[]     = "#\s*href\s*=\s*[\"']?(?!http)(?:".$cms['tngpath'].")*([^\"'/>]*)\.php\s*[\"']#iU";
+            $replacements[] = " href=\"".$cms['url']."=$1\" ";
+            // Now, the links with arguments
+            $patterns[]     = "#\s*href\s*=\s*[\"']?(?!http)(?:".$cms['tngpath'].")*([^\"'/>]*)\.php\?([^\"'>]*)\s*[\"']#iU";
+            $replacements[] = " href=\"".$cms['url']."=$1&amp;$2\" ";
+        }
+
         // Remove TNG javascripts and load files into head (also using Zikula versions).
         $patterns[]     = "/<script(.*)prototype.js(.*)<\/script>/iU";
         //$replacements[] = "<!-- $0 -->\n";
         $replacements[] = "";
-        PageUtil::AddVar('javascript', 'javascript/ajax/prototype.js');
+        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/'. $TNG['js_dir'].'prototype.js');
 
         $patterns[]     = "/<script(.*)scriptaculous.js(.*)<\/script>/iU";
         //$replacements[] = "<!-- $0 -->\n";
         $replacements[] = "";
-        PageUtil::AddVar('javascript', 'javascript/ajax/scriptaculous.js');
+        PageUtil::AddVar('javascript', pnGetBaseURL().$TNG['directory'].'/'. $TNG['js_dir'].'scriptaculous.js');
 
         $patterns[]     = "/<script(.*)net.js(.*)<\/script>/iU";
         //$replacements[] = "<!-- $0 -->\n";
@@ -1722,17 +1770,17 @@ function TNGz_userapi_GetSurnames($args)
             $class = 2;
         } else if ($percent > 50) {
             $class = 3;
-        } else if ($percent > 30) {
-            $class = 4;
         } else if ($percent > 25) {
+            $class = 4;
+        } else if ($percent > 13) {
             $class = 5;
-        } else if ($percent > 20) {
+        } else if ($percent > 8) {
             $class = 6;
-        } else if ($percent > 15) {
+        } else if ($percent > 4) {
             $class = 7;
-        } else if ($percent > 10) {
+        } else if ($percent > 2) {
             $class = 8;
-        } else if ($percent > 5 ) {
+        } else if ($percent > 1 ) {
             $class = 9;
         } else {
             $class = 0;
@@ -1795,9 +1843,35 @@ function TNGz_userapi_GetPlaces($args)
             $countrow = $result2[0];
             $specificcount = $countrow['placecount'];
 
-            $searchlink = ($specificcount) ? " <a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array('show'=>'placesearch', 'psearch'=>$place2))). "\"><img src=\"". $cms['tngpath']. "tng_search_small.gif\" border=\"0\" alt=\"\" width=\"9\" height=\"9\" /></a>" : "";
             $name = ($place['placecount'] > 1 || !$specificcount) ? "<a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array('show'=>'places-oneletter', 'offset'=>'1', 'psearch'=>$place2)))."\">" . DataUtil::formatForDisplay($place['myplace']) . "</a> (".$place['placecount'].")" : $place['myplace'];
-            $thePlaces[$name] = array('rank'=> $count, 'name'=>$name, 'count'=> $place['placecount'], 'link'=>$searchlink, 'place'=>$place['myplace']);
+            $searchlink = ($specificcount) ? " <a href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array('show'=>'placesearch', 'psearch'=>$place2))). "\"><img src=\"". $cms['tngpath']. "tng_search_small.gif\" border=\"0\" alt=\"\" width=\"9\" height=\"9\" /></a>" : "";
+            $href       = ($specificcount) ? " href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array('show'=>'placesearch', 'psearch'=>$place2))). "\"" : "";
+            // Set PlaceMax.  Now this should really be the first since places are ordered by frequency
+            $PlaceMax = ($place['placecount'] > $PlaceMax)? $place['placecount']: $PlaceMax;
+            // Now assign a class to each surname based upon relative number to most used surname
+            $percent = 100 * $place['placecount'] / $PlaceMax;
+            if ($percent > 98) {
+                $class = 1;
+            } else if ($percent > 70) {
+                $class = 2;
+            } else if ($percent > 50) {
+                $class = 3;
+            } else if ($percent > 25) {
+                $class = 4;
+            } else if ($percent > 13) {
+                $class = 5;
+            } else if ($percent > 8) {
+                $class = 6;
+            } else if ($percent > 4) {
+                $class = 7;
+            } else if ($percent > 2) {
+                $class = 8;
+            } else if ($percent > 1 ) {
+                $class = 9;
+            } else {
+                $class = 0;
+            }            
+            $thePlaces[$name] = array('rank'=> $count, 'name'=>$name, 'count'=> $place['placecount'], 'link'=>$searchlink, 'place'=>$place['myplace'], 'class'=>$class, 'href'=>$href );
             $count++;
         }
     }

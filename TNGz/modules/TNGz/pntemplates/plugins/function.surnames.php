@@ -84,10 +84,10 @@ function smarty_function_surnames($params, &$smarty)
     $output  = ( $params['title'] ) ? "<h3 class=\"surnames\" >" . $params['title'] . "</h3>\n" : "";
 
     if ($type == 'cloud') {
-        $output .= "<div class='surnames-cloud'>";
+        $output .= "<div class='cloud'>";
         foreach($names as $name){
-            $output .= "<span class='surnames-cloud size" . $name['class'] . "'>";
-            $output .= ($params['links']=='N') ? "" : "<a class='surnames-cloud size" . $name['class'] . "' ";
+            $output .= "<span class='cloud size" . $name['class'] . "'>";
+            $output .= ($params['links']=='N') ? "" : "<a class='cloud size" . $name['class'] . "' ";
             $output .= ($params['links']=='N') ? "" : "href=\"". DataUtil::formatForDisplay(pnModURL('TNGz', 'user', 'main', array( 'show' => 'search', 'mylastname' => $name['surnameuc'], 'mybool' => 'AND'))) . "\">";
             $output .= $name['surname'];
             $output .= ($params['links']=='N') ? "" : "</a>";

@@ -38,7 +38,7 @@ function smarty_function_places($params, &$smarty)
     $top  = (isset($params['top'])) ? $params['top'] : "" ;
     $top  = (is_numeric($top) && $top > 0)? intval($top) : 50;  // Get valid value or set default
 
-    $validtypes = array('table', 'list');  // first in list is the default
+    $validtypes = array('table', 'cloud', 'list');  // first in list is the default
     $type = (isset($params['type'])) ? $params['type'] : "" ;
     $type = (in_array($params['type'], $validtypes))? $params['type'] : $validtypes[0];
     
@@ -75,6 +75,18 @@ function smarty_function_places($params, &$smarty)
     $Places =  pnModAPIFunc('TNGz','user','GetPlaces', array('top'=> $top, 'sort' => $sort));
 
     $output  .= ( $params['title'] ) ? "<h3 class=\"places\" >" . $params['title'] . "</h3>\n" : "";
+
+    if ($type == 'cloud') {
+        $output .= "<div class='cloud'>";
+        foreach($Places as $place){
+            $output .= "<span class='cloud size" . $place['class'] . "'>";
+            $output .= ($params['links']=='N') ? "" : "<a class='cloud size" . $place['class'] . "' ". $place['href'] . ">";
+            $output .= $place['place'];
+            $output .= ($params['links']=='N') ? "" : "</a>";
+            $output .= "</span> ";
+        }
+        $output .= "</div>";
+    }
 
     if ($type == 'list'){
         $list = ($sort == 'alpha') ? "ul" : "ol";

@@ -46,7 +46,7 @@
     </tr>
     <tr>
         <td align="center" valign="middle" ><!--[showphoto showliving='user' phototype='thumb' photolist='' max_height='200' max_width='200']--></td>
-	<td align="center" valign="top" ><div class="surname-big"><!--[surnames title="" type='cloud' top='25' links='yes']--></div></td>
+	<td align="center" valign="top" ><div class="cloud-big"><!--[surnames title="" type='cloud' top='25' links='yes']--></div></td>
 	<td align="center" valign="middle" ><a href="<!--[pnmodurl modname=TNGz show=placemap]-->"><img src="<!--[pnmodurl modname=TNGz type=user func=worldmap size='tiny']-->" alt="Map" /></a></td>
 	<td align="left"   valign="top" rowspan="2">
 	    <!--[thisday title=$text.date date='yes' birth='user' marriage='user' death='yes' sortby='up' wikipedia='yes' link='yes' newwindow='no' cache='yes']-->
@@ -70,6 +70,8 @@
 	    <!--[namesearch title=$text.search]-->
 	    <hr />
 	    <!--[statistics title=$text.mnustatistics people='yes' family='yes' surnames='yes' sex='yes' living='yes' places='yes' geocode='yes']-->
+	    <hr />	
+	    <div class="cloud-big"><!--[places title=$text.places type='cloud' top='25' col='x' sort='alpha' links='yes' menu='no']--></div>
 	</td>
 	<td valign="top" >
   	    <!--[histogram title="`$text.date` Histogram" step=20 scale=200 width=300 height=200 color='007777' graph='line' values='no' background='Clock.png']-->

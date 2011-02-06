@@ -1,4 +1,4 @@
-.surnames-cloud {
+.cloud {
   	font-family: Verdana, Tahoma, Arial;
   	padding: 2px 2px 2px 2px;
   	letter-spacing:  0.0em;
@@ -8,12 +8,12 @@
     text-align:      center;	
 }
 
-div.surname-small {
+div.cloud-small {
 	font-size: 1.3em;
 }
 
-div.surname-big {
-	font-size: 1.6em;
+div.cloud-big {
+	font-size:  1.6em;
 }
 
 div.surname-block-intro {
@@ -21,39 +21,39 @@ div.surname-block-intro {
 	text-align:center;
 }
 
-span.size1      { color: #000099; font-size: 130%; }
+span.size1      { color: #000099; font-size: 200%; }
 a.size1:link    { color: #000099; }
 a.size1:visited { color: #000099; }
 
-span.size2      { color: #3333CC; font-size: 120%; }
+span.size2      { color: #3333CC; font-size: 160%; }
 a.size2:link    { color: #3333CC; }
 a.size2:visited { color: #3333CC; }
 
-span.size3      { color: #006633; font-size: 110%; }
+span.size3      { color: #006633; font-size: 130%; }
 a.size3:link    { color: #006633; }
 a.size3:visited { color: #006633; }
 
-span.size4      { color: #993300; font-size: 100%; }
-a.size4:link    { color: #993300; }
-a.size4:visited { color: #993300; }
+span.size4      { color: #CC0033; font-size: 110%; }
+a.size4:link    { color: #CC0033; }
+a.size4:visited { color: #CC0033; }
 
-span.size5      { color: #CC0033; font-size: 90%; }
-a.size5:link    { color: #CC0033; }
-a.size5:visited { color: #CC0033; }
+span.size5      { color: #993300; font-size: 100%; }
+a.size5:link    { color: #993300; }
+a.size5:visited { color: #993300; }
 
-span.size6      { color: #666666; font-size: 80%; }
+span.size6      { color: #666666; font-size: 90%; }
 a.size6:link    { color: #666666; }
 a.size6:visited { color: #666666; }
 
-span.size7      { color: #CC9900; font-size: 70%; }
+span.size7      { color: #CC9900; font-size: 80%; }
 a.size7:link    { color: #CC9900; }
 a.size7:visited { color: #CC9900; }
 
-span.size8      { color: #999933; font-size: 60%; }
+span.size8      { color: #999933; font-size: 70%; }
 a.size8:link    { color: #999933; }
 a.size8:visited { color: #999933; }
 
-span.size9      { color: #000000; font-size: 50%; }
+span.size9      { color: #000000; font-size: 60%; }
 a.size9:link    { color: #000000; }
 a.size9:visited { color: #000000; }
 

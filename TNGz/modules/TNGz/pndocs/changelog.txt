@@ -4,16 +4,21 @@ TNGz /pndoc/changelog.txt
 TNGz (C) 2009 Wendel Voigt
 ======================================================================================
 version 1.5
-  * Added support for TNG 8.0.0 (and is still compatible with TNG 7.1.3)
+  * Added support for TNG 8.0.x, TNG 8.1.0 and TNG 8.1.1 (and is still compatible with TNG 7.1.3)
+  * Added support for TNG template switching introduced in TNG 8.1.0
+  * Added support for fixing up URLs from TNG that do not accomodate a CMS
+    (mostly for the templates in the templates folder.)
+  * Added "cloud" for Places, similar to the "cloud" for Surnames
   * Added support for different password hash methods (as supported by TNG 8.0.0 and up)
   * Removed dependancy on ADODB which is being removed in Zikula 1.3.0
   * Localized all TNG database queries to make future porting to other databases easier
+  * fixed issue with global variable scan not picking up TNG mod directories.
   * fixed issue with adminlog.txt not displaying properly in TNGz Administration
   * fixed relationship plugin in template TNGz_user_main.htm to be active.  Can turn off in TNGz Administration.
   * fixed issue with .pot file (two entries with the same id)
   * code clean up, and simplification
   * Warning: TNG 7.x.x and below will no longer sync passwords correctly starting with Zikula 1.3.0
-    Solution: Upgrade to TNG 8.0.0 (when available) before moving to Zikula 1.3.0
+    Solution: Upgrade to TNG 8.0.0 before moving to Zikula 1.3.0
   
 version 1.4
   * This version requires Zikula 1.2.x or above

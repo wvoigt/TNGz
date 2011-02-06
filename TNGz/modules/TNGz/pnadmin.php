@@ -374,8 +374,26 @@ function TNGz_admin_updateconfig()
     // Also, we do this every time to make sure we have the latest, just in case files are changed
     $TNG = pnModAPIFunc('TNGz','user','TNGconfig');
 
-    if ($TNGglobals = pnModAPIFunc('TNGz','user','GetTNGglobals', array('dir' => $TNG['SitePath']."/".$TNG['directory']))) {
-        pnModSetVar('TNGz', '_globals'     , $TNGglobals);
+    // Programs can be in several locations...
+    $search_directories = array();
+    $search_directories[] = $TNG['SitePath']."/".$TNG['directory'];                  // main TNG
+    $search_directories[] = $TNG['SitePath']."/".$TNG['directory']."/extensions";    // some extensions hardcoded to this
+    if($TNG['extspath']!=""){                                                        // user defined area for extensions
+        $search_directories[] = $TNG['SitePath']."/".$TNG['directory']."/".$TNG['extspath']; 
+    }
+    
+    $TNGglobals = "";
+    // scan each directory to find all the global veriables
+    foreach($search_directories as $search_dir) {
+        if ($the_globals = pnModAPIFunc('TNGz','user','GetTNGglobals', array('dir' => $search_dir))) {
+            $TNGglobals = ($TNGglobals) ? $TNGglobals . ", " . $the_globals  : $the_globals; //append to the end
+        }
+    }
+
+    if ($TNGglobals) {
+        // now clean it up and save
+        $the_globals = array_unique ( explode(", ", $TNGglobals), SORT_STRING); // turn into an array and make sure all are unique
+        pnModSetVar('TNGz', '_globals'  , implode(", ", $the_globals ));        // and now save as a string
     }
 
     // the module configuration has been updated successfuly
